@@ -1,5 +1,7 @@
 package com.bonkan.brao.entity;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 public abstract class Entity implements Comparable {
 
     private float x;
@@ -10,9 +12,25 @@ public abstract class Entity implements Comparable {
         this.y = y;
     }
 
+    public abstract void render(SpriteBatch batch);
+    public abstract void update(float delta);
+
+    public float getX()
+    {
+        return x;
+    }
+
+    public float getY()
+    {
+        return y;
+    }
+
     @Override
     public int compareTo(Object o) {
-        return 0;
+        if(o != null && o instanceof Entity) {
+            if(y > ((Entity) o).y) return -1;
+        }
+        return 1;
     }
 
 }

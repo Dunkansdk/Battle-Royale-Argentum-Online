@@ -9,6 +9,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bonkan.brao.state.GameStateManager;
 
+/**
+ * Main Class
+ */
 public class Game extends ApplicationAdapter {
 
 	public boolean DEBUG = false;
@@ -16,8 +19,8 @@ public class Game extends ApplicationAdapter {
 	// Game information
 	public static final String TILTE = "Battle Royale AO";
 	public static final float SCALE = 1.0f;
-	public static final int V_WIDTH = 720;
-	public static final int V_HEIGHT = 480;
+	public static final int V_WIDTH = 1280;
+	public static final int V_HEIGHT = 720;
 
 	private OrthographicCamera camera;
 	private GameStateManager gameState;
