@@ -18,6 +18,7 @@ public class PlayState extends AbstractGameState {
 
         map = new TmxMapLoader().load("map1.tmx");
         tiled = new OrthogonalTiledMapRenderer(map);
+        entity = new EntityManager();
     }
 
     @Override

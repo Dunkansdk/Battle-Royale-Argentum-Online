@@ -5,6 +5,9 @@ sourceCompatibility = 1.6
 
 sourceSets.main.java.srcDirs = [ "src/" ]
 
+dependencies {
+	compile files('libs/kryonet-2.21-all.jar')
+}
 
 eclipse.project {
     name = appName + "-core"

@@ -24,7 +24,8 @@ public class GameStateManager {
     public GameStateManager(final Game app) {
         this.app = app;
         this.states = new Stack<AbstractGameState>();
-        this.setState(State.PLAY); // HARDCODE: Se inicia en el play para testear el juego
+        //this.setState(State.PLAY); // HARDCODE: Se inicia en el play para testear el juego
+        this.setState(State.LOGIN); // inicio en login xq me la banco
     }
 
     public Game getApp() {
@@ -59,7 +60,7 @@ public class GameStateManager {
         if(states.size() >= 1) {
             states.pop().dispose();
         }
-        states.push(getState(state));
+        states.push(this.getState(state));
     }
 
     private AbstractGameState getState(State state)
