@@ -4,15 +4,18 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.bonkan.brao.networking.Packet;
 import com.bonkan.brao.networking.PacketIDs;
@@ -27,9 +30,15 @@ public class LoginState extends AbstractGameState {
 	private TextField username;
 	private TextField password;
 	private TextButton connect;
+	private Label label;
+	
+	private double labelTimer; // para que se borre despues de un toque
+	private final int LABEL_TIME = 3000; // en 3 segundos desaparece
 	
     public LoginState(GameStateManager gameState) {
         super(gameState);
+        
+        labelTimer = 0;
         
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -51,14 +60,19 @@ public class LoginState extends AbstractGameState {
  		skin.load(fileHandle);
         
         username = new TextField("", skin);
-        username.setBounds(50, 100, 100, 30);
+        username.setBlinkTime(0.7f);
+        username.setMessageText("username");
+        username.setBounds(stage.getWidth() / 2 - 75, stage.getHeight() - 200, 150, 25);
+        
         password = new TextField("", skin);
-        password.setBounds(50, 60, 100, 30);
+        password.setBlinkTime(0.7f);
+        password.setMessageText("password");
+        password.setBounds(stage.getWidth() / 2 - 75, stage.getHeight() - 230, 150, 25);
         password.setPasswordMode(true);
         password.setPasswordCharacter('*');
         
         connect = new TextButton("Conectar", skin);
-        connect.setBounds(50, 40, 80, 20);
+        connect.setBounds(stage.getWidth() / 2 - 40, stage.getHeight() - 280, 80, 25);
         
         connect.addListener(new ClickListener() {
         	public void clicked(InputEvent e, float x, float y)
@@ -72,11 +86,23 @@ public class LoginState extends AbstractGameState {
 			}
         });
         
+        label = new Label("", skin);
+        label.setBounds(stage.getWidth() / 2 - 75, stage.getHeight() - 310, 150, 25);
+        label.setAlignment(Align.center);
+        
         stage.addActor(username);
         stage.addActor(password);
         stage.addActor(connect);
+        stage.addActor(label);
     }
 
+    public void setErrorLabelText(String text)
+    {
+    	label.setColor(Color.RED);
+    	label.setText(text);
+    	labelTimer = System.currentTimeMillis();
+    }
+    
     @Override
     public void update(float delta) {
     	stage.act(delta);
@@ -84,6 +110,12 @@ public class LoginState extends AbstractGameState {
     	// Si esta logueado desde el app cambiamos el estado
     	if(app.isLogged()) {
     		gameState.setState(GameStateManager.State.PLAY);
+    	}
+    	
+    	if(labelTimer != 0 && labelTimer + LABEL_TIME < System.currentTimeMillis())
+    	{
+    		labelTimer = 0;
+    		label.setText("");
     	}
     }
 

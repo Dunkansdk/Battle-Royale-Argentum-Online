@@ -13,8 +13,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bonkan.brao.networking.Packet;
 import com.bonkan.brao.networking.PacketIDs;
+import com.bonkan.brao.state.AbstractGameState;
 import com.bonkan.brao.state.GameStateManager;
 import com.bonkan.brao.state.GameStateManager.State;
+import com.bonkan.brao.state.app.LoginState;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -58,7 +60,6 @@ public class Game extends ApplicationAdapter {
 		client = new Client(); // el constrctor de client puede recibir un buffersize, si hay errores probablemente sean por paquetes muy grandes, hay que tocar aca
 		
 		// inicializa el nuevo thread
-	    //client.start();
 		new Thread(client).start(); // hay que hacerlo asi xq de la otra forma se finaliza -.-
 		
 	    // registramos las clases a usar
@@ -85,7 +86,12 @@ public class Game extends ApplicationAdapter {
 		    client.sendTCP(request);
 		    
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+	
+			AbstractGameState ags = gameState.getCurrentState();
+			
+			if(ags instanceof LoginState)
+				((LoginState) ags).setErrorLabelText("Server offline.");
 		}
 	}
 
@@ -117,6 +123,13 @@ public class Game extends ApplicationAdapter {
 		{
 			case PacketIDs.PACKET_LOGIN_SUCCESS:
 				isLogged = true;
+				break;
+				
+			case PacketIDs.PACKET_LOGIN_FAILED:
+				AbstractGameState ags = gameState.getCurrentState();
+				
+				if(ags instanceof LoginState)
+					((LoginState) ags).setErrorLabelText("Nickname or password invalid.");
 				break;
 		}
 	}

@@ -1,4 +1,4 @@
-package com.bonkan.brao.server;
+package com.bonkan.brao.server.packets;
 import java.util.ArrayList;
 
 public class Packet {

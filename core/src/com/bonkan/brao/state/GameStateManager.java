@@ -61,6 +61,11 @@ public class GameStateManager {
         }
         states.push(this.getState(state));
     }
+    
+    public AbstractGameState getCurrentState()
+    {
+    	return states.peek();
+    }
 
     private AbstractGameState getState(State state)
     {
