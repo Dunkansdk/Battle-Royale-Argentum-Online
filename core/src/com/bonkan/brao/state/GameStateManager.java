@@ -24,8 +24,7 @@ public class GameStateManager {
     public GameStateManager(final Game app) {
         this.app = app;
         this.states = new Stack<AbstractGameState>();
-        //this.setState(State.PLAY); // HARDCODE: Se inicia en el play para testear el juego
-        this.setState(State.LOGIN); // inicio en login xq me la banco
+        this.setState(State.LOGIN); // Inicia en el LOGIN
     }
 
     public Game getApp() {

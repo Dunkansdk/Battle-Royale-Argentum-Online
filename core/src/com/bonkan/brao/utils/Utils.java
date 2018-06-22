@@ -1,9 +1,10 @@
-package com.bonkan.brao;
+package com.bonkan.brao.utils;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.bonkan.brao.entity.Entity;
-import com.bonkan.brao.entity.entities.ObjectMap;
+import com.bonkan.brao.entity.entities.TiledObject;
 
 import java.util.ArrayList;
 
@@ -15,17 +16,17 @@ public class Utils {
      * @param   layerName
      * @return  ArrayList<<b>Entity</b>>
      */
-    public static ArrayList<Entity> splitLayer(TiledMap map, String layerName){
+    public static ArrayList<Entity> splitLayer(TiledMap map, OrthogonalTiledMapRenderer tiled, String layerName) {
         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(layerName);
         ArrayList<Entity> rows = new ArrayList<Entity>();
 
         for(int x = layer.getWidth() - 1; x >= 0; x--){
             for(int y = layer.getHeight()- 1; y >= 0; y--){
-                ObjectMap e = new ObjectMap(x, y);
+                TiledObject e = new TiledObject(x, y, tiled);
 
                 for(Entity r : rows){
                     if(e.getY() == r.getY()){
-                        e = (ObjectMap) r;
+                        e = (TiledObject) r;
                         break;
                     }
                 }

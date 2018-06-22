@@ -3,9 +3,11 @@ package com.bonkan.brao.state.app;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.bonkan.brao.entity.entities.EntityManager;
+import com.bonkan.brao.entity.EntityManager;
+import com.bonkan.brao.entity.entities.character.Player;
 import com.bonkan.brao.state.AbstractGameState;
 import com.bonkan.brao.state.GameStateManager;
+import com.bonkan.brao.utils.Utils;
 
 public class PlayState extends AbstractGameState {
 
@@ -15,10 +17,13 @@ public class PlayState extends AbstractGameState {
 
     public PlayState(GameStateManager gameState) {
         super(gameState);
-
+        
         map = new TmxMapLoader().load("map1.tmx");
         tiled = new OrthogonalTiledMapRenderer(map);
-        entity = new EntityManager();
+        entity = new EntityManager();        
+        
+        // Agregamos todos los objetos del TiledMap al EntityManager para ordenarlos
+        entity.insertAll(Utils.splitLayer(map, tiled, "objects"));
     }
 
     @Override
@@ -31,8 +36,12 @@ public class PlayState extends AbstractGameState {
     @Override
     public void render()
     {
-        tiled.render();
-        entity.render(app.getBatch());
+    	// Dibujamos el suelo, siempre atras
+    	int[] floor = {0};
+    	tiled.render(floor);
+    	
+    	// Dibujamos los objetos del mapa y el resto de las entidades
+        entity.render(app.getBatch(), tiled);
     }
 
     @Override

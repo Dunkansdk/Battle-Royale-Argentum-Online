@@ -1,11 +1,13 @@
 package com.bonkan.brao.entity;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
+@SuppressWarnings("rawtypes")
 public abstract class Entity implements Comparable {
 
-    private float x;
-    private float y;
+    protected float x;
+    protected float y;
 
     public Entity(float x, float y) {
         this.x = x;
@@ -25,6 +27,9 @@ public abstract class Entity implements Comparable {
         return y;
     }
 
+    /**
+     * Permite hacer el sorting
+     */
     @Override
     public int compareTo(Object o) {
         if(o != null && o instanceof Entity) {

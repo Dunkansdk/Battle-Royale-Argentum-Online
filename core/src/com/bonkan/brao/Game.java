@@ -6,19 +6,19 @@ import java.util.ArrayList;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bonkan.brao.networking.Packet;
+import com.bonkan.brao.networking.PacketIDs;
 import com.bonkan.brao.state.GameStateManager;
 import com.bonkan.brao.state.GameStateManager.State;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-
-import networking.Packet;
-import networking.PacketIDs;
 
 /**
  * Main Class
@@ -36,7 +36,8 @@ public class Game extends ApplicationAdapter {
 	private OrthographicCamera camera;
 	private GameStateManager gameState;
 	private SpriteBatch batch;
-	private Client client; // kryonet
+	private Client client;
+	private AssetManager assets;
 	
 	private boolean isLogged; // si se logueo el user
 
@@ -95,12 +96,6 @@ public class Game extends ApplicationAdapter {
 		gameState.update(Gdx.graphics.getDeltaTime());
 		gameState.render();
 		
-		if(isLogged)
-		{
-			gameState.setState(State.PLAY);
-			isLogged = false;
-		}
-		
 		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
 	}
 
@@ -121,8 +116,6 @@ public class Game extends ApplicationAdapter {
 		switch(p.getID())
 		{
 			case PacketIDs.PACKET_LOGIN_SUCCESS:
-				// esto crashea todo, te lo dejo a vos, falta pasar al prox state nomas
-				//gameState.setState(State.PLAY);
 				isLogged = true;
 				break;
 		}
@@ -138,5 +131,9 @@ public class Game extends ApplicationAdapter {
 	
 	public Client getClient() {
 		return client;
+	}
+	
+	public boolean isLogged() {
+		return isLogged;
 	}
 }

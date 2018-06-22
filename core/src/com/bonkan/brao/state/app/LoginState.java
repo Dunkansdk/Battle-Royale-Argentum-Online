@@ -14,11 +14,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.bonkan.brao.networking.Packet;
+import com.bonkan.brao.networking.PacketIDs;
 import com.bonkan.brao.state.AbstractGameState;
 import com.bonkan.brao.state.GameStateManager;
-
-import networking.Packet;
-import networking.PacketIDs;
 
 public class LoginState extends AbstractGameState {
 
@@ -81,6 +80,11 @@ public class LoginState extends AbstractGameState {
     @Override
     public void update(float delta) {
     	stage.act(delta);
+    	
+    	// Si esta logueado desde el app cambiamos el estado
+    	if(app.isLogged()) {
+    		gameState.setState(GameStateManager.State.PLAY);
+    	}
     }
 
     @Override

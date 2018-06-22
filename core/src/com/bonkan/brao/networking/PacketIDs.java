@@ -1,4 +1,4 @@
-package networking;
+package com.bonkan.brao.networking;
 
 public class PacketIDs {
 
