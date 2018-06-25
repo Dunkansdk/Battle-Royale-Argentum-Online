@@ -39,7 +39,6 @@ public class Game extends ApplicationAdapter {
 	private GameStateManager gameState;
 	private SpriteBatch batch;
 	private Client client;
-	private AssetManager assets;
 	
 	private boolean isLogged; // si se logueo el user
 
@@ -136,6 +135,10 @@ public class Game extends ApplicationAdapter {
 
 	public OrthographicCamera getCamera() {
 		return camera;
+	}
+	
+	public void setCamera(OrthographicCamera camera) {
+		this.camera = camera;
 	}
 
 	public SpriteBatch getBatch() {
