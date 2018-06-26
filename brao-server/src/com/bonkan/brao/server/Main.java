@@ -47,6 +47,7 @@ public class Main {
 	    Kryo kryo = server.getKryo();
 	    kryo.register(Packet.class);
 	    kryo.register(ArrayList.class);
+	    kryo.register(String.class);
 	    
 	    try {
 			server.bind(7666, 54777);

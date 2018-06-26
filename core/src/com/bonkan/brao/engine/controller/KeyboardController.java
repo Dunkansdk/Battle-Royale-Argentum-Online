@@ -5,8 +5,8 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 
 public class KeyboardController  implements InputProcessor {
-	public boolean left,right,up,down;
-	public boolean isMouse1Down, isMouse2Down,isMouse3Down;
+	public boolean left, right, up, down;
+	public boolean isMouse1Down, isMouse2Down, isMouse3Down;
 	public boolean isDragged;
 	public Vector2 mouseLocation = new Vector2(0,0);
 
@@ -33,6 +33,7 @@ public class KeyboardController  implements InputProcessor {
         }
 		return keyProcessed;	//  return our peyProcessed flag
 	}
+	
 	@Override
 	public boolean keyUp(int keycode) {
 		boolean keyProcessed = false;
@@ -56,10 +57,12 @@ public class KeyboardController  implements InputProcessor {
         }
 		return keyProcessed;	//  return our peyProcessed flag
 	}
+	
 	@Override
 	public boolean keyTyped(char character) {
 		return false;
 	}
+	
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if(button == 0){
@@ -87,7 +90,6 @@ public class KeyboardController  implements InputProcessor {
 		}
 		mouseLocation.x = screenX;
 		mouseLocation.y = screenY;
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -96,7 +98,6 @@ public class KeyboardController  implements InputProcessor {
 		isDragged = true;
 		mouseLocation.x = screenX;
 		mouseLocation.y = screenY;
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -104,9 +105,9 @@ public class KeyboardController  implements InputProcessor {
 	public boolean mouseMoved(int screenX, int screenY) {
 		mouseLocation.x = screenX;
 		mouseLocation.y = screenY;
-		// TODO Auto-generated method stub
 		return false;
 	}
+	
 	@Override
 	public boolean scrolled(int amount) {
 		return false;

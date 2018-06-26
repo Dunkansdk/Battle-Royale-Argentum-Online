@@ -9,7 +9,6 @@ import com.esotericsoftware.kryonet.Connection;
 public class User {
 
 	private UUID id;
-	//private int state;
 	private String nickName;
 	private GameData gameData;
 	private Connection socket;

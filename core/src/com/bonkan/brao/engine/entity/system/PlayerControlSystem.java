@@ -10,7 +10,7 @@ import com.bonkan.brao.engine.entity.component.B2dBodyComponent;
 import com.bonkan.brao.engine.entity.component.PlayerComponent;
 import com.bonkan.brao.engine.entity.component.StateComponent;
 
-public class PlayerControlSystem extends IteratingSystem{
+public class PlayerControlSystem extends IteratingSystem {
 
 	private ComponentMapper<PlayerComponent> pm;
 	private ComponentMapper<B2dBodyComponent> bodm;
@@ -47,6 +47,5 @@ public class PlayerControlSystem extends IteratingSystem{
 		}
 		
 		b2body.body.setLinearVelocity(horizontalForce * 250, verticalForce * 250);
-
 	}
 }

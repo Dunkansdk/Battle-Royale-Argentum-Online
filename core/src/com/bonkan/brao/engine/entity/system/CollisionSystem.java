@@ -25,32 +25,34 @@ public class CollisionSystem  extends IteratingSystem {
 	}
 	
 	@Override
-	protected void processEntity(Entity entity, float deltaTime) {
+	protected void processEntity(Entity entity, float deltaTime) 
+	{
 		// get player collision component
-	CollisionComponent cc = cm.get(entity);
+		CollisionComponent cc = cm.get(entity);
 	
-	Entity collidedEntity = cc.collisionEntity;
-	if(collidedEntity != null){
-		TypeComponent type = collidedEntity.getComponent(TypeComponent.class);
-		if(type != null) {
-			switch(type.type){
-			case TypeComponent.ENEMY:
-				//do player hit enemy thing
-				System.out.println("player hit enemy");
-				break;
-			case TypeComponent.SCENERY:
-				//do player hit scenery thing
-				System.out.println("player hit scenery");
-				break;
-			case TypeComponent.OTHER:
-				//do player hit other thing
-				System.out.println("player hit other");
-				break; //technically this isn't needed				
-			}
-			cc.collisionEntity = null; // collision handled reset component
+		Entity collidedEntity = cc.collisionEntity;
+		
+		if(collidedEntity != null) {
+			TypeComponent type = collidedEntity.getComponent(TypeComponent.class);
+			if(type != null) {
+				switch(type.type)
+				{
+					case TypeComponent.ENEMY:
+						//do player hit enemy thing
+						System.out.println("player hit enemy");
+						break;
+					case TypeComponent.SCENERY:
+						//do player hit scenery thing
+						System.out.println("player hit scenery");
+						break;
+					case TypeComponent.OTHER:
+						//do player hit other thing
+						System.out.println("player hit other");
+						break; //technically this isn't needed				
+				}
+				cc.collisionEntity = null; // collision handled reset component
 			}
 		}
-		
 	}
 
 }

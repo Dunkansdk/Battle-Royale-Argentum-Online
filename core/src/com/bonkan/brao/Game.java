@@ -2,20 +2,18 @@ package com.bonkan.brao;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bonkan.brao.networking.Packet;
 import com.bonkan.brao.networking.PacketIDs;
 import com.bonkan.brao.state.AbstractGameState;
 import com.bonkan.brao.state.GameStateManager;
-import com.bonkan.brao.state.GameStateManager.State;
 import com.bonkan.brao.state.app.LoginState;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
@@ -41,6 +39,7 @@ public class Game extends ApplicationAdapter {
 	private Client client;
 	
 	private boolean isLogged; // si se logueo el user
+	private UUID loggedID;
 
 	@Override
 	public void create () {
@@ -65,6 +64,7 @@ public class Game extends ApplicationAdapter {
 	    Kryo kryo = client.getKryo();
 	    kryo.register(Packet.class);
 	    kryo.register(ArrayList.class);
+	    kryo.register(String.class);
 	    
 	    try {
 	    	// 5000 es la cant. maxima de milisegundos que se bloquea el thread tratando de conectar
@@ -82,7 +82,7 @@ public class Game extends ApplicationAdapter {
 		    arguments.add("asdasd");
 		    
 		    Packet request = new Packet(1, "bon3", arguments); // las clases que se mandan como "object" del packet tambien tienen que estar registradas
-		    client.sendTCP(request);
+		    //client.sendTCP(request);
 		    
 		} catch (IOException e) {
 			//e.printStackTrace();
@@ -122,6 +122,7 @@ public class Game extends ApplicationAdapter {
 		{
 			case PacketIDs.PACKET_LOGIN_SUCCESS:
 				isLogged = true;
+				loggedID = UUID.fromString((String) p.getData());
 				break;
 				
 			case PacketIDs.PACKET_LOGIN_FAILED:
@@ -151,5 +152,9 @@ public class Game extends ApplicationAdapter {
 	
 	public boolean isLogged() {
 		return isLogged;
+	}
+	
+	public UUID getLoggedID() {
+		return loggedID;
 	}
 }
