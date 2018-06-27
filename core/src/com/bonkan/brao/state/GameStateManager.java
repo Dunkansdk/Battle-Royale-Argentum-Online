@@ -24,8 +24,8 @@ public class GameStateManager {
     public GameStateManager(final Game app) {
         this.app = app;
         this.states = new Stack<AbstractGameState>();
-        //this.setState(State.PLAY);
-        this.setState(State.LOGIN);
+        this.setState(State.PLAY);
+        //this.setState(State.LOGIN);
     }
 
     public Game getApp() {

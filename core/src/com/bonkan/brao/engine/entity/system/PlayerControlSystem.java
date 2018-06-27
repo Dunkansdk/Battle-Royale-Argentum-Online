@@ -9,12 +9,14 @@ import com.bonkan.brao.engine.controller.KeyboardController;
 import com.bonkan.brao.engine.entity.component.B2dBodyComponent;
 import com.bonkan.brao.engine.entity.component.PlayerComponent;
 import com.bonkan.brao.engine.entity.component.StateComponent;
+import com.bonkan.brao.engine.entity.component.TransformComponent;
 
 public class PlayerControlSystem extends IteratingSystem {
 
 	private ComponentMapper<PlayerComponent> pm;
 	private ComponentMapper<B2dBodyComponent> bodm;
 	private ComponentMapper<StateComponent> sm;
+	private ComponentMapper<TransformComponent> tm;
 	private KeyboardController controller;
 
 	public PlayerControlSystem(KeyboardController keyCon) {
@@ -23,12 +25,14 @@ public class PlayerControlSystem extends IteratingSystem {
 		pm = ComponentMapper.getFor(PlayerComponent.class);
 		bodm = ComponentMapper.getFor(B2dBodyComponent.class);
 		sm = ComponentMapper.getFor(StateComponent.class);
+		tm = ComponentMapper.getFor(TransformComponent.class);
 	}
 	
 	@Override
 	protected void processEntity(Entity entity, float deltaTime) {
 		B2dBodyComponent b2body = bodm.get(entity);
 		StateComponent state = sm.get(entity);
+		TransformComponent position = tm.get(entity);
 		
 		int horizontalForce = 0;
         int verticalForce = 0;
@@ -47,5 +51,6 @@ public class PlayerControlSystem extends IteratingSystem {
 		}
 		
 		b2body.body.setLinearVelocity(horizontalForce * 250, verticalForce * 250);
+		
 	}
 }

@@ -1,15 +1,22 @@
 package com.bonkan.brao.state.app;
 
+import java.util.Iterator;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
 import com.bonkan.brao.engine.controller.KeyboardController;
@@ -19,12 +26,12 @@ import com.bonkan.brao.engine.entity.component.PlayerComponent;
 import com.bonkan.brao.engine.entity.component.StateComponent;
 import com.bonkan.brao.engine.entity.component.TextureComponent;
 import com.bonkan.brao.engine.entity.component.TiledMapComponent;
+import com.bonkan.brao.engine.entity.component.TiledMapLayerComponent;
 import com.bonkan.brao.engine.entity.component.TransformComponent;
 import com.bonkan.brao.engine.entity.component.TypeComponent;
 import com.bonkan.brao.engine.entity.component.UUIDComponent;
 import com.bonkan.brao.engine.entity.system.AnimationSystem;
 import com.bonkan.brao.engine.entity.system.CollisionSystem;
-import com.bonkan.brao.engine.entity.system.MapSystem;
 import com.bonkan.brao.engine.entity.system.PhysicsDebugSystem;
 import com.bonkan.brao.engine.entity.system.PhysicsSystem;
 import com.bonkan.brao.engine.entity.system.PlayerControlSystem;
@@ -53,20 +60,19 @@ public class PlayState extends AbstractGameState {
 		//world.setContactListener(new B2dContactListener());
 		bodyFactory = BodyFactory.getInstance(world);
 			
-		RenderingSystem renderingSystem = new RenderingSystem(app.getBatch(), app.getCamera());
+		RenderingSystem renderingSystem = new RenderingSystem(app.getBatch(), new OrthogonalTiledMapRenderer(map), app.getCamera());
 		
 		engine = new PooledEngine();
-		
-        engine.addSystem(new AnimationSystem());
+
         engine.addSystem(renderingSystem);
+        engine.addSystem(new AnimationSystem());
         engine.addSystem(new PhysicsSystem(world));
         engine.addSystem(new PhysicsDebugSystem(world, renderingSystem.getCamera()));
         engine.addSystem(new CollisionSystem());
         engine.addSystem(new PlayerControlSystem(controller));
-        engine.addSystem(new MapSystem(new OrthogonalTiledMapRenderer(map), renderingSystem.getCamera()));
         
         createPlayer();
-        createMap(map);
+        loadMap(map);
     }
 
 
@@ -124,15 +130,14 @@ public class PlayState extends AbstractGameState {
 		System.out.println("Player creado con ID: " + uuidComp.id);
 	}
     
+    
     public void createMap(TiledMap tiledMap) {
     	
     	Entity entity = engine.createEntity();
         TiledMapComponent tiled = new TiledMapComponent();
-        TransformComponent position = engine.createComponent(TransformComponent.class);
         TypeComponent type = engine.createComponent(TypeComponent.class);
         
         tiled.map = tiledMap;
-        position.position.set(10, 10, 0);
         type.type = TypeComponent.SCENERY;
         
         entity.add(tiled);
@@ -140,4 +145,49 @@ public class PlayState extends AbstractGameState {
 
         engine.addEntity(entity);
     }
+    
+    private void loadMap(TiledMap tiledMap){
+		Iterator<MapLayer> i = tiledMap.getLayers().iterator();
+		TiledMapTileLayer layer;
+		Vector2 position = new Vector2(0, 0);
+
+		while(i.hasNext()) {
+			MapLayer m = i.next();
+			
+			if(m instanceof TiledMapTileLayer)
+				layer  = (TiledMapTileLayer) m;
+			else
+				continue;
+			
+			System.out.println("Loading layer " + layer.getName());
+			Entity entity = new Entity();
+
+			// Obtiene la capa donde se encuentran los obstáculos
+			if(layer.getName().startsWith("objects")) {
+				for(int x = 0; x < layer.getWidth(); x++) {
+					for(int y = 0; y < layer.getHeight(); y++) {
+						TiledMapTileLayer.Cell cell = layer.getCell(x, y);
+						if(cell != null) {
+							if(position.y != y * 32) {
+								TiledMapLayerComponent component = new TiledMapLayerComponent(layer);
+								TransformComponent transform = new TransformComponent(new Vector3(x * 32, y * 32, y * 32));
+								entity.add(component);
+								entity.add(transform);
+								position = new Vector2(x * 32, y * 32);
+							}
+							break;
+						}
+					} 
+				}
+			} else { // Background
+				TiledMapLayerComponent component = new TiledMapLayerComponent(layer);
+				TransformComponent transform = new TransformComponent(new Vector3(0, 0, -1));
+				entity.add(component);
+				entity.add(transform);
+			}
+
+			engine.addEntity(entity);
+		}
+	}
+    
 }

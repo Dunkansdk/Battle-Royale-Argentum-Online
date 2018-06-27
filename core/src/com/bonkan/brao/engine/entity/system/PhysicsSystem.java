@@ -15,7 +15,6 @@ import com.bonkan.brao.engine.entity.component.TransformComponent;
 public class PhysicsSystem extends IteratingSystem {
 
     private static final float MAX_STEP_TIME = 1 / 60f;
-    private static float accumulator = 0f;
 
     private World world;
     private Array<Entity> bodiesQueue;
@@ -42,6 +41,7 @@ public class PhysicsSystem extends IteratingSystem {
                 Vector2 position = bodyComp.body.getPosition();
                 tfm.position.x = position.x;
                 tfm.position.y = position.y;
+                tfm.position.z = position.y;
                 tfm.rotation = bodyComp.body.getAngle() * MathUtils.radiansToDegrees;
             }
 
