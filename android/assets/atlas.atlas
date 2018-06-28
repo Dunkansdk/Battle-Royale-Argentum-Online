@@ -1,82 +1,33 @@
 
 atlas.png
-size: 2048,512
+size: 1024,512
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-1
+fountain
   rotate: false
-  xy: 768, 0
+  xy: 260, 132
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+grass-base
+  rotate: false
+  xy: 2, 2
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
-12052
+heart
   rotate: false
-  xy: 0, 384
-  size: 512, 128
-  orig: 512, 128
+  xy: 518, 292
+  size: 96, 96
+  orig: 96, 96
   offset: 0, 0
   index: -1
-12053
+tree1
   rotate: false
-  xy: 0, 256
-  size: 512, 128
-  orig: 512, 128
-  offset: 0, 0
-  index: -1
-12054
-  rotate: false
-  xy: 512, 384
-  size: 512, 128
-  orig: 512, 128
-  offset: 0, 0
-  index: -1
-12055
-  rotate: false
-  xy: 512, 256
-  size: 512, 128
-  orig: 512, 128
-  offset: 0, 0
-  index: -1
-12056
-  rotate: false
-  xy: 256, 128
-  size: 512, 128
-  orig: 512, 128
-  offset: 0, 0
-  index: -1
-12057
-  rotate: false
-  xy: 1024, 384
-  size: 384, 128
-  orig: 384, 128
-  offset: 0, 0
-  index: -1
-12058
-  rotate: false
-  xy: 1024, 256
-  size: 384, 128
-  orig: 384, 128
-  offset: 0, 0
-  index: -1
-12060
-  rotate: false
-  xy: 256, 0
-  size: 512, 128
-  orig: 512, 128
-  offset: 0, 0
-  index: -1
-12061
-  rotate: false
-  xy: 768, 128
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-2
-  rotate: false
-  xy: 0, 0
+  xy: 2, 132
   size: 256, 256
   orig: 256, 256
   offset: 0, 0

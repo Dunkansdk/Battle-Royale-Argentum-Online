@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.4" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextobjectid="1">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextobjectid="22">
  <tileset firstgid="1" source="Argentum.tsx"/>
  <layer name="floor" width="100" height="100">
   <data encoding="csv">
@@ -209,5 +209,18 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup name="objectSprite">
+  <object id="2" x="383.5" y="2912" width="193.5" height="257"/>
+  <object id="6" x="611.583" y="2564.17" width="193.5" height="257"/>
+  <object id="7" x="98.25" y="2528.5" width="193.5" height="257"/>
+  <object id="8" x="800.25" y="2818.5" width="193.5" height="257"/>
+  <object id="10" gid="455" x="488" y="2580" width="32" height="32"/>
+  <object id="11" gid="455" x="455" y="2601" width="32" height="32"/>
+  <object id="13" gid="455" x="508" y="2183" width="32" height="32"/>
+  <object id="14" gid="455" x="549" y="2183" width="32" height="32"/>
+  <object id="15" gid="455" x="606" y="2232" width="32" height="32"/>
+  <object id="16" gid="455" x="515" y="2246" width="32" height="32"/>
+  <object id="21" gid="455" x="460" y="2728" width="32" height="32"/>
+ </objectgroup>
  <objectgroup name="blocked"/>
 </map>
