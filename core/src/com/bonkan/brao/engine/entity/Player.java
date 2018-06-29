@@ -7,19 +7,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 
 public class Player extends Entity {
-	
-	private int health;
-	private int mana;
+
 	private UUID id;
 	private Body body;
 
-	public Player(TextureRegion texture, int mana, int health, UUID id, Body body) {
+	public Player(TextureRegion texture, UUID id, Body body) {
 		super(texture);
-		this.health = health;
-		this.mana = mana;
 		this.id = id;
 		this.body = body;
-
 	}
 
 	@Override
@@ -36,4 +31,7 @@ public class Player extends Entity {
 		return body;
 	}
 
+	public UUID getID() {
+		return id;
+	}
 }

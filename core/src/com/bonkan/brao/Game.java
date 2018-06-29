@@ -100,6 +100,7 @@ public class Game extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		gameState.update(Gdx.graphics.getDeltaTime());
 		gameState.render();
+		batch.setProjectionMatrix(camera.combined);
 		
 		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
 	}
