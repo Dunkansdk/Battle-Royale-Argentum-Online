@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 import com.bonkan.brao.engine.entity.animation.BodyAnimator;
+import com.bonkan.brao.engine.utils.BodyFactory;
 
 public class Player extends Entity {
 
@@ -21,10 +23,10 @@ public class Player extends Entity {
 		MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN
 	}
 
-	public Player(TextureRegion texture, UUID id, Body body) {
+	public Player(TextureRegion texture, UUID id, World world) {
 		super(texture);
 		this.id = id;
-		this.body = body;
+		this.body = BodyFactory.createBox(world, 0, 0, texture.getRegionWidth(), texture.getRegionHeight(), false, true);
 		this.state = playerState.NONE;
 		this.bodyAnimator = new BodyAnimator(new Texture(Gdx.files.internal("body.png")));
 	}
@@ -44,7 +46,7 @@ public class Player extends Entity {
 	}
 
 	public UUID getID() {
-		return id;
+		return id; 
 	}
 	
 	public void setState(playerState state) {

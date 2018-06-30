@@ -25,7 +25,7 @@ import com.esotericsoftware.kryonet.Listener;
  */
 public class Game extends ApplicationAdapter {
 
-	public boolean DEBUG = false;
+	public boolean DEBUG = true;
 
 	// Game information
 	public static final String TITLE = "Battle Royale AO";

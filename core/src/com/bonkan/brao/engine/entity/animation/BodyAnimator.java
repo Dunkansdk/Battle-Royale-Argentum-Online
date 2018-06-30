@@ -28,7 +28,7 @@ public class BodyAnimator {
 		lastState = playerState.NONE;
 
 		TextureRegion[][] tmp = TextureRegion.split(walkSheet, 
-				walkSheet.getWidth()  / FRAME_COLS,
+				walkSheet.getWidth() / FRAME_COLS,
 				walkSheet.getHeight() / FRAME_ROWS);
 		
 		TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS];
@@ -84,7 +84,6 @@ public class BodyAnimator {
 		if(!lastState.equals(state)) {
 			if(state != playerState.NONE) lastState = state;
 			stateTime = 0.0f;
-			System.out.println(lastState);
 		}	
 
 		batch.draw(currentFrame, x, y); // Draw current frame at (50, 50)
