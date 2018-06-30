@@ -18,6 +18,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.bonkan.brao.engine.entity.Player;
+import com.bonkan.brao.engine.entity.Player.playerState;
 import com.bonkan.brao.state.AbstractGameState;
 import com.bonkan.brao.state.GameStateManager;
 
@@ -52,19 +53,31 @@ public class PlayState extends AbstractGameState {
         int verticalForce = 0;
 
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        	player.setState(playerState.MOVE_LEFT);
             horizontalForce -= 1;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        	player.setState(playerState.MOVE_RIGHT);
             horizontalForce += 1;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        	player.setState(playerState.MOVE_UP);
             verticalForce += 1;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        	player.setState(playerState.MOVE_DOWN);
             verticalForce -= 1;
         }
-
-        player.getBody().setLinearVelocity(horizontalForce * 5 * 32, verticalForce * 5 * 32);
+        
+        if(	!Gdx.input.isKeyPressed(Input.Keys.DOWN) 	&& 
+        	!Gdx.input.isKeyPressed(Input.Keys.UP) 		&& 
+        	!Gdx.input.isKeyPressed(Input.Keys.LEFT) 	&& 
+        	!Gdx.input.isKeyPressed(Input.Keys.RIGHT)) 
+        {
+        	player.setState(playerState.NONE);
+        }
+        
+        player.getBody().setLinearVelocity(horizontalForce * 256, verticalForce * 256); // ( 8 * 32 = 256 )
     }
 
     private Body createBox(int x, int y, int width, int height, boolean isStatic) {

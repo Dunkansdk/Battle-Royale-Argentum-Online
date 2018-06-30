@@ -13,6 +13,7 @@ public abstract class Entity {
 	
 	abstract void update(float delta);
 	abstract void render(SpriteBatch batch);
+	abstract void dispose();
 
 	public TextureRegion getTexture() {
 		return texture;

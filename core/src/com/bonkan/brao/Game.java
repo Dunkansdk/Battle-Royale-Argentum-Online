@@ -98,10 +98,9 @@ public class Game extends ApplicationAdapter {
 	public void render () {
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		gameState.update(Gdx.graphics.getDeltaTime());
-		gameState.render();
 		batch.setProjectionMatrix(camera.combined);
-		
+		gameState.update(Gdx.graphics.getDeltaTime());
+		gameState.render();		
 		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
 	}
 
