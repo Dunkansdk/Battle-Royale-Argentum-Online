@@ -7,7 +7,8 @@ public abstract class Entity {
 
 	protected TextureRegion texture;
 	
-	public Entity(TextureRegion texture) {
+	public Entity(TextureRegion texture) 
+	{
 		this.texture = texture;
 	}
 	

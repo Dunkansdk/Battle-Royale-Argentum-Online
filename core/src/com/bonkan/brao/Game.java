@@ -10,6 +10,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bonkan.brao.engine.utils.AtlasManager;
+import com.bonkan.brao.networking.LoggedUser;
 import com.bonkan.brao.networking.Packet;
 import com.bonkan.brao.networking.PacketIDs;
 import com.bonkan.brao.state.AbstractGameState;
@@ -37,21 +39,23 @@ public class Game extends ApplicationAdapter {
 	private GameStateManager gameState;
 	private SpriteBatch batch;
 	private Client client;
-	
-	private boolean isLogged; // si se logueo el user
-	private UUID loggedID;
+
+	private LoggedUser loggedUser; // cuando loguea un user
 
 	@Override
 	public void create () {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 
-		isLogged = false;
+		loggedUser = null;
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, width / SCALE, height / SCALE);
 		batch = new SpriteBatch();
 		gameState = new GameStateManager(this);
+		
+		// inicializo el atlas manager para tener todos los atlases cargados
+		AtlasManager.init();
 		
 		// instanciamos el cliente y tratamos de conectar
 		// esto también se hace en otro thread
@@ -77,16 +81,9 @@ public class Game extends ApplicationAdapter {
 		        	}
 		        }
 		    });
-
-		    ArrayList<String> arguments = new ArrayList<String>();
-		    arguments.add("asdasd");
-		    
-		    Packet request = new Packet(1, "bon3", arguments); // las clases que se mandan como "object" del packet tambien tienen que estar registradas
-		    //client.sendTCP(request);
 		    
 		} catch (IOException e) {
-			//e.printStackTrace();
-	
+
 			AbstractGameState ags = gameState.getCurrentState();
 			
 			if(ags instanceof LoginState)
@@ -121,8 +118,7 @@ public class Game extends ApplicationAdapter {
 		switch(p.getID())
 		{
 			case PacketIDs.PACKET_LOGIN_SUCCESS:
-				isLogged = true;
-				loggedID = UUID.fromString((String) p.getData());
+				loggedUser = new LoggedUser(UUID.fromString(p.getArgs().get(0)), p.getArgs().get(1), Integer.valueOf(p.getArgs().get(2)));
 				break;
 				
 			case PacketIDs.PACKET_LOGIN_FAILED:
@@ -150,11 +146,13 @@ public class Game extends ApplicationAdapter {
 		return client;
 	}
 	
-	public boolean isLogged() {
-		return isLogged;
+	public boolean isLogged() 
+	{
+		return loggedUser != null;
 	}
 	
-	public UUID getLoggedID() {
-		return loggedID;
+	public LoggedUser getLoggedUser()
+	{
+		return loggedUser;
 	}
 }

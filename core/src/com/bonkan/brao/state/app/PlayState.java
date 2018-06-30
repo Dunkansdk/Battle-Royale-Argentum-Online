@@ -1,12 +1,8 @@
 package com.bonkan.brao.state.app;
 
-import java.util.UUID;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -14,6 +10,7 @@ import com.bonkan.brao.engine.entity.Player;
 import com.bonkan.brao.engine.entity.Player.playerState;
 import com.bonkan.brao.engine.map.MapManager;
 import com.bonkan.brao.engine.map.WorldManager;
+import com.bonkan.brao.networking.LoggedUser;
 import com.bonkan.brao.state.AbstractGameState;
 import com.bonkan.brao.state.GameStateManager;
 
@@ -29,7 +26,9 @@ public class PlayState extends AbstractGameState {
         world = new WorldManager();
         map = new MapManager(world.getWorld());
         b2dr = new Box2DDebugRenderer();
-        player = new Player(new TextureRegion(new Texture(Gdx.files.internal("body.png")), 32, 38), UUID.randomUUID(), world.getWorld());
+        
+        LoggedUser aux = app.getLoggedUser();
+        player = new Player(aux.getLoggedDefaultBody(), aux.getLoggedID(), aux.getLoggedUserName(), world.getWorld());
     }
 
     @Override

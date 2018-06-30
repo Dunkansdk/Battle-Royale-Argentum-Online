@@ -16,20 +16,20 @@ public class BodyAnimator {
 	private Animation<TextureRegion> upAnimation;
 	private Animation<TextureRegion> downAnimation;
 	
-	private Texture walkSheet;
+	private TextureRegion walkSheet;
 	
 	// A variable for tracking elapsed time for the animation
 	private float stateTime;
 	private playerState lastState;
 		
-	public BodyAnimator(Texture texture) {
+	public BodyAnimator(TextureRegion texture) {
 		
 		walkSheet = texture;
 		lastState = playerState.NONE;
 
-		TextureRegion[][] tmp = TextureRegion.split(walkSheet, 
-				walkSheet.getWidth() / FRAME_COLS,
-				walkSheet.getHeight() / FRAME_ROWS);
+		TextureRegion[][] tmp = walkSheet.split( 
+				walkSheet.getRegionWidth() / FRAME_COLS,
+				walkSheet.getRegionHeight() / FRAME_ROWS);
 		
 		TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS];
 		TextureRegion[] walkFrames2 = new TextureRegion[FRAME_COLS];
@@ -88,10 +88,6 @@ public class BodyAnimator {
 
 		batch.draw(currentFrame, x, y); // Draw current frame at (50, 50)
 
-	}
-	
-	public void dispose() {
-		walkSheet.dispose();
 	}
 	
 }

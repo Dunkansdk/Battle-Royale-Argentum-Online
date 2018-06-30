@@ -1,17 +1,13 @@
 package com.bonkan.brao.server;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.bonkan.brao.server.mysql.MySQLHandler;
 import com.bonkan.brao.server.packets.Packet;
-import com.bonkan.brao.server.packets.PacketIDs;
 import com.bonkan.brao.server.ui.ServerInterface;
-import com.bonkan.brao.server.users.User;
+import com.bonkan.brao.server.users.LobbyUser;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -48,6 +44,7 @@ public class Main {
 	    kryo.register(Packet.class);
 	    kryo.register(ArrayList.class);
 	    kryo.register(String.class);
+	    kryo.register(LobbyUser.class);
 	    
 	    try {
 			server.bind(7666, 54777);

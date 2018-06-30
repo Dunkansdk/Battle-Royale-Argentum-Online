@@ -2,6 +2,7 @@ package com.bonkan.brao.server;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -9,16 +10,16 @@ import com.bonkan.brao.server.mysql.MySQLHandler;
 import com.bonkan.brao.server.packets.Packet;
 import com.bonkan.brao.server.packets.PacketIDs;
 import com.bonkan.brao.server.ui.ServerInterface;
-import com.bonkan.brao.server.users.User;
+import com.bonkan.brao.server.users.LobbyUser;
 import com.esotericsoftware.kryonet.Connection;
 
 public class Protocol {
 
-	public static ConcurrentHashMap<UUID, User> userList;
+	public static ConcurrentHashMap<UUID, LobbyUser> userList; // en el lobby
 
 	public static void init()
 	{
-		userList = new ConcurrentHashMap<UUID, User>();
+		userList = new ConcurrentHashMap<UUID, LobbyUser>();
 	}
 	
 	public static void handleData(Connection conn, Packet p)
@@ -34,13 +35,18 @@ public class Protocol {
 					if(rs.next())
 					{
 						// si logea exitosamente, creamos un user y lo metemos al mapa
-						UUID userID = UUID.randomUUID();
+						LobbyUser u = new LobbyUser(p.getArgs().get(0), UUID.randomUUID(), rs.getInt("default_body"));
+						userList.put(u.getID(), u);
 						
-						userList.put(userID, new User(p.getArgs().get(0), userID));
+						ArrayList<String> args = new ArrayList<String>();
 						
-						conn.sendTCP(new Packet(PacketIDs.PACKET_LOGIN_SUCCESS, userID.toString(), null));
+						args.add(u.getID().toString());
+						args.add(u.getNickName());
+						args.add(String.valueOf(u.getDefaultBody()));
+						
+						conn.sendTCP(new Packet(PacketIDs.PACKET_LOGIN_SUCCESS, null, args));
 
-						ServerInterface.addMessage("LOGUEADO CON ID: " + userID);
+						ServerInterface.addMessage("LOGUEADO CON ID: " + u.getID());
 					} else {
 						conn.sendTCP(new Packet(PacketIDs.PACKET_LOGIN_FAILED, "", null));
 					}

@@ -3,20 +3,20 @@ package com.bonkan.brao.server.users;
 import java.util.UUID;
 
 import com.bonkan.brao.server.packets.Packet;
-import com.bonkan.brao.server.users.game.GameData;
 import com.esotericsoftware.kryonet.Connection;
 
-public class User {
+public class LobbyUser {
 
 	private UUID id;
 	private String nickName;
-	private GameData gameData;
 	private Connection socket;
+	private int defaultBody;
 
-	public User(String nickName, UUID id)
+	public LobbyUser(String nickName, UUID id, int defaultBody)
 	{
 		this.nickName = nickName;
 		this.id = id;
+		this.defaultBody = defaultBody;
 	}
 	
 	public void sendData(Packet p)
@@ -29,13 +29,13 @@ public class User {
 		return nickName;
 	}
 	
-	public GameData getGameData()
-	{
-		return gameData;
-	}
-	
 	public UUID getID()
 	{
 		return id;
+	}
+
+	public int getDefaultBody()
+	{
+		return defaultBody;
 	}
 }
