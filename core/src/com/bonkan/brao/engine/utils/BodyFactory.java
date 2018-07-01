@@ -86,35 +86,4 @@ public class BodyFactory {
         return world.createBody(bodyDef).createFixture(fixtureDef).getBody();
     }
 
-    /**
-     * Create a circle body
-     * @param cBits 	&emsp;<b>short</b>Setting filter
-     * @param mBits		&emsp;<b>short</b>Collide with this filter
-     * @param gIndex	&emsp;<b>short</b>GroupIndex (necessary)
-     * @return <b>Body</b> Box2DBody
-     */
-    public static Body createCircle(final World world, float x, float y, float r,
-                                 boolean isStatic, boolean canRotate, short cBits, short mBits, short gIndex) {
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.fixedRotation = canRotate;
-        bodyDef.position.set(x, y);
-
-        if(isStatic) {
-            bodyDef.type = BodyDef.BodyType.StaticBody;
-        } else {
-            bodyDef.type = BodyDef.BodyType.DynamicBody;
-        }
-
-        CircleShape shape = new CircleShape();
-        shape.setRadius(r);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.density = 1.0f;
-        fixtureDef.filter.categoryBits = cBits; // Is a
-        fixtureDef.filter.maskBits = mBits; // Collides with
-        fixtureDef.filter.groupIndex = gIndex;
-
-        return world.createBody(bodyDef).createFixture(fixtureDef).getBody();
-    }
 }

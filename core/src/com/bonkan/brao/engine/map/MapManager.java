@@ -4,10 +4,9 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.objects.CircleMapObject;
-import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -20,11 +19,16 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.bonkan.brao.engine.exception.BRAOException;
+import com.bonkan.brao.engine.map.factory.ShapeFactory;
+
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 
 public class MapManager {
 	
 	private ArrayList<TiledMap> map;
     private OrthogonalTiledMapRenderer tiled;
+    private RayHandler rays;
     private int currentMap;
 	
     /**
@@ -47,9 +51,18 @@ public class MapManager {
 
 		}
 		
-		System.out.println("Maps: " + map.size());
+		rays = new RayHandler(world);
+		RayHandler.setGammaCorrection(true);     // enable or disable gamma correction
+		RayHandler.useDiffuseLight(true);
+		this.rays.setAmbientLight(0.4f, 0.4f, 0.4f, 0.1f);
+		this.rays.setBlur(true);           // enabled or disable blur
+		this.rays.setBlurNum(1);           // set number of gaussian blur passes
+		this.rays.setShadows(true);        // enable or disable shadow
+		this.rays.setCulling(true);        // enable or disable culling
 		
-		load(world, 1); // ESTAMOS CARGANDO POR DEFECTO!
+		System.out.println("Maps: " + map.size());
+
+		load(world,  1); // ESTAMOS CARGANDO POR DEFECTO!
 	}
 	
 	/**
@@ -61,9 +74,13 @@ public class MapManager {
 		currentMap = actual;
 		tiled = new OrthogonalTiledMapRenderer(getCurrentMap());
 		createCollision(world);
+		createLights();
 	}
 	
-	
+	/**
+	 * Create a world collision (Box2D)
+	 * @param world
+	 */
 	private void createCollision(World world) {
 		MapObjects objects = getCurrentMap().getLayers().get("collision").getObjects();
 
@@ -94,6 +111,18 @@ public class MapManager {
     }
 	
 	/**
+	 * Create a world lights
+	 */
+	private void createLights() {
+		MapObjects objects = getCurrentMap().getLayers().get("lights").getObjects();
+		
+		for(MapObject object : objects) {
+			new PointLight(rays, 500, (Color)object.getProperties().get("color"), 350, (float)object.getProperties().get("x"), (float)object.getProperties().get("y"));
+		}
+	
+	}
+	
+	/**
 	 * Asumimos que si se seteo un currentMap es porque realmente existe.
 	 * @return	TiledMap
 	 */
@@ -105,6 +134,9 @@ public class MapManager {
 		return tiled;
 	}
 	
+	public RayHandler getRayHandler() {
+		return rays;
+	}
 
 	public void dispose() {
 		map.clear();

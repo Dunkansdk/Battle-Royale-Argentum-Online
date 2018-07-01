@@ -3,6 +3,7 @@ package com.bonkan.brao.state.app;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -10,9 +11,14 @@ import com.bonkan.brao.engine.entity.Player;
 import com.bonkan.brao.engine.entity.Player.playerState;
 import com.bonkan.brao.engine.map.MapManager;
 import com.bonkan.brao.engine.map.WorldManager;
+import com.bonkan.brao.engine.map.factory.LightFactory;
 import com.bonkan.brao.networking.LoggedUser;
 import com.bonkan.brao.state.AbstractGameState;
 import com.bonkan.brao.state.GameStateManager;
+
+import box2dLight.DirectionalLight;
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 
 public class PlayState extends AbstractGameState {
    
@@ -20,15 +26,21 @@ public class PlayState extends AbstractGameState {
     private WorldManager world;
     private Box2DDebugRenderer b2dr;
     private MapManager map;
-
+    //private RayHandler rays;
+    
     public PlayState(GameStateManager gameState) {
         super(gameState);
         world = new WorldManager();
         map = new MapManager(world.getWorld());
+        //rays = new RayHandler(world.getWorld());
+        //rays.setAmbientLight(.6f);
         b2dr = new Box2DDebugRenderer();
         
         LoggedUser aux = app.getLoggedUser();
         player = new Player(aux.getLoggedDefaultBody(), aux.getLoggedID(), aux.getLoggedUserName(), world.getWorld());
+        //new PointLight(rays, 500, Color.RED, 50, -5, 10);
+        //new PointLight(rays, 500, new Color(1f, 0.5f, 1f, 1f), 150, 0, 30);
+        //PointLight p1 = LightFactory.createPointLight(rays, 150, 150, Color.RED, 6);
     }
 
     @Override
@@ -41,6 +53,7 @@ public class PlayState extends AbstractGameState {
     	
     	world.step();
     	map.getTiled().setView(camera);
+    	map.getRayHandler().setCombinedMatrix(camera);
     }
     
     /**
@@ -105,10 +118,12 @@ public class PlayState extends AbstractGameState {
     	player.render(app.getBatch());
     	app.getBatch().end();
     	if(app.DEBUG) b2dr.render(world.getWorld(), camera.combined.cpy());
+    	map.getRayHandler().updateAndRender();
     }
 
     @Override
     public void dispose() {
         map.dispose();
+        b2dr.dispose();
     }
 }

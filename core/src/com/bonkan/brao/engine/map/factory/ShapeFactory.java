@@ -1,4 +1,4 @@
-package com.bonkan.brao.engine.map;
+package com.bonkan.brao.engine.map.factory;
 
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;

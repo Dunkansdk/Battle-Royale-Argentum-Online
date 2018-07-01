@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextobjectid="21">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextobjectid="24">
  <tileset firstgid="1" source="../atlas.tsx"/>
  <layer name="floor" width="100" height="100">
   <data encoding="csv">
@@ -220,5 +220,19 @@
   <object id="17" x="153.333" y="2875.33" width="15.3333" height="17"/>
   <object id="19" x="409" y="2555.5" width="15.3333" height="17"/>
   <object id="20" x="761.333" y="2715.17" width="15.3333" height="17"/>
+ </objectgroup>
+ <objectgroup name="lights">
+  <object id="21" x="809.333" y="2717.33">
+   <properties>
+    <property name="color" type="color" value="#ffffffff"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="22" x="258.667" y="2710.67">
+   <properties>
+    <property name="color" type="color" value="#ffff0000"/>
+   </properties>
+   <point/>
+  </object>
  </objectgroup>
 </map>
