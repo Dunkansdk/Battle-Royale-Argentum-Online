@@ -23,6 +23,9 @@ public class WorldManager
 		myGravity = new Vector2(0, 0f);
 		gravityIsTemporarilySet = false;
 		world = new World(myGravity, true);
+		
+		// Seteamos el ContactListener para obtener las collisiones
+		world.setContactListener(new WorldContactListener());
 	}
 
 	/**

@@ -16,11 +16,15 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.bonkan.brao.engine.exception.BRAOException;
+import com.bonkan.brao.engine.map.factory.BodyFactory;
+import com.bonkan.brao.engine.map.factory.LightFactory;
 import com.bonkan.brao.engine.map.factory.ShapeFactory;
 
+import box2dLight.ConeLight;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
@@ -101,25 +105,28 @@ public class MapManager {
                 continue;
             }
 
-            BodyDef bodyDef = new BodyDef();
-            bodyDef.type = BodyDef.BodyType.StaticBody;
-            Body body = world.createBody(bodyDef);
-            body.createFixture(shape, 1);
+            BodyFactory.createMapBox(world, shape, true, false, this);
 
             shape.dispose();
         }
     }
 	
 	/**
-	 * Create a world lights
+	 * 
 	 */
 	private void createLights() {
 		MapObjects objects = getCurrentMap().getLayers().get("lights").getObjects();
 		
 		for(MapObject object : objects) {
-			new PointLight(rays, 500, (Color)object.getProperties().get("color"), 350, (float)object.getProperties().get("x"), (float)object.getProperties().get("y"));
+			if(object.getProperties().get("angle") == null) {
+				new PointLight(rays, 120, (Color)object.getProperties().get("color"), (Integer)object.getProperties().get("size"), 
+										  (Float)object.getProperties().get("x"), (Float)object.getProperties().get("y"));
+			} else {
+				new ConeLight(rays, 120, (Color)object.getProperties().get("color"), (Integer)object.getProperties().get("size"), 
+										 (Float)object.getProperties().get("x"), 	 (Float)object.getProperties().get("y"), 
+										 270, (Integer)object.getProperties().get("amplitude")).setXray(true);
+			}
 		}
-	
 	}
 	
 	/**
