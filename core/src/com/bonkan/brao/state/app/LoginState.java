@@ -25,6 +25,9 @@ import com.bonkan.brao.networking.PacketIDs;
 import com.bonkan.brao.state.AbstractGameState;
 import com.bonkan.brao.state.GameStateManager;
 
+/**
+ * <p>Estado "Login".</p>
+ */
 public class LoginState extends AbstractGameState {
 
 	private Stage stage;

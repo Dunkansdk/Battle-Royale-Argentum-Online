@@ -13,6 +13,9 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
+/**
+ * <p>Clase principal.</p>
+ */
 public class Main {
 	
 	public static void main(String args[])

@@ -13,6 +13,9 @@ import com.bonkan.brao.server.ui.ServerInterface;
 import com.bonkan.brao.server.users.LobbyUser;
 import com.esotericsoftware.kryonet.Connection;
 
+/**
+ * <p>La clase protocolo maneja la llegada y el envío de paquetes.</p>
+ */
 public class Protocol {
 
 	public static ConcurrentHashMap<UUID, LobbyUser> userList; // en el lobby
@@ -22,6 +25,11 @@ public class Protocol {
 		userList = new ConcurrentHashMap<UUID, LobbyUser>();
 	}
 	
+	/**
+	 * <p>Maneja la llegada de paquetes.</p>
+	 * @param conn		&emsp;{@link com.esotericsoftware.kryonet.Connection Connection} el cliente que mandó el paquete
+	 * @param p			&emsp;{@link com.bonkan.brao.server.packets.Packet Packet} el paquete que mandó
+	 */
 	public static void handleData(Connection conn, Packet p)
 	{
 		switch(p.getID())

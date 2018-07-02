@@ -8,8 +8,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
 /**
- * Make a Box2D Body
- *
+ * <p>Fábrica de {@link com.badlogic.gdx.physics.box2d.Body bodies} de box2d.</p>
  */
 public class BodyFactory {
 	
@@ -21,11 +20,12 @@ public class BodyFactory {
     public static final short BIT_BREAKABLE = 16;
 
     /**
-     * Crea el {@link com.badlogic.gdx.physics.box2d.Body} de un player
-     * @param data	Instancia que crea el body
+     * <p>Crea el {@link com.badlogic.gdx.physics.box2d.Body} de un player.</p>
+     * @param data		&emsp;{@link java.lang.Object Object} instancia que crea el body
      * @return {@link com.badlogic.gdx.physics.box2d.Body}
      */
-    public static Body createPlayerBox(final World world, float x, float y, int width, int height, Object data) {
+    public static Body createPlayerBox(final World world, float x, float y, int width, int height, Object data) 
+    {
     	Body pBody;
         BodyDef bodyDef = new BodyDef();
 
@@ -53,9 +53,9 @@ public class BodyFactory {
     }
     
     /**
-     * Crea un objeto en el mapa (Los obtiene de el editor Tiled)
+     * <p>Crea un objeto en el mapa (Los obtiene de el editor Tiled).</p>
      * @param {@link com.bonkan.brao.engine.map.factory.ShapeFactory} Shape que crea el MapManager dependiendo de que se haya creado en el Tiled
-     * @param data	Instancia que crea el body
+     * @param data		&emsp;{@link java.lang.Object Object} instancia que crea el bodyInstancia que crea el body
      * @return {@link com.badlogic.gdx.physics.box2d.Body}
      */
     public static Body createMapBox(final World world, Shape shape, boolean isStatic, boolean fixedRotation, Object data) {

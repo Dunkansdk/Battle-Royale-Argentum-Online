@@ -1,5 +1,8 @@
 package com.bonkan.brao.server.utils;
 
+/**
+ * <p>Clase utilitaria que maneja una posición bidimensional.</p>
+ */
 public class Position {
 
 	private int x, y;

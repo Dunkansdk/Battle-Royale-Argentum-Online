@@ -7,19 +7,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * <p>Class that handles and performs the MySQL queries</p>
- * @author bon3
+ * <p>Clase que maneja y realiza las queries a la BD.</p>
  */
 public class MySQLHandler {
     
 	private static Connection localConn;
 	
 	/**
-	 * <p>Connects to the database and stores the connection in the <b>localConn</b> variable. Some suggest that the connection
-	 * should be closed when unusued and reopened everytime a query is performed; but I don't know if that's the case for
-	 * this kind of server (queries are going to be performed pretty much all the time)</p>
+	 * <p>Conecta con la BD y guarda la conexión en la variable <b>localConn</b>. 
+	 * Generalmente las conexiones se cierran cuando no se usan y se vuelven a abrir cada vez
+	 * que se va a realizar una query; pero no sé si es tan util para un server de este estilo
+	 * (las queries se realizan constantemente), así que, por lo pronto, la conexión queda abierta
+	 * hasta que se cierra el server.</p>
 	 * @throws SQLException
-	 * @author bon3
 	 */
 	public static void connect() throws SQLException
 	{
@@ -31,11 +31,10 @@ public class MySQLHandler {
 	}
 	
 	/**
-	 * <p>Executes a query and returns the data (usually, these are <b>SELECT</b> queries)</p>
-	 * @param query				&emsp;(<b>String</b>) query to execute
+	 * <p>Ejecuta la query y retorna los valores (generalmente se usa para queries <b>SELECT</b>).</p>
+	 * @param query				&emsp;(<b>String</b>) query a ejecutar
 	 * @throws SQLException
-	 * @return ResultSet		&emsp;({@link java.sql.ResultSet ResultSet}) query results
-	 * @author bon3
+	 * @return ResultSet		&emsp;({@link java.sql.ResultSet ResultSet}) los resultados de la query
 	 */
 	public static ResultSet retrieveData(String query) throws SQLException
 	{
@@ -46,10 +45,9 @@ public class MySQLHandler {
     }
 
 	/**
-	 * <p>Executes a query that <b>INSERTS</b> data into the database</p>
-	 * @param query				&emsp;(<b>String</b>) query to execute
+	 * <p>Ejecuta una query que inserta datos a la BD (generalmente <b>INSERTS</b>, <b>ALTER</b> o <b>UPDATE</b>).</p>
+	 * @param query				&emsp;(<b>String</b>) query a ejecutar
 	 * @throws SQLException
-	 * @author bon3
 	 */
 	public static void insertData(String query) throws SQLException
 	{

@@ -4,6 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+/**
+ * <p>Simple clase estática que carga todos los atlases y provee getters para acceder
+ * a sus texturas.</p>
+ */
 public class AtlasManager {
 
 	private static TextureAtlas bodies;

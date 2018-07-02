@@ -1,5 +1,8 @@
 package com.bonkan.brao.server.packets;
 
+/**
+ * <p>Humilde homenaje al viejo y querido <b>ServerPacketIDs</b></p>
+ */
 public class PacketIDs {
 
 	public static final int PACKET_LOGIN = 0;

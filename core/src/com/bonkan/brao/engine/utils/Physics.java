@@ -1,8 +1,11 @@
 package com.bonkan.brao.engine.utils;
 
-import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 
+/**
+ * <p>Clase auxiliar con los valores de las físicas del juego y métodos
+ * utilitarios.</p>
+ */
 public final class Physics {
 
     public static final float PIXELS_PER_UNIT = 1f;
@@ -11,7 +14,7 @@ public final class Physics {
         return pixels / PIXELS_PER_UNIT;
     }
     
-    public static Vector toUnits(Vector2 pixels) {
+    public static Vector2 toUnits(Vector2 pixels) {
         return new Vector2(toUnits(pixels.x), toUnits(pixels.y));
     }
 

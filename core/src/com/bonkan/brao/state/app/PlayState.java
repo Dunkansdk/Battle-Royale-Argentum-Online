@@ -14,6 +14,9 @@ import com.bonkan.brao.networking.LoggedUser;
 import com.bonkan.brao.state.AbstractGameState;
 import com.bonkan.brao.state.GameStateManager;
 
+/**
+ * <p>Estado "Jugando".</p>
+ */
 public class PlayState extends AbstractGameState {
 	
     private Player player;

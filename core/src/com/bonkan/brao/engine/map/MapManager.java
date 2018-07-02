@@ -14,20 +14,19 @@ import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.bonkan.brao.engine.exception.BRAOException;
 import com.bonkan.brao.engine.map.factory.BodyFactory;
-import com.bonkan.brao.engine.map.factory.LightFactory;
 import com.bonkan.brao.engine.map.factory.ShapeFactory;
 
 import box2dLight.ConeLight;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
+/**
+ *<p>Carga todos los mapas del directiorio "maps/" y crea un {@link com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer OrthogonalTiledMapRenderer}
+ * para el mapa específico que se va a mostrar.</p>
+ */
 public class MapManager {
 	
 	private ArrayList<TiledMap> map;
@@ -70,9 +69,9 @@ public class MapManager {
 	}
 	
 	/**
-	 * Setea un {@link com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer} en base a los mapas precargados del directorio "maps/"
-	 * @param actual	&emsp;<b>int</b> subindice del mapa
-	 * @throws BRAOException
+	 * Setea un {@link com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer OrthogonalTiledMapRenderer} 
+	 * en base a los mapas precargados del directorio "maps/"
+	 * @param actual	&emsp;<b>int</b> subindice del mapa (en el ArrayList de mapas)
 	 */
 	public void load(World world, int actual) {
 		currentMap = actual;
@@ -82,8 +81,8 @@ public class MapManager {
 	}
 	
 	/**
-	 * Create a world collision (Box2D)
-	 * @param world
+	 * <p>Crea las colisiones (los <i>bodies</i> de box2d) para todos los objetos del mapa.</p>
+	 * @param world	&emsp;{@link com.badlogic.gdx.physics.box2d.World World} el mundo !!
 	 */
 	private void createCollision(World world) {
 		MapObjects objects = getCurrentMap().getLayers().get("collision").getObjects();
@@ -112,7 +111,7 @@ public class MapManager {
     }
 	
 	/**
-	 * 
+	 * <p>Crea las luces !!! (las carga de la capa "lights" del .tmx).</p>
 	 */
 	private void createLights() {
 		MapObjects objects = getCurrentMap().getLayers().get("lights").getObjects();
@@ -130,10 +129,11 @@ public class MapManager {
 	}
 	
 	/**
-	 * Asumimos que si se seteo un currentMap es porque realmente existe.
+	 * <p>Devuelve el mapa que está actualmente cargado.</p>
 	 * @return	TiledMap
 	 */
-	public TiledMap getCurrentMap() {
+	public TiledMap getCurrentMap() 
+	{
 		return map.get(currentMap);
 	}
 	

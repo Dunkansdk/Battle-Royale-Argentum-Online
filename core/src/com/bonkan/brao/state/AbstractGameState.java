@@ -4,6 +4,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bonkan.brao.Game;
 
+/**
+ * <p>Clase abstracta que agrupa el funcionamiento de los estados del juego.</p>
+ */
 public abstract class AbstractGameState {
 
     protected GameStateManager gameState;

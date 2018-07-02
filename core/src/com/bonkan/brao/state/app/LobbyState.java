@@ -3,6 +3,9 @@ package com.bonkan.brao.state.app;
 import com.bonkan.brao.state.AbstractGameState;
 import com.bonkan.brao.state.GameStateManager;
 
+/**
+ * <p>Estado "Lobby".</p>
+ */
 public class LobbyState extends AbstractGameState {
 
     public LobbyState(GameStateManager gameState) {

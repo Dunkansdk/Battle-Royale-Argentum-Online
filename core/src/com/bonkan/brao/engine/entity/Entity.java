@@ -3,6 +3,9 @@ package com.bonkan.brao.engine.entity;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+/**
+ * <p>Sistema básico de entidades.</p>
+ */
 public abstract class Entity {
 
 	protected TextureRegion texture;

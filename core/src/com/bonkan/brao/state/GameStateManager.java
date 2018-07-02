@@ -8,6 +8,10 @@ import com.bonkan.brao.state.app.PlayState;
 
 import java.util.Stack;
 
+/**
+ * <p>Maneja los estados del juego (lobby, login, jugando, etc)</p>
+ * <p>Usa una {@link java.util.Stack Pila} para el manejo de los estados.</p>
+ */
 public class GameStateManager {
 
     private final Game app;
@@ -68,6 +72,12 @@ public class GameStateManager {
     	return states.peek();
     }
 
+    /**
+     * <p>No confundir con {@link com.bonkan.brao.state.GameStateManager#getCurrentState getCurrentState()},
+     * este método devuelve una NUEVA INSTANCIA del estado solicitado.</p>
+     * @param state		&emsp;<b>State (enum privado de esta clase)</b> el estado solicitado
+     * @return	AbstractGameState
+     */
     private AbstractGameState getState(State state)
     {
         switch (state) {

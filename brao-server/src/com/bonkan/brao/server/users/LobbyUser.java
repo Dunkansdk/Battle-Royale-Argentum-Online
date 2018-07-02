@@ -5,6 +5,9 @@ import java.util.UUID;
 import com.bonkan.brao.server.packets.Packet;
 import com.esotericsoftware.kryonet.Connection;
 
+/**
+ * <p>Maneja todos los atributos de un usuario que está logeado en el LOBBY (aún no está jugando).</p>
+ */
 public class LobbyUser {
 
 	private UUID id;

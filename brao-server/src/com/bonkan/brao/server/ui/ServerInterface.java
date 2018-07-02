@@ -7,6 +7,9 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+/**
+ * <p>Para que el server no sea tan horrendo.</p>
+ */
 public class ServerInterface {
 
 	private static JFrame mainWindow;
@@ -14,7 +17,7 @@ public class ServerInterface {
 	private static JScrollPane verticalScrollPane;
 	
 	/**
-	 * <p>Initializes the widgets</p>
+	 * <p>Inicializa los widgets.</p>
 	 */
 	public static void init()
 	{
@@ -37,8 +40,8 @@ public class ServerInterface {
 	}
 	
 	/**
-	 * <p>Adds a message to the JTextArea</p>
-	 * @param m		&emsp;(<b>String</b>) The message to add
+	 * <p>Agrega un mensaje al JTextArea.</p>
+	 * @param m		&emsp;<b>String</b> el mensaje a agregar
 	 */
 	public static void addMessage(String m)
 	{

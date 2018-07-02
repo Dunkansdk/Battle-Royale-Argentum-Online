@@ -2,6 +2,10 @@ package com.bonkan.brao.networking;
 
 import java.util.UUID;
 
+/**
+ * <p>Clase que maneja los atributos comunes de un usuario logeado (tanto cuando está
+ * en el lobby como cuando está jugando).</p>
+ */
 public class LoggedUser {
 
 	private UUID loggedID;

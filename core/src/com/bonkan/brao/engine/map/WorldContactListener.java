@@ -8,9 +8,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.bonkan.brao.engine.entity.Player;
 
 /**
- * 
- * Collisiones entre {@link com.badlogic.gdx.physics.box2d.Body}
- *
+ * <p>Collisiones entre {@link com.badlogic.gdx.physics.box2d.Body Bodies}</p>
  */
 public class WorldContactListener implements ContactListener {
 

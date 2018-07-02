@@ -10,6 +10,9 @@ import com.bonkan.brao.engine.map.factory.BodyFactory;
 import com.bonkan.brao.engine.utils.AtlasManager;
 import com.bonkan.brao.engine.utils.Constants;
 
+/**
+ *<p>El player.</p>
+ */
 public class Player extends Entity {
 
 	private UUID id;

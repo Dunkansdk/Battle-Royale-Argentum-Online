@@ -23,7 +23,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
 /**
- * Main Class
+ * <p>Clase principal.</p>
  */
 public class Game extends ApplicationAdapter {
 

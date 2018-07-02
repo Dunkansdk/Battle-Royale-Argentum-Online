@@ -1,12 +1,15 @@
 package com.bonkan.brao.engine.entity.animation;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.bonkan.brao.engine.entity.Player.playerState;
 
+/**
+ * <p>Clase encargada de la animación de cuerpos. Todas las {@link com.bonkan.brao.engine.entity.Entity entidades}
+ * que representan un jugador tienen un BodyAnimator.</p>
+ */
 public class BodyAnimator {
 	
 	private static final int FRAME_COLS = 6, FRAME_ROWS = 4;
@@ -22,6 +25,10 @@ public class BodyAnimator {
 	private float stateTime;
 	private playerState lastState;
 		
+	/**
+	 * <p>Crea las animaciones según la textura</p>
+	 * @param texture	&emsp;{@link com.badlogic.gdx.graphics.g2d.TextureRegion TextureRegion} si bien es un TextureRegion, es la textura ENTERA de la animación
+	 */
 	public BodyAnimator(TextureRegion texture) {
 		
 		walkSheet = texture;
@@ -62,6 +69,13 @@ public class BodyAnimator {
 		
 	}
 	
+	/**
+	 * <p>Dibuja la animación que corresponde según el estado</p>
+	 * @param batch		&emsp;{@link com.badlogic.gdx.graphics.g2d.SpriteBatch SpriteBatch} el batch que dibuja
+	 * @param x			&emsp;<b>float</b> posición X destino
+	 * @param y			&emsp;<b>float</b> posición Y destino
+	 * @param state		&emsp;<b>playerState (<i>enum</i> público de la clase {@link com.bonkan.brao.engine.entity.Player Player} )</b> el estado de la entidad
+	 */
 	public void render(SpriteBatch batch, float x, float y, playerState state) {
 		stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
 		
@@ -87,7 +101,6 @@ public class BodyAnimator {
 		}	
 
 		batch.draw(currentFrame, x, y); // Draw current frame at (50, 50)
-
 	}
 	
 }
