@@ -2,12 +2,7 @@ package com.bonkan.brao.engine.entity.humans;
 
 import java.util.UUID;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.bonkan.brao.engine.entity.Entity;
 import com.bonkan.brao.engine.entity.Human;
 import com.bonkan.brao.engine.map.factory.BodyFactory;
 import com.bonkan.brao.engine.utils.Constants;

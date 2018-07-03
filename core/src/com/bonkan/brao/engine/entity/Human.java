@@ -10,7 +10,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.bonkan.brao.engine.entity.animation.BodyAnimator;
 import com.bonkan.brao.engine.entity.animation.HeadAnimator;
-import com.bonkan.brao.engine.map.factory.BodyFactory;
 import com.bonkan.brao.engine.utils.AtlasManager;
 import com.bonkan.brao.engine.utils.Constants;
 

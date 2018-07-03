@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.bonkan.brao.engine.entity.humans.Enemy;
 import com.bonkan.brao.engine.map.factory.Sensor;
 
 /**
@@ -22,8 +23,20 @@ public class WorldContactListener implements ContactListener {
         
         if(fa.isSensor() || fb.isSensor())
         {
-        	if(fa.getUserData() instanceof Sensor) ((Sensor) fa.getUserData()).setColliding(true);
-        	if(fb.getUserData() instanceof Sensor) ((Sensor) fb.getUserData()).setColliding(true);
+        	if(fa.getUserData() instanceof Sensor) {
+        		Sensor s = (Sensor) fa.getUserData();
+        		s.setColliding(true);
+        		
+        		if(fb.getUserData() instanceof Enemy)
+        			s.setCollidingWithEnemy(true);
+        	}
+        	if(fb.getUserData() instanceof Sensor) {
+        		Sensor s = (Sensor) fb.getUserData();
+        		s.setColliding(true);
+        		
+        		if(fa.getUserData() instanceof Enemy)
+        			s.setCollidingWithEnemy(true);
+        	}
         }
 
 	}
@@ -38,8 +51,16 @@ public class WorldContactListener implements ContactListener {
         
         if(fa.isSensor() || fb.isSensor())
         {
-        	if(fa.getUserData() instanceof Sensor) ((Sensor) fa.getUserData()).setColliding(false);
-        	if(fb.getUserData() instanceof Sensor) ((Sensor) fb.getUserData()).setColliding(false);
+        	if(fa.getUserData() instanceof Sensor) {
+        		Sensor s = (Sensor) fa.getUserData();
+        		s.setColliding(false);
+        		s.setCollidingWithEnemy(false);
+        	}
+        	if(fb.getUserData() instanceof Sensor) {
+        		Sensor s = (Sensor) fb.getUserData();
+        		s.setColliding(false);
+        		s.setCollidingWithEnemy(false);
+        	}
         }
 	}
 

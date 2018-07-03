@@ -63,22 +63,22 @@ public class PlayState extends AbstractGameState {
 
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
         	player.setState(playerState.MOVE_LEFT);
-        	if(!player.getSensor(0).isColliding()) horizontalForce -= 1;
+        	if(!player.getSensor(0).getCollidingWithEnemy()) horizontalForce -= 1;
         	if(player.getSensor(0).isColliding()) System.out.println("Collide elft");
         }
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
         	player.setState(playerState.MOVE_RIGHT);
-        	if(!player.getSensor(1).isColliding()) horizontalForce += 1;
+        	if(!player.getSensor(1).getCollidingWithEnemy()) horizontalForce += 1;
         	if(player.getSensor(1).isColliding()) System.out.println("Collide right");
         }
         if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
         	player.setState(playerState.MOVE_UP);
-        	if(!player.getSensor(2).isColliding()) verticalForce += 1;
+        	if(!player.getSensor(2).getCollidingWithEnemy()) verticalForce += 1;
         	if(player.getSensor(2).isColliding()) System.out.println("Collide up");
         }
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
         	player.setState(playerState.MOVE_DOWN);
-        	if(!player.getSensor(3).isColliding()) verticalForce -= 1;
+        	if(!player.getSensor(3).getCollidingWithEnemy()) verticalForce -= 1;
         	if(player.getSensor(3).isColliding()) System.out.println("Collide down");
         }
         
