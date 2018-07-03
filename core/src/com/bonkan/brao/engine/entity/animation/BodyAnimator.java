@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.bonkan.brao.engine.entity.Player.playerState;
+import com.bonkan.brao.engine.entity.Human.playerState;
 
 /**
  * <p>Clase encargada de la animación de cuerpos. Todas las {@link com.bonkan.brao.engine.entity.Entity entidades}
@@ -74,7 +74,7 @@ public class BodyAnimator {
 	 * @param batch		&emsp;{@link com.badlogic.gdx.graphics.g2d.SpriteBatch SpriteBatch} el batch que dibuja
 	 * @param x			&emsp;<b>float</b> posición X destino
 	 * @param y			&emsp;<b>float</b> posición Y destino
-	 * @param state		&emsp;<b>playerState (<i>enum</i> público de la clase {@link com.bonkan.brao.engine.entity.Player Player} )</b> el estado de la entidad
+	 * @param state		&emsp;<b>playerState (<i>enum</i> público de la clase {@link com.bonkan.brao.engine.entity.humans.Player Player} )</b> el estado de la entidad
 	 */
 	public void render(SpriteBatch batch, float x, float y, playerState state) {
 		stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time

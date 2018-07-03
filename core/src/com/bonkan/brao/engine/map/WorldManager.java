@@ -20,7 +20,7 @@ public class WorldManager
 	 */
 	public WorldManager()
 	{
-		timeStep = 1.0f / 45.f;
+		timeStep = 1.0f / 60.f;
 		velocityIterations = 6;
 		positionIterations = 3;
 		myGravity = new Vector2(0, 0f);

@@ -1,13 +1,16 @@
 package com.bonkan.brao.state.app;
 
+import java.util.UUID;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.bonkan.brao.engine.entity.Player;
-import com.bonkan.brao.engine.entity.Player.playerState;
+import com.bonkan.brao.engine.entity.Human.playerState;
+import com.bonkan.brao.engine.entity.humans.Enemy;
+import com.bonkan.brao.engine.entity.humans.Player;
 import com.bonkan.brao.engine.map.MapManager;
 import com.bonkan.brao.engine.map.WorldManager;
 import com.bonkan.brao.networking.LoggedUser;
@@ -20,6 +23,7 @@ import com.bonkan.brao.state.GameStateManager;
 public class PlayState extends AbstractGameState {
 	
     private Player player;
+    private Enemy enemy;
     private WorldManager world;
     private Box2DDebugRenderer b2dr;
     private MapManager map;
@@ -31,7 +35,8 @@ public class PlayState extends AbstractGameState {
         b2dr = new Box2DDebugRenderer();
 
         LoggedUser aux = app.getLoggedUser();
-        player = new Player(aux.getLoggedDefaultBody(), aux.getLoggedID(), aux.getLoggedUserName(), world.getWorld());
+        player = new Player(20.0f, 20.0f, aux.getLoggedDefaultBody(), 1, 320, 1620, aux.getLoggedID(), aux.getLoggedUserName(), world.getWorld());
+        enemy = new Enemy(70, 70, 1, 1, UUID.randomUUID(), "Dummy", world.getWorld());
     }
 
     @Override
@@ -41,7 +46,6 @@ public class PlayState extends AbstractGameState {
     	lerpToTarget(camera, player.getBody().getPosition());
     	inputUpdate(delta);
     	//TODO: ESTO HAY QUE VOLARLO!
-    	
     	world.step();
     	map.getTiled().setView(camera);
     	map.getRayHandler().setCombinedMatrix(camera);
@@ -59,19 +63,23 @@ public class PlayState extends AbstractGameState {
 
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
         	player.setState(playerState.MOVE_LEFT);
-            horizontalForce -= 1;
+        	if(!player.getSensor(0).isColliding()) horizontalForce -= 1;
+        	if(player.getSensor(0).isColliding()) System.out.println("Collide elft");
         }
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
         	player.setState(playerState.MOVE_RIGHT);
-            horizontalForce += 1;
+        	if(!player.getSensor(1).isColliding()) horizontalForce += 1;
+        	if(player.getSensor(1).isColliding()) System.out.println("Collide right");
         }
         if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
         	player.setState(playerState.MOVE_UP);
-            verticalForce += 1;
+        	if(!player.getSensor(2).isColliding()) verticalForce += 1;
+        	if(player.getSensor(2).isColliding()) System.out.println("Collide up");
         }
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
         	player.setState(playerState.MOVE_DOWN);
-            verticalForce -= 1;
+        	if(!player.getSensor(3).isColliding()) verticalForce -= 1;
+        	if(player.getSensor(3).isColliding()) System.out.println("Collide down");
         }
         
         if(	!Gdx.input.isKeyPressed(Input.Keys.DOWN) 	&& 
@@ -111,6 +119,7 @@ public class PlayState extends AbstractGameState {
     	
     	app.getBatch().begin();
     	player.render(app.getBatch());
+    	enemy.render(app.getBatch());
     	app.getBatch().end();
     	
     	if(app.DEBUG) b2dr.render(world.getWorld(), camera.combined.cpy());

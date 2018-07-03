@@ -5,7 +5,9 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.bonkan.brao.engine.entity.Player;
+import com.bonkan.brao.engine.entity.humans.Enemy;
+import com.bonkan.brao.engine.entity.humans.Player;
+import com.bonkan.brao.engine.map.factory.Sensor;
 
 /**
  * <p>Collisiones entre {@link com.badlogic.gdx.physics.box2d.Body Bodies}</p>
@@ -20,18 +22,46 @@ public class WorldContactListener implements ContactListener {
         if(fa == null || fb == null) return;
         if(fa.getUserData() == null || fb.getUserData() == null) return;
         
-        // Le informamos a la instancia que esta tocando otro body
-        if(fa.getUserData() instanceof Player) {
-        	Player p = (Player) fa.getUserData();
-        	p.setContact(true);
+        if(fa.isSensor() && fa.getUserData() instanceof Sensor && ((Sensor)fa.getUserData()).getDireccion() == 0) {
+        	System.out.println("[FA] Sensorleft: " + fa.getBody().getPosition() + " with " + fb.getBody().getPosition());
+        	((Sensor)fa.getUserData()).setColliding(true);
         }
         
-        if(fb.getUserData() instanceof Player) {
-        	Player p = (Player) fb.getUserData();
-        	p.setContact(true);
+        if(fb.isSensor() && fb.getUserData() instanceof String && ((Sensor)fb.getUserData()).getDireccion() == 0) {
+        	System.out.println("[FB] Sensorleft: " + fa.getBody().getPosition() + " with " + fb.getBody().getPosition());
+        	((Sensor)fa.getUserData()).setColliding(true);
         }
         
-        System.out.println("Begin Contact: " + fa.getBody().getPosition() + " with " + fb.getBody().getPosition());
+        if(fa.isSensor() && fa.getUserData() instanceof String && ((Sensor)fa.getUserData()).getDireccion() == 1) {
+        	System.out.println("[FA] Sensorright: " + fa.getBody().getPosition() + " with " + fb.getBody().getPosition());
+        	((Sensor)fa.getUserData()).setColliding(true);
+        }
+        
+        if(fb.isSensor() && fb.getUserData() instanceof String && ((Sensor)fb.getUserData()).getDireccion() == 1){
+        	System.out.println("[FB] Sensorright: " + fa.getBody().getPosition() + " with " + fb.getBody().getPosition());
+        	((Sensor)fa.getUserData()).setColliding(true);
+        }
+        
+        if(fa.isSensor() && fa.getUserData() instanceof String && ((Sensor)fa.getUserData()).getDireccion() == 2) {
+        	System.out.println("[FA] Sensorup: " + fa.getBody().getPosition() + " with " + fb.getBody().getPosition());
+        	((Sensor)fa.getUserData()).setColliding(true);
+        }
+        
+        if(fb.isSensor() && fb.getUserData() instanceof String && ((Sensor)fb.getUserData()).getDireccion() == 2) {
+        	System.out.println("[FB] Sensorup: " + fa.getBody().getPosition() + " with " + fb.getBody().getPosition());
+        	((Sensor)fa.getUserData()).setColliding(true);
+        }
+        
+        if(fa.isSensor() && fa.getUserData() instanceof String && ((Sensor)fa.getUserData()).getDireccion() == 3) {
+        	System.out.println("[FA] SensorDown: " + fa.getBody().getPosition() + " with " + fb.getBody().getPosition());
+        	((Sensor)fa.getUserData()).setColliding(true);
+        }
+        
+        if(fb.isSensor() && fb.getUserData() instanceof String && ((Sensor)fb.getUserData()).getDireccion() == 3) {
+        	System.out.println("[FB] SensorDown: " + fa.getBody().getPosition() + " with " + fb.getBody().getPosition());
+        	((Sensor)fa.getUserData()).setColliding(true);
+        }
+
 	}
 
 	@Override
@@ -41,19 +71,56 @@ public class WorldContactListener implements ContactListener {
         
         if(fa == null || fb == null) return;
         if(fa.getUserData() == null || fb.getUserData() == null) return;
-        
-        // Le informamos a la instancia que ya no esta tocando otro body
-        if(fa.getUserData() instanceof Player) {
-        	Player p = (Player) fa.getUserData();
-        	p.setContact(false);
+        /*
+        if(fa.isSensor() && fa.getUserData() instanceof Sensor && ((Sensor)fa.getUserData()).getDireccion() == 0) {
+        	System.out.println("[FA] Sensorleft: " + fa.getBody().getPosition() + " with " + fb.getBody().getPosition());
+        	Player player = ((Sensor)fb.getUserData()).getPlayer();
+        	player.resetSensorCollision(1);
         }
         
-        if(fb.getUserData() instanceof Player) {
-        	Player p = (Player) fb.getUserData();
-        	p.setContact(false);
+        if(fb.isSensor() && fb.getUserData() instanceof String && ((Sensor)fb.getUserData()).getDireccion() == 0) {
+        	System.out.println("[FB] Sensorleft: " + fa.getBody().getPosition() + " with " + fb.getBody().getPosition());
+        	Player player = ((Sensor)fb.getUserData()).getPlayer();
+        	player.resetSensorCollision(0);
         }
         
-		System.out.println("End Contact: " + fa.getBody().getPosition() + " with " + fb.getBody().getPosition());
+        if(fa.isSensor() && fa.getUserData() instanceof String && ((Sensor)fa.getUserData()).getDireccion() == 1) {
+        	System.out.println("[FA] Sensorright: " + fa.getBody().getPosition() + " with " + fb.getBody().getPosition());
+        	Player player = ((Sensor)fb.getUserData()).getPlayer();
+        	player.resetSensorCollision(0);
+        }
+        
+        if(fb.isSensor() && fb.getUserData() instanceof String && ((Sensor)fb.getUserData()).getDireccion() == 1){
+        	System.out.println("[FB] Sensorright: " + fa.getBody().getPosition() + " with " + fb.getBody().getPosition());
+        	Player player = ((Sensor)fb.getUserData()).getPlayer();
+        	player.resetSensorCollision(1);
+        }
+        
+        if(fa.isSensor() && fa.getUserData() instanceof String && ((Sensor)fa.getUserData()).getDireccion() == 2) {
+        	System.out.println("[FA] Sensorup: " + fa.getBody().getPosition() + " with " + fb.getBody().getPosition());
+        	Player player = ((Sensor)fb.getUserData()).getPlayer();
+        	player.resetSensorCollision(2);
+        }
+        
+        if(fb.isSensor() && fb.getUserData() instanceof String && ((Sensor)fb.getUserData()).getDireccion() == 2) {
+        	System.out.println("[FB] Sensorup: " + fa.getBody().getPosition() + " with " + fb.getBody().getPosition());
+        	Player player = ((Sensor)fb.getUserData()).getPlayer();
+        	player.resetSensorCollision(2);
+        }
+        
+        if(fa.isSensor() && fa.getUserData() instanceof String && ((Sensor)fa.getUserData()).getDireccion() == 3) {
+        	System.out.println("[FA] SensorDown: " + fa.getBody().getPosition() + " with " + fb.getBody().getPosition());
+        	Player player = ((Sensor)fb.getUserData()).getPlayer();
+        	player.resetSensorCollision(3);
+        }
+        
+        if(fb.isSensor() && fb.getUserData() instanceof String && ((Sensor)fb.getUserData()).getDireccion() == 3) {
+        	System.out.println("[FB] SensorDown: " + fa.getBody().getPosition() + " with " + fb.getBody().getPosition());
+        	Player player = ((Sensor)fb.getUserData()).getPlayer();
+        	player.resetSensorCollision(3);
+        }
+        */
+
 	}
 
 	@Override
