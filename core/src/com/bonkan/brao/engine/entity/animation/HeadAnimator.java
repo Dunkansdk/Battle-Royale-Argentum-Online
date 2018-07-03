@@ -31,14 +31,14 @@ public class HeadAnimator {
 		
 		TextureRegion currentFrame = null;
 		
-		if(state == playerState.MOVE_UP) currentFrame = headFrames[3];
-		if(state == playerState.MOVE_DOWN) currentFrame = headFrames[0];
+		if(state == playerState.MOVE_UP || state == playerState.MOVE_LEFT_UP || state == playerState.MOVE_RIGHT_UP) currentFrame = headFrames[3];
+		if(state == playerState.MOVE_DOWN || state == playerState.MOVE_LEFT_DOWN || state == playerState.MOVE_RIGHT_DOWN) currentFrame = headFrames[0];
 		if(state == playerState.MOVE_RIGHT) currentFrame = headFrames[1];
 		if(state == playerState.MOVE_LEFT) currentFrame = headFrames[2];
 		
 		if(state == playerState.NONE) {
-			if(lastState == playerState.MOVE_UP) currentFrame = headFrames[3];
-			if(lastState == playerState.MOVE_DOWN) currentFrame = headFrames[0];
+			if(lastState == playerState.MOVE_UP || lastState == playerState.MOVE_LEFT_UP || lastState == playerState.MOVE_RIGHT_UP) currentFrame = headFrames[3];
+			if(lastState == playerState.MOVE_DOWN || lastState == playerState.MOVE_LEFT_DOWN || lastState == playerState.MOVE_RIGHT_DOWN) currentFrame = headFrames[0];
 			if(lastState == playerState.MOVE_RIGHT) currentFrame = headFrames[1];
 			if(lastState == playerState.MOVE_LEFT) currentFrame = headFrames[2];
 			if(lastState == playerState.NONE) currentFrame = headFrames[0]; // StateRecienArranco

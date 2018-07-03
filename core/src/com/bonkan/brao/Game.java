@@ -17,6 +17,7 @@ import com.bonkan.brao.networking.PacketIDs;
 import com.bonkan.brao.state.AbstractGameState;
 import com.bonkan.brao.state.GameStateManager;
 import com.bonkan.brao.state.app.LoginState;
+import com.bonkan.brao.state.app.PlayState;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -69,6 +70,7 @@ public class Game extends ApplicationAdapter {
 	    kryo.register(Packet.class);
 	    kryo.register(ArrayList.class);
 	    kryo.register(String.class);
+	    kryo.register(UUID.class);
 	    
 	    try {
 	    	// 5000 es la cant. maxima de milisegundos que se bloquea el thread tratando de conectar
@@ -99,6 +101,7 @@ public class Game extends ApplicationAdapter {
 		gameState.update(Gdx.graphics.getDeltaTime());
 		gameState.render();		
 		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
+		if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) DEBUG = !DEBUG;
 	}
 
 	@Override
@@ -118,7 +121,7 @@ public class Game extends ApplicationAdapter {
 		switch(p.getID())
 		{
 			case PacketIDs.PACKET_LOGIN_SUCCESS:
-				loggedUser = new LoggedUser(UUID.fromString(p.getArgs().get(0)), p.getArgs().get(1), Integer.valueOf(p.getArgs().get(2)));
+				loggedUser = new LoggedUser(UUID.fromString(p.getArgs().get(0)), p.getArgs().get(1), Integer.valueOf(p.getArgs().get(2)), Integer.valueOf(p.getArgs().get(3)), Integer.valueOf(p.getArgs().get(4)), Float.valueOf(p.getArgs().get(5)), Float.valueOf(p.getArgs().get(6)));
 				break;
 				
 			case PacketIDs.PACKET_LOGIN_FAILED:
@@ -126,6 +129,13 @@ public class Game extends ApplicationAdapter {
 				
 				if(ags instanceof LoginState)
 					((LoginState) ags).setErrorLabelText("Nickname or password invalid.");
+				break;
+				
+			case PacketIDs.PACKET_USER_ENTERED_PLAYER_AREA:
+				AbstractGameState asd = gameState.getCurrentState();
+				
+				if(asd instanceof PlayState)
+					((LoginState) asd).setErrorLabelText("Nickname or password invalid.");
 				break;
 		}
 	}

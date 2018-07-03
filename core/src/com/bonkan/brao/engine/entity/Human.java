@@ -13,24 +13,25 @@ import com.bonkan.brao.engine.entity.animation.HeadAnimator;
 import com.bonkan.brao.engine.utils.AtlasManager;
 import com.bonkan.brao.engine.utils.Constants;
 
-public class Human extends Entity {
+public abstract class Human extends Entity {
 	
 	public enum playerState {
 		NONE,
-		MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN
+		MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN,
+		MOVE_LEFT_DOWN, MOVE_LEFT_UP, MOVE_RIGHT_DOWN, MOVE_RIGHT_UP
 	}
 	
-	private UUID id;
-	private playerState state;
-	private String userName;
-	private BitmapFont defaultFont;
+	protected UUID id;
+	protected playerState state;
+	protected String userName;
+	protected BitmapFont defaultFont;
 	
 	// Texturas del player
-	private BodyAnimator bodyAnimator;
-	private HeadAnimator headAnimator;
+	protected BodyAnimator bodyAnimator;
+	protected HeadAnimator headAnimator;
 	
-	private int bodyIndex;
-	private int headIndex;
+	protected int bodyIndex;
+	protected int headIndex;
 
 	public Human(int bodyIndex, int headIndex, UUID id, String userName, final World world) {
 		super(AtlasManager.getBody(bodyIndex));
@@ -49,17 +50,12 @@ public class Human extends Entity {
 	}
 
 	@Override
-	public void update(float delta) {
-		
-	}
-
-	@Override
 	public void render(SpriteBatch batch) {
 		bodyAnimator.render(batch, body.getPosition().x - Constants.BODY_WIDTH / 2, body.getPosition().y - Constants.BODY_HEIGHT / 2, state);
 		headAnimator.render(batch, body.getPosition().x - 8, body.getPosition().y + Constants.BODY_HEIGHT / 2 - 3, state);
 		defaultFont.draw(batch, userName, body.getPosition().x - (userName.length() / 2 * 14) / 2, body.getPosition().y - Constants.BODY_HEIGHT / 2);
 	}
-
+	
 	@Override
 	public void dispose() {
 		

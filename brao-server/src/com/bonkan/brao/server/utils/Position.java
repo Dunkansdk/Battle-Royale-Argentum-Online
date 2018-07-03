@@ -5,20 +5,26 @@ package com.bonkan.brao.server.utils;
  */
 public class Position {
 
-	private int x, y;
+	private float x, y;
 	
-	public Position(int x, int y)
+	public Position(float x, float y)
 	{
 		this.x = x;
 		this.y = y;
 	}
 	
-	public int getX()
+	public void set(float x, float y)
+	{
+		this.x = x;
+		this.y = y;
+	}
+	
+	public float getX()
 	{
 		return x;
 	}
 	
-	public int getY()
+	public float getY()
 	{
 		return y;
 	}

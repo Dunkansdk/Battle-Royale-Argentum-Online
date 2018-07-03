@@ -82,14 +82,14 @@ public class BodyAnimator {
 		TextureRegion currentFrame = null;
 				
 		// Get current frame of animation for the current stateTime
-		if(state == playerState.MOVE_UP) currentFrame = upAnimation.getKeyFrame(stateTime, true);
-		if(state == playerState.MOVE_DOWN) currentFrame = downAnimation.getKeyFrame(stateTime, true);
+		if(state == playerState.MOVE_UP || state == playerState.MOVE_LEFT_UP || state == playerState.MOVE_RIGHT_UP) currentFrame = upAnimation.getKeyFrame(stateTime, true);
+		if(state == playerState.MOVE_DOWN || state == playerState.MOVE_LEFT_DOWN || state == playerState.MOVE_RIGHT_DOWN) currentFrame = downAnimation.getKeyFrame(stateTime, true);
 		if(state == playerState.MOVE_RIGHT) currentFrame = rightAnimation.getKeyFrame(stateTime, true);
 		if(state == playerState.MOVE_LEFT) currentFrame = leftAnimation.getKeyFrame(stateTime, true);
 		
 		if(state == playerState.NONE) {
-			if(lastState == playerState.MOVE_UP) currentFrame = upAnimation.getKeyFrame(0, false);
-			if(lastState == playerState.MOVE_DOWN) currentFrame = downAnimation.getKeyFrame(0, false);
+			if(lastState == playerState.MOVE_UP || lastState == playerState.MOVE_LEFT_UP || lastState == playerState.MOVE_RIGHT_UP) currentFrame = upAnimation.getKeyFrame(0, false);
+			if(lastState == playerState.MOVE_DOWN || lastState == playerState.MOVE_LEFT_DOWN || lastState == playerState.MOVE_RIGHT_DOWN) currentFrame = downAnimation.getKeyFrame(0, false);
 			if(lastState == playerState.MOVE_RIGHT) currentFrame = rightAnimation.getKeyFrame(0, false);
 			if(lastState == playerState.MOVE_LEFT) currentFrame = leftAnimation.getKeyFrame(0, false);
 			if(lastState == playerState.NONE) currentFrame = downAnimation.getKeyFrame(0, false); // StateRecienArranco

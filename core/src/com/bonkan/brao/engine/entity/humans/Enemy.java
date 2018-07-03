@@ -14,4 +14,17 @@ public class Enemy extends Human {
 		this.body = BodyFactory.createPlayerBox(world, x, y, Constants.BODY_WIDTH, Constants.BODY_HEIGHT, this);
 	}
 	
+	@Override
+	public void update(float delta)
+	{
+		if(state == playerState.MOVE_DOWN)
+			body.setLinearVelocity(0, -256);
+		if(state == playerState.MOVE_LEFT)
+			body.setLinearVelocity(256, 0);
+		if(state == playerState.MOVE_RIGHT)
+			body.setLinearVelocity(-256, 0);
+		if(state == playerState.MOVE_UP)
+			body.setLinearVelocity(0, 256);
+	}
+	
 }

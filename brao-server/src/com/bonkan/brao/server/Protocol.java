@@ -11,6 +11,8 @@ import com.bonkan.brao.server.packets.Packet;
 import com.bonkan.brao.server.packets.PacketIDs;
 import com.bonkan.brao.server.ui.ServerInterface;
 import com.bonkan.brao.server.users.LobbyUser;
+import com.bonkan.brao.server.users.MatchUser;
+import com.bonkan.brao.server.utils.Position;
 import com.esotericsoftware.kryonet.Connection;
 
 /**
@@ -20,9 +22,14 @@ public class Protocol {
 
 	public static ConcurrentHashMap<UUID, LobbyUser> userList; // en el lobby
 
+	// TODO: HARDCODED !!!!
+    // CREAMOS UN MATCH AL TUN TUN Y METEMOS LOS USERS QUE SE LOGUEAN
+	private static Match currentMatch; // además, cuando haya queues, el match se crea una vez que se llena la queue
+	
 	public static void init()
 	{
 		userList = new ConcurrentHashMap<UUID, LobbyUser>();
+		currentMatch = new Match(UUID.randomUUID());
 	}
 	
 	/**
@@ -52,9 +59,24 @@ public class Protocol {
 						args.add(u.getNickName());
 						args.add(String.valueOf(u.getDefaultBody()));
 						
+						// TODO: HARDCODED !! cuando se loguea un user, no se crea el MatchUser,
+						// solamente el LobbyUser, pero hacemos esto para testear
+						MatchUser mu = new MatchUser(p.getArgs().get(0), u.getID(), rs.getInt("default_body"), 250, 2000, new Position(150, 120), currentMatch.getID());
+						currentMatch.addUser(mu);
+						
+						// TODO: esto lo metemos aca para testear tambien, el paquete PACKET_LOGIN_SUCCESS, no deberia mandar la hp, mana y posicion (no esta jugando todavia)
+						args.add(String.valueOf(mu.getHP()));
+						args.add(String.valueOf(mu.getMana()));
+						args.add(String.valueOf(mu.getPos().getX()));
+						args.add(String.valueOf(mu.getPos().getY()));
+
 						conn.sendTCP(new Packet(PacketIDs.PACKET_LOGIN_SUCCESS, null, args));
 
+						// TODO: tambien hay que sacar esto
+						currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_ENTERED_PLAYER_AREA, null, null), u.getID());
+						
 						ServerInterface.addMessage("LOGUEADO CON ID: " + u.getID());
+						
 					} else {
 						conn.sendTCP(new Packet(PacketIDs.PACKET_LOGIN_FAILED, "", null));
 					}
@@ -62,6 +84,15 @@ public class Protocol {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				break;
+				
+			case PacketIDs.PACKET_PLAYER_MOVED:
+				// buscamos al user en el Match y le cambiamos la posicion
+				UUID id = UUID.fromString((String) p.getData());
+				MatchUser mu = currentMatch.getUserByID(id);
+				
+				if(mu != null)
+					mu.setPosition(Float.valueOf(p.getArgs().get(0)), Float.valueOf(p.getArgs().get(1)));
 				break;
 		}
 	}

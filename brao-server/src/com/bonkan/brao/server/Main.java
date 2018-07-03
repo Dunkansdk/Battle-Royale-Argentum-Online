@@ -3,11 +3,11 @@ package com.bonkan.brao.server;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import com.bonkan.brao.server.mysql.MySQLHandler;
 import com.bonkan.brao.server.packets.Packet;
 import com.bonkan.brao.server.ui.ServerInterface;
-import com.bonkan.brao.server.users.LobbyUser;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -23,7 +23,7 @@ public class Main {
 		// inicializamos la interfaz
 	    ServerInterface.init();
 
-	    // inicialiazamos el protocolo (clase auxiliar que maneja la entrada y salida de paquetes)
+	    // inicializamos el protocolo (clase auxiliar que maneja la entrada y salida de paquetes)
 	    Protocol.init();
 	    
 	    // conectamos a la BD
@@ -47,7 +47,7 @@ public class Main {
 	    kryo.register(Packet.class);
 	    kryo.register(ArrayList.class);
 	    kryo.register(String.class);
-	    kryo.register(LobbyUser.class);
+	    kryo.register(UUID.class);
 	    
 	    try {
 			server.bind(7666, 54777);
