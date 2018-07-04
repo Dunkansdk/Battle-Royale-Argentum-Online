@@ -6,8 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.World;
 import com.bonkan.brao.engine.entity.animation.BodyAnimator;
 import com.bonkan.brao.engine.entity.animation.HeadAnimator;
 import com.bonkan.brao.engine.utils.AtlasManager;
@@ -33,8 +31,8 @@ public abstract class Human extends Entity {
 	protected int bodyIndex;
 	protected int headIndex;
 
-	public Human(int bodyIndex, int headIndex, UUID id, String userName, final World world) {
-		super(AtlasManager.getBody(bodyIndex));
+	public Human(int bodyIndex, int headIndex, UUID id, String userName, float x, float y) {
+		super(AtlasManager.getBody(bodyIndex), x, y);
 		this.bodyIndex = bodyIndex;
 		this.headIndex = headIndex;
 		this.userName = userName;
@@ -51,19 +49,14 @@ public abstract class Human extends Entity {
 
 	@Override
 	public void render(SpriteBatch batch) {
-		bodyAnimator.render(batch, body.getPosition().x - Constants.BODY_WIDTH / 2, body.getPosition().y - Constants.BODY_HEIGHT / 2, state);
-		headAnimator.render(batch, body.getPosition().x - 8, body.getPosition().y + Constants.BODY_HEIGHT / 2 - 3, state);
-		defaultFont.draw(batch, userName, body.getPosition().x - (userName.length() / 2 * 14) / 2, body.getPosition().y - Constants.BODY_HEIGHT / 2);
+		bodyAnimator.render(batch, pos.x - Constants.BODY_WIDTH / 2, pos.y - Constants.BODY_HEIGHT / 2, state);
+		headAnimator.render(batch, pos.x - 8, pos.y + Constants.BODY_HEIGHT / 2 - 3, state);
+		defaultFont.draw(batch, userName, pos.x - (userName.length() / 2 * 14) / 2, pos.y - Constants.BODY_HEIGHT / 2);
 	}
 	
 	@Override
 	public void dispose() {
 		
-	}
-	
-	public Body getBody() 
-	{
-		return body;
 	}
 
 	public UUID getID() 

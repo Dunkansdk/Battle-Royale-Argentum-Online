@@ -2,7 +2,7 @@ package com.bonkan.brao.engine.entity;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * <p>Sistema básico de entidades.</p>
@@ -10,11 +10,12 @@ import com.badlogic.gdx.physics.box2d.Body;
 public abstract class Entity {
 
 	protected TextureRegion texture;
-	protected Body body;
+	protected Vector2 pos;
 	
-	public Entity(TextureRegion texture) 
+	public Entity(TextureRegion texture, float x, float y) 
 	{
 		this.texture = texture;
+		this.pos = new Vector2(x, y);
 	}
 	
 	public abstract void update(float delta);
@@ -23,6 +24,10 @@ public abstract class Entity {
 
 	public TextureRegion getTexture() {
 		return texture;
+	}
+	
+	public Vector2 getPos() {
+		return pos;
 	}
 
 }

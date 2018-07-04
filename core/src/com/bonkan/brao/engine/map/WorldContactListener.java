@@ -26,6 +26,7 @@ public class WorldContactListener implements ContactListener {
         	if(fa.getUserData() instanceof Sensor) {
         		Sensor s = (Sensor) fa.getUserData();
         		s.setColliding(true);
+        		System.out.println("TOY COLLIDING");
         		
         		if(fb.getUserData() instanceof Enemy)
         			s.setCollidingWithEnemy(true);
@@ -33,6 +34,7 @@ public class WorldContactListener implements ContactListener {
         	if(fb.getUserData() instanceof Sensor) {
         		Sensor s = (Sensor) fb.getUserData();
         		s.setColliding(true);
+        		System.out.println("TOY COLLIDING");
         		
         		if(fa.getUserData() instanceof Enemy)
         			s.setCollidingWithEnemy(true);

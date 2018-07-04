@@ -10,7 +10,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.bonkan.brao.engine.entity.Human.playerState;
 import com.bonkan.brao.engine.utils.AtlasManager;
 import com.bonkan.brao.networking.LoggedUser;
 import com.bonkan.brao.networking.Packet;
@@ -18,7 +17,6 @@ import com.bonkan.brao.networking.PacketIDs;
 import com.bonkan.brao.state.AbstractGameState;
 import com.bonkan.brao.state.GameStateManager;
 import com.bonkan.brao.state.app.LoginState;
-import com.bonkan.brao.state.app.PlayState;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -130,65 +128,6 @@ public class Game extends ApplicationAdapter {
 			case PacketIDs.PACKET_LOGIN_FAILED:
 				if(ags instanceof LoginState)
 					((LoginState) ags).setErrorLabelText("Nickname or password invalid.");
-				break;
-				
-			case PacketIDs.PACKET_USER_ENTERED_PLAYER_AREA:
-
-				if(ags instanceof PlayState)
-				{
-					final float x = Float.valueOf(p.getArgs().get(0));
-					final float y = Float.valueOf(p.getArgs().get(1));
-					final int bodyIndex = Integer.parseInt(p.getArgs().get(2));
-					final int headIndex = Integer.parseInt(p.getArgs().get(3));
-					final UUID id = UUID.fromString(p.getArgs().get(4));
-					final String nick = p.getArgs().get(5);
-					
-					System.out.println("LA CONCHA DE TU MADRE ALL BOYS");
-					
-					Gdx.app.postRunnable(new Runnable(){
-				        public void run(){
-				            ((PlayState) ags).addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
-				        }
-				    });
-				}
-
-				break;
-				
-			case PacketIDs.PACKET_USER_CHANGED_STATE:
-				
-				if(ags instanceof PlayState)
-				{
-					final UUID id = UUID.fromString(((String)p.getData()));
-					final playerState state = playerState.valueOf(p.getArgs().get(0));
-					
-					Gdx.app.postRunnable(new Runnable(){
-				        public void run(){
-				            ((PlayState) ags).setEnemyState(id, state);
-				        }
-				    });
-				}
-				
-				break;
-				
-			case PacketIDs.PACKET_USER_IN_AREA_MOVED:
-				
-				if(ags instanceof PlayState)
-				{
-					final float x = Float.valueOf(p.getArgs().get(0));
-					final float y = Float.valueOf(p.getArgs().get(1));
-					final int bodyIndex = Integer.parseInt(p.getArgs().get(2));
-					final int headIndex = Integer.parseInt(p.getArgs().get(3));
-					final UUID id = UUID.fromString(p.getArgs().get(4));
-					final String nick = p.getArgs().get(5);
-					
-					Gdx.app.postRunnable(new Runnable(){
-				        public void run(){
-				            if(!((PlayState) ags).getEnemyInArea(id))
-				            	((PlayState) ags).addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
-				        }
-				    });
-				}
-				
 				break;
 		}
 	}

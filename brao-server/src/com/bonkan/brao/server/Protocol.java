@@ -71,18 +71,6 @@ public class Protocol {
 						args.add(String.valueOf(mu.getPos().getY()));
 
 						conn.sendTCP(new Packet(PacketIDs.PACKET_LOGIN_SUCCESS, null, args));
-
-						// TODO: tambien hay que sacar esto
-						args.clear();
-						args.add(String.valueOf(mu.getPos().getX()));
-						args.add(String.valueOf(mu.getPos().getY()));
-						args.add(String.valueOf(mu.getDefaultBody()));
-						args.add("1");
-						args.add(String.valueOf(mu.getID()));
-						args.add(mu.getNickName());
-						
-						// mostramos a todos los users el user q logeo
-						currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_ENTERED_PLAYER_AREA, null, args), u.getID());
 						
 						ServerInterface.addMessage("LOGUEADO CON ID: " + u.getID());
 						
@@ -93,34 +81,6 @@ public class Protocol {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				break;
-				
-			case PacketIDs.PACKET_PLAYER_MOVED:
-				// buscamos al user en el Match y le cambiamos la posicion
-				UUID id = UUID.fromString((String) p.getData());
-				MatchUser mu = currentMatch.getUserByID(id);
-				
-				if(mu != null)
-					mu.setPosition(Float.valueOf(p.getArgs().get(0)), Float.valueOf(p.getArgs().get(1)));
-				
-				ArrayList<String> args = new ArrayList<String>();
-				args.add(String.valueOf(mu.getPos().getX()));
-				args.add(String.valueOf(mu.getPos().getY()));
-				args.add(String.valueOf(mu.getDefaultBody()));
-				args.add("1");
-				args.add(String.valueOf(mu.getID()));
-				args.add(mu.getNickName());
-				
-				currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_IN_AREA_MOVED, mu.getID().toString(), args), id);
-				break;
-				
-			case PacketIDs.PACKET_PLAYER_CHANGED_STATE:
-
-				MatchUser mu2 = currentMatch.getUserByID(UUID.fromString((String) p.getData()));
-				mu2.setState(p.getArgs().get(0));
-				
-				// avisamos al resto de los players en el area que se cambio el state
-				currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_CHANGED_STATE, mu2.getID().toString(), p.getArgs()), mu2.getID());
 				break;
 		}
 	}

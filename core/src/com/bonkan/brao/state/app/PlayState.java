@@ -1,6 +1,5 @@
 package com.bonkan.brao.state.app;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -18,8 +17,6 @@ import com.bonkan.brao.engine.entity.humans.Player;
 import com.bonkan.brao.engine.map.MapManager;
 import com.bonkan.brao.engine.map.WorldManager;
 import com.bonkan.brao.networking.LoggedUser;
-import com.bonkan.brao.networking.Packet;
-import com.bonkan.brao.networking.PacketIDs;
 import com.bonkan.brao.state.AbstractGameState;
 import com.bonkan.brao.state.GameStateManager;
 
@@ -34,10 +31,6 @@ public class PlayState extends AbstractGameState {
     private Box2DDebugRenderer b2dr;
     private MapManager map;
     
-    private float lastPositionUpdate; // para no spammear el server, actualizamos la posicion del player cada X milisegundos
-    private static final float POS_UPDATE_TIME = 0.5f;
-    private playerState lastState; // para actualizar el state en el server
-    
     public PlayState(GameStateManager gameState) {
         super(gameState);
         world = new WorldManager();
@@ -48,20 +41,17 @@ public class PlayState extends AbstractGameState {
         
         player = new Player(aux.getX(), aux.getY(), aux.getLoggedDefaultBody(), 1, aux.getHP(), aux.getMana(), aux.getLoggedID(), aux.getLoggedUserName(), world.getWorld());
         enemiesInViewport = new HashMap<UUID, Enemy>();
-    
-        lastPositionUpdate = 0;
-        lastState = playerState.NONE;
     }
 
     @Override
     public void update(float delta)
     {
     	//TODO: ESTO HAY QUE VOLARLO!
-    	lerpToTarget(camera, player.getBody().getPosition());
+    	lerpToTarget(camera, player.getPos());
     	inputUpdate(delta);
     	//TODO: ESTO HAY QUE VOLARLO!
     	world.step();
-    	player.update(delta);
+    	//player.update(delta);
     	
     	for (Map.Entry<UUID, Enemy> entry : enemiesInViewport.entrySet())
     		entry.getValue().update(delta);
@@ -69,7 +59,7 @@ public class PlayState extends AbstractGameState {
     	map.getTiled().setView(camera);
     	map.getRayHandler().setCombinedMatrix(camera);
     	
-    	lastPositionUpdate += delta;
+    	//lastPositionUpdate += delta;
     }
     
     /**
@@ -80,7 +70,7 @@ public class PlayState extends AbstractGameState {
      */
     private void inputUpdate(float delta) {
         
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
+        /*if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
         {
         	if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
         		player.setState(playerState.MOVE_LEFT_DOWN);
@@ -118,35 +108,23 @@ public class PlayState extends AbstractGameState {
         		player.setState(playerState.MOVE_LEFT_UP);
         	else
         		player.setState(playerState.MOVE_UP);
-        }
-        
+        }*/
+    	
+    	if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && !player.getSensor(2).isColliding())
+    		player.setPos(player.getPos().x, player.getPos().y - 1);
+    	if(Gdx.input.isKeyPressed(Input.Keys.UP) && !player.getSensor(3).isColliding())
+    		player.setPos(player.getPos().x, player.getPos().y + 1);
+    	if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !player.getSensor(1).isColliding())
+    		player.setPos(player.getPos().x + 1, player.getPos().y);
+    	if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && !player.getSensor(0).isColliding())
+    		player.setPos(player.getPos().x - 1, player.getPos().y);
+    	
         if(	!Gdx.input.isKeyPressed(Input.Keys.DOWN) 	&& 
         	!Gdx.input.isKeyPressed(Input.Keys.UP) 		&& 
         	!Gdx.input.isKeyPressed(Input.Keys.LEFT) 	&& 
         	!Gdx.input.isKeyPressed(Input.Keys.RIGHT)) 
         {
         	player.setState(playerState.NONE);
-        }
-        
-        if(!lastState.equals(player.getState()))
-        {
-        	lastState = player.getState();
-        	ArrayList<String> args = new ArrayList<String>();
-        	args.add(String.valueOf(player.getState()));
-        	app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_CHANGED_STATE, player.getID().toString(), args));
-        }
-
-        if(!player.getLastPos().equals(player.getBody().getPosition()) && lastPositionUpdate >= POS_UPDATE_TIME)
-        {
-        	// si se movio, actualizamos la pos en el server
-        	player.setLastPos(player.getBody().getPosition().x, player.getBody().getPosition().y);
-        	
-        	ArrayList<String> args = new ArrayList<String>();
-        	args.add(String.valueOf(player.getLastPos().x));
-        	args.add(String.valueOf(player.getLastPos().y));
-        	
-        	app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_MOVED, player.getID().toString(), args));
-        	lastPositionUpdate = 0;
         }
     }
     
@@ -166,7 +144,7 @@ public class PlayState extends AbstractGameState {
     
     public void addEnemyToArea(int bodyIndex, int headIndex, float x, float y, UUID id, String nick)
     {
-    	enemiesInViewport.put(id, new Enemy(x, y, bodyIndex, headIndex, id, nick, world.getWorld()));
+    	enemiesInViewport.put(id, new Enemy(x, y, bodyIndex, headIndex, id, nick));
     }
     
     public void setEnemyState(UUID enemyID, playerState newState)
