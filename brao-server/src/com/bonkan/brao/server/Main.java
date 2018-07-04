@@ -50,7 +50,7 @@ public class Main {
 	    kryo.register(UUID.class);
 	    
 	    try {
-			server.bind(7666, 54777);
+			server.bind(7666, 7667);
 
 		    server.addListener(new Listener() {
 		        public void received (Connection connection, Object object) {

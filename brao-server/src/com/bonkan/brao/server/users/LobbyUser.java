@@ -15,11 +15,12 @@ public class LobbyUser {
 	private Connection socket;
 	private int defaultBody;
 
-	public LobbyUser(String nickName, UUID id, int defaultBody)
+	public LobbyUser(String nickName, UUID id, int defaultBody, Connection socket)
 	{
 		this.nickName = nickName;
 		this.id = id;
 		this.defaultBody = defaultBody;
+		this.socket = socket;
 	}
 	
 	public void sendData(Packet p)

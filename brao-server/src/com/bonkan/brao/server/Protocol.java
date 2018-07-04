@@ -50,7 +50,7 @@ public class Protocol {
 					if(rs.next())
 					{
 						// si logea exitosamente, creamos un user y lo metemos al mapa
-						LobbyUser u = new LobbyUser(p.getArgs().get(0), UUID.randomUUID(), rs.getInt("default_body"));
+						LobbyUser u = new LobbyUser(p.getArgs().get(0), UUID.randomUUID(), rs.getInt("default_body"), conn);
 						userList.put(u.getID(), u);
 						
 						ArrayList<String> args = new ArrayList<String>();
@@ -61,7 +61,7 @@ public class Protocol {
 						
 						// TODO: HARDCODED !! cuando se loguea un user, no se crea el MatchUser,
 						// solamente el LobbyUser, pero hacemos esto para testear
-						MatchUser mu = new MatchUser(p.getArgs().get(0), u.getID(), rs.getInt("default_body"), 250, 2000, new Position(150, 120), currentMatch.getID());
+						MatchUser mu = new MatchUser(p.getArgs().get(0), u.getID(), rs.getInt("default_body"), conn, 250, 2000, new Position(150, 120), currentMatch.getID());
 						currentMatch.addUser(mu);
 						
 						// TODO: esto lo metemos aca para testear tambien, el paquete PACKET_LOGIN_SUCCESS, no deberia mandar la hp, mana y posicion (no esta jugando todavia)
@@ -73,7 +73,16 @@ public class Protocol {
 						conn.sendTCP(new Packet(PacketIDs.PACKET_LOGIN_SUCCESS, null, args));
 
 						// TODO: tambien hay que sacar esto
-						currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_ENTERED_PLAYER_AREA, null, null), u.getID());
+						args.clear();
+						args.add(String.valueOf(mu.getPos().getX()));
+						args.add(String.valueOf(mu.getPos().getY()));
+						args.add(String.valueOf(mu.getDefaultBody()));
+						args.add("1");
+						args.add(String.valueOf(mu.getID()));
+						args.add(mu.getNickName());
+						
+						// mostramos a todos los users el user q logeo
+						currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_ENTERED_PLAYER_AREA, null, args), u.getID());
 						
 						ServerInterface.addMessage("LOGUEADO CON ID: " + u.getID());
 						
@@ -93,6 +102,25 @@ public class Protocol {
 				
 				if(mu != null)
 					mu.setPosition(Float.valueOf(p.getArgs().get(0)), Float.valueOf(p.getArgs().get(1)));
+				
+				ArrayList<String> args = new ArrayList<String>();
+				args.add(String.valueOf(mu.getPos().getX()));
+				args.add(String.valueOf(mu.getPos().getY()));
+				args.add(String.valueOf(mu.getDefaultBody()));
+				args.add("1");
+				args.add(String.valueOf(mu.getID()));
+				args.add(mu.getNickName());
+				
+				currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_IN_AREA_MOVED, mu.getID().toString(), args), id);
+				break;
+				
+			case PacketIDs.PACKET_PLAYER_CHANGED_STATE:
+
+				MatchUser mu2 = currentMatch.getUserByID(UUID.fromString((String) p.getData()));
+				mu2.setState(p.getArgs().get(0));
+				
+				// avisamos al resto de los players en el area que se cambio el state
+				currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_CHANGED_STATE, mu2.getID().toString(), p.getArgs()), mu2.getID());
 				break;
 		}
 	}

@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.bonkan.brao.server.packets.Packet;
-import com.bonkan.brao.server.ui.ServerInterface;
 import com.bonkan.brao.server.users.MatchUser;
 import com.bonkan.brao.server.utils.CommonUtils;
 
@@ -57,12 +56,14 @@ public class Match {
 			{
 				MatchUser mu = entry.getValue();
 				if(CommonUtils.areInViewport(users.get(id).getPos(), mu.getPos()))
-				{
-					ServerInterface.addMessage("SE LO MANDO A: " + mu.getNickName());
 					mu.sendData(p);
-				}
 			}
 		}
+	}
+	
+	public HashMap<UUID, MatchUser> getUsers()
+	{
+		return users;
 	}
 	
 	public MatchUser getUserByID(UUID id)

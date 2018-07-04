@@ -17,14 +17,24 @@ public class Enemy extends Human {
 	@Override
 	public void update(float delta)
 	{
+		if(state == playerState.MOVE_LEFT_DOWN)
+			body.setLinearVelocity(-256, -256);
+		if(state == playerState.MOVE_LEFT_UP)
+			body.setLinearVelocity(-256, 256);
+		if(state == playerState.MOVE_RIGHT_DOWN)
+			body.setLinearVelocity(256, -256);
+		if(state == playerState.MOVE_RIGHT_UP)
+			body.setLinearVelocity(256, 256);
 		if(state == playerState.MOVE_DOWN)
 			body.setLinearVelocity(0, -256);
 		if(state == playerState.MOVE_LEFT)
-			body.setLinearVelocity(256, 0);
-		if(state == playerState.MOVE_RIGHT)
 			body.setLinearVelocity(-256, 0);
+		if(state == playerState.MOVE_RIGHT)
+			body.setLinearVelocity(256, 0);
 		if(state == playerState.MOVE_UP)
 			body.setLinearVelocity(0, 256);
+		if(state == playerState.NONE)
+			body.setLinearVelocity(0, 0);
 	}
 	
 }
