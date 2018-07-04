@@ -6,8 +6,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 import com.bonkan.brao.engine.entity.animation.BodyAnimator;
 import com.bonkan.brao.engine.entity.animation.HeadAnimator;
+import com.bonkan.brao.engine.map.factory.BodyFactory;
 import com.bonkan.brao.engine.utils.AtlasManager;
 import com.bonkan.brao.engine.utils.Constants;
 
@@ -23,15 +26,17 @@ public abstract class Human extends Entity {
 	protected playerState state;
 	protected String userName;
 	protected BitmapFont defaultFont;
-	
+		
 	// Texturas del player
 	protected BodyAnimator bodyAnimator;
 	protected HeadAnimator headAnimator;
 	
 	protected int bodyIndex;
 	protected int headIndex;
+	
+	protected Body body;
 
-	public Human(int bodyIndex, int headIndex, UUID id, String userName, float x, float y) {
+	public Human(float x, float y, int bodyIndex, int headIndex, UUID id, String userName, World world) {
 		super(AtlasManager.getBody(bodyIndex), x, y);
 		this.bodyIndex = bodyIndex;
 		this.headIndex = headIndex;
@@ -40,6 +45,7 @@ public abstract class Human extends Entity {
 		this.state = playerState.NONE;
 		this.headAnimator = new HeadAnimator(AtlasManager.getHeads(headIndex));
 		this.bodyAnimator = new BodyAnimator(texture);
+		this.body = BodyFactory.createPlayerBox(world, x, y, Constants.BODY_WIDTH, Constants.BODY_HEIGHT, this);
 		
 		FreeTypeFontGenerator freeTypeFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("segoeui.ttf"));
  		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -52,6 +58,11 @@ public abstract class Human extends Entity {
 		bodyAnimator.render(batch, pos.x - Constants.BODY_WIDTH / 2, pos.y - Constants.BODY_HEIGHT / 2, state);
 		headAnimator.render(batch, pos.x - 8, pos.y + Constants.BODY_HEIGHT / 2 - 3, state);
 		defaultFont.draw(batch, userName, pos.x - (userName.length() / 2 * 14) / 2, pos.y - Constants.BODY_HEIGHT / 2);
+	}
+	
+	@Override
+	public void update(float delta) {
+		body.setTransform(super.pos, 0.0f);
 	}
 	
 	@Override

@@ -51,7 +51,7 @@ public class PlayState extends AbstractGameState {
     	inputUpdate(delta);
     	//TODO: ESTO HAY QUE VOLARLO!
     	world.step();
-    	//player.update(delta);
+    	player.update(delta);
     	
     	for (Map.Entry<UUID, Enemy> entry : enemiesInViewport.entrySet())
     		entry.getValue().update(delta);
@@ -110,13 +110,13 @@ public class PlayState extends AbstractGameState {
         		player.setState(playerState.MOVE_UP);
         }*/
     	
-    	if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && !player.getSensor(2).isColliding())
+    	if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
     		player.setPos(player.getPos().x, player.getPos().y - 1);
-    	if(Gdx.input.isKeyPressed(Input.Keys.UP) && !player.getSensor(3).isColliding())
+    	if(Gdx.input.isKeyPressed(Input.Keys.UP))
     		player.setPos(player.getPos().x, player.getPos().y + 1);
-    	if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !player.getSensor(1).isColliding())
+    	if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
     		player.setPos(player.getPos().x + 1, player.getPos().y);
-    	if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && !player.getSensor(0).isColliding())
+    	if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
     		player.setPos(player.getPos().x - 1, player.getPos().y);
     	
         if(	!Gdx.input.isKeyPressed(Input.Keys.DOWN) 	&& 
@@ -144,7 +144,7 @@ public class PlayState extends AbstractGameState {
     
     public void addEnemyToArea(int bodyIndex, int headIndex, float x, float y, UUID id, String nick)
     {
-    	enemiesInViewport.put(id, new Enemy(x, y, bodyIndex, headIndex, id, nick));
+    	enemiesInViewport.put(id, new Enemy(x, y, bodyIndex, headIndex, id, nick, world.getWorld()));
     }
     
     public void setEnemyState(UUID enemyID, playerState newState)

@@ -1,13 +1,11 @@
 package com.bonkan.brao.engine.map.factory;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.bonkan.brao.engine.entity.humans.Player;
 
 /**
  * <p>Fábrica de {@link com.badlogic.gdx.physics.box2d.Body bodies} de box2d.</p>
@@ -29,7 +27,7 @@ public class BodyFactory {
     public static Body createPlayerBox(final World world, float x, float y, int width, int height, Object data) 
     {
     	Body pBody;
-        BodyDef bodyDef = new BodyDef();
+        BodyDef bodyDef = new BodyDef(); 
 
         // Siempre va a ser dinamico un player
 		bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -43,29 +41,32 @@ public class BodyFactory {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.filter.categoryBits = BIT_PLAYER;
-        fixtureDef.filter.maskBits = BIT_PLAYER | BIT_WALL | BIT_SENSOR;
-        fixtureDef.filter.groupIndex = 0;
+        fixtureDef.density = 1.0f;
+        fixtureDef.filter.categoryBits = BIT_PLAYER; // Es un...
+		fixtureDef.filter.maskBits = 0; // Collisiona contra...
+		fixtureDef.filter.groupIndex = 0;
         
+        // Asociamos la instancia que lo crea como UserData (Para acceder a los datos desde el WorldContactListener)
+        pBody.createFixture(fixtureDef).setUserData(data);
+        
+        /*
         FixtureDef SensorLeft = getSensorFixture(2, height / 2, new Vector2(-width / 2 - 1, 0));
         FixtureDef SensorRight = getSensorFixture(2, height / 2, new Vector2(width / 2 + 1, 0));
         FixtureDef SensorUp = getSensorFixture(width / 2, 2, new Vector2(0, height / 2 + 1));
         FixtureDef SensorDown = getSensorFixture(width / 2, 2, new Vector2(0, -height / 2 - 1));
-                
-        // Asociamos la instancia que lo crea como UserData (Para acceder a los datos desde el WorldContactListener)
-        pBody.createFixture(fixtureDef).setUserData(data);
         
         if(data instanceof Player) {
         	pBody.createFixture(SensorLeft).setUserData(((Player)data).getSensor(0));
             pBody.createFixture(SensorRight).setUserData(((Player)data).getSensor(1));
             pBody.createFixture(SensorUp).setUserData(((Player)data).getSensor(2));
             pBody.createFixture(SensorDown).setUserData(((Player)data).getSensor(3));
-        }
+        }*/
         
         shape.dispose();
         return pBody;
     }
     
+    /*
     private static FixtureDef getSensorFixture(float width, float height, Vector2 position) {
     	
     	PolygonShape shapeSensor = new PolygonShape();
@@ -79,7 +80,7 @@ public class BodyFactory {
         sensorDef.isSensor = true;
         
         return sensorDef;
-    }
+    }*/
     
     /**
      * <p>Crea un objeto en el mapa (Los obtiene de el editor Tiled).</p>
@@ -104,8 +105,9 @@ public class BodyFactory {
 		fixtureDef.shape = shape;
 		fixtureDef.density = 1.0f;
 		fixtureDef.filter.categoryBits = BIT_WALL; // Es un...
-		fixtureDef.filter.maskBits = BIT_PLAYER | BIT_WALL | BIT_SENSOR; // Collisiona contra...
+		fixtureDef.filter.maskBits = 0; // Collisiona contra...
 		fixtureDef.filter.groupIndex = 0;
+		fixtureDef.density = 0f;
 		
 		// Asociamos la instancia que lo crea como UserData (Para acceder a los datos desde el WorldContactListener)
 		pBody.createFixture(fixtureDef).setUserData(data);

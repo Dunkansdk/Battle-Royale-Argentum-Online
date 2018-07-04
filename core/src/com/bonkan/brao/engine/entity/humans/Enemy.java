@@ -2,18 +2,13 @@ package com.bonkan.brao.engine.entity.humans;
 
 import java.util.UUID;
 
+import com.badlogic.gdx.physics.box2d.World;
 import com.bonkan.brao.engine.entity.Human;
 
 public class Enemy extends Human {
 
-	public Enemy(float x, float y, int bodyIndex, int headIndex, UUID id, String userName) {
-		super(bodyIndex, headIndex, id, userName, x, y);
-	}
-	
-	@Override
-	public void update(float delta)
-	{
-
+	public Enemy(float x, float y, int bodyIndex, int headIndex, UUID id, String userName, World world) {
+		super(x, y, bodyIndex, headIndex, id, userName, world);
 	}
 	
 }

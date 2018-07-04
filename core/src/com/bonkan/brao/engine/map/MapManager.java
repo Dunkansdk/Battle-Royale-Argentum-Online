@@ -117,7 +117,7 @@ public class MapManager {
 		MapObjects objects = getCurrentMap().getLayers().get("lights").getObjects();
 		
 		for(MapObject object : objects) {
-			if(object.getProperties().get("angle") == null) {
+			if(!object.getProperties().containsKey("angle")) {
 				new PointLight(rays, 120, (Color)object.getProperties().get("color"), (Integer)object.getProperties().get("size"), 
 										  (Float)object.getProperties().get("x"), (Float)object.getProperties().get("y"));
 			} else {
