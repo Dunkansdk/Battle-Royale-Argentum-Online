@@ -1,6 +1,5 @@
 package com.bonkan.brao.engine.entity;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 import com.badlogic.gdx.Gdx;
@@ -17,14 +16,14 @@ import com.bonkan.brao.engine.utils.Constants;
 
 public abstract class Human extends Entity {
 	
-	public enum playerState {
+	public enum PlayerState {
 		NONE,
 		MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN,
 		MOVE_LEFT_DOWN, MOVE_LEFT_UP, MOVE_RIGHT_DOWN, MOVE_RIGHT_UP
 	}
 	
 	protected UUID id;
-	protected playerState state;
+	protected PlayerState state;
 	protected String userName;
 	protected BitmapFont defaultFont;
 		
@@ -37,13 +36,13 @@ public abstract class Human extends Entity {
 	
 	protected Body body;
 
-	public Human(float x, float y, int bodyIndex, int headIndex, UUID id, String userName, World world) {
+	public Human(int x, int y, int bodyIndex, int headIndex, UUID id, String userName, World world) {
 		super(AtlasManager.getBody(bodyIndex), x, y);
 		this.bodyIndex = bodyIndex;
 		this.headIndex = headIndex;
 		this.userName = userName;
 		this.id = id;
-		this.state = playerState.NONE;
+		this.state = PlayerState.NONE;
 		this.headAnimator = new HeadAnimator(AtlasManager.getHeads(headIndex));
 		this.bodyAnimator = new BodyAnimator(texture);
 		this.body = BodyFactory.createPlayerBox(world, x, y, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
@@ -70,18 +69,24 @@ public abstract class Human extends Entity {
 	public void dispose() {
 		
 	}
+	
+	public void setPos(int x, int y)
+	{
+		pos.x = x;
+		pos.y = y;
+	}
 
 	public UUID getID() 
 	{
 		return id; 
 	}
 	
-	public void setState(playerState state) 
+	public void setState(PlayerState state) 
 	{
 		this.state = state;
 	}
 	
-	public playerState getState() 
+	public PlayerState getState() 
 	{
 		return state;
 	}

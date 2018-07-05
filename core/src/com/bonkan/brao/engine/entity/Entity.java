@@ -12,7 +12,7 @@ public abstract class Entity {
 	protected TextureRegion texture;
 	protected Vector2 pos;
 	
-	public Entity(TextureRegion texture, float x, float y) 
+	public Entity(TextureRegion texture, int x, int y) 
 	{
 		this.texture = texture;
 		this.pos = new Vector2(x, y);

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.bonkan.brao.engine.entity.Human.playerState;
+import com.bonkan.brao.engine.entity.Human.PlayerState;
 
 /**
  * <p>Clase encargada de la animación de cuerpos. Todas las {@link com.bonkan.brao.engine.entity.Entity entidades}
@@ -23,7 +23,7 @@ public class BodyAnimator {
 	
 	// A variable for tracking elapsed time for the animation
 	private float stateTime;
-	private playerState lastState;
+	private PlayerState lastState;
 		
 	/**
 	 * <p>Crea las animaciones según la textura</p>
@@ -32,7 +32,7 @@ public class BodyAnimator {
 	public BodyAnimator(TextureRegion texture) {
 		
 		walkSheet = texture;
-		lastState = playerState.NONE;
+		lastState = PlayerState.NONE;
 
 		TextureRegion[][] tmp = walkSheet.split( 
 				walkSheet.getRegionWidth() / FRAME_COLS,
@@ -76,27 +76,27 @@ public class BodyAnimator {
 	 * @param y			&emsp;<b>float</b> posición Y destino
 	 * @param state		&emsp;<b>playerState (<i>enum</i> público de la clase {@link com.bonkan.brao.engine.entity.humans.Player Player} )</b> el estado de la entidad
 	 */
-	public void render(SpriteBatch batch, float x, float y, playerState state) {
+	public void render(SpriteBatch batch, float x, float y, PlayerState state) {
 		stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
 		
 		TextureRegion currentFrame = null;
 				
 		// Get current frame of animation for the current stateTime
-		if(state == playerState.MOVE_UP || state == playerState.MOVE_LEFT_UP || state == playerState.MOVE_RIGHT_UP) currentFrame = upAnimation.getKeyFrame(stateTime, true);
-		if(state == playerState.MOVE_DOWN || state == playerState.MOVE_LEFT_DOWN || state == playerState.MOVE_RIGHT_DOWN) currentFrame = downAnimation.getKeyFrame(stateTime, true);
-		if(state == playerState.MOVE_RIGHT) currentFrame = rightAnimation.getKeyFrame(stateTime, true);
-		if(state == playerState.MOVE_LEFT) currentFrame = leftAnimation.getKeyFrame(stateTime, true);
+		if(state == PlayerState.MOVE_UP || state == PlayerState.MOVE_LEFT_UP || state == PlayerState.MOVE_RIGHT_UP) currentFrame = upAnimation.getKeyFrame(stateTime, true);
+		if(state == PlayerState.MOVE_DOWN || state == PlayerState.MOVE_LEFT_DOWN || state == PlayerState.MOVE_RIGHT_DOWN) currentFrame = downAnimation.getKeyFrame(stateTime, true);
+		if(state == PlayerState.MOVE_RIGHT) currentFrame = rightAnimation.getKeyFrame(stateTime, true);
+		if(state == PlayerState.MOVE_LEFT) currentFrame = leftAnimation.getKeyFrame(stateTime, true);
 		
-		if(state == playerState.NONE) {
-			if(lastState == playerState.MOVE_UP || lastState == playerState.MOVE_LEFT_UP || lastState == playerState.MOVE_RIGHT_UP) currentFrame = upAnimation.getKeyFrame(0, false);
-			if(lastState == playerState.MOVE_DOWN || lastState == playerState.MOVE_LEFT_DOWN || lastState == playerState.MOVE_RIGHT_DOWN) currentFrame = downAnimation.getKeyFrame(0, false);
-			if(lastState == playerState.MOVE_RIGHT) currentFrame = rightAnimation.getKeyFrame(0, false);
-			if(lastState == playerState.MOVE_LEFT) currentFrame = leftAnimation.getKeyFrame(0, false);
-			if(lastState == playerState.NONE) currentFrame = downAnimation.getKeyFrame(0, false); // StateRecienArranco
+		if(state == PlayerState.NONE) {
+			if(lastState == PlayerState.MOVE_UP || lastState == PlayerState.MOVE_LEFT_UP || lastState == PlayerState.MOVE_RIGHT_UP) currentFrame = upAnimation.getKeyFrame(0, false);
+			if(lastState == PlayerState.MOVE_DOWN || lastState == PlayerState.MOVE_LEFT_DOWN || lastState == PlayerState.MOVE_RIGHT_DOWN) currentFrame = downAnimation.getKeyFrame(0, false);
+			if(lastState == PlayerState.MOVE_RIGHT) currentFrame = rightAnimation.getKeyFrame(0, false);
+			if(lastState == PlayerState.MOVE_LEFT) currentFrame = leftAnimation.getKeyFrame(0, false);
+			if(lastState == PlayerState.NONE) currentFrame = downAnimation.getKeyFrame(0, false); // StateRecienArranco
 		}
 		
 		if(!lastState.equals(state)) {
-			if(state != playerState.NONE) lastState = state;
+			if(state != PlayerState.NONE) lastState = state;
 			stateTime = 0.0f;
 		}	
 

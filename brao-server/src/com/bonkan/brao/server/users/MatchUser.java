@@ -25,7 +25,7 @@ public class MatchUser extends LobbyUser {
 		this.state = PlayerState.NONE;
 	}
 
-	public void setPosition(float x, float y)
+	public void setPosition(int x, int y)
 	{
 		pos.set(x, y);
 	}

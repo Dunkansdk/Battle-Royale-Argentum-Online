@@ -10,18 +10,18 @@ import java.util.UUID;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
-import com.bonkan.brao.engine.entity.Human.playerState;
+import com.bonkan.brao.engine.entity.Human.PlayerState;
 import com.bonkan.brao.engine.entity.humans.Enemy;
 import com.bonkan.brao.engine.entity.humans.Player;
 import com.bonkan.brao.engine.map.MapManager;
 import com.bonkan.brao.engine.map.WorldManager;
 import com.bonkan.brao.engine.utils.Constants;
 import com.bonkan.brao.networking.LoggedUser;
+import com.bonkan.brao.networking.Packet;
+import com.bonkan.brao.networking.PacketIDs;
 import com.bonkan.brao.state.AbstractGameState;
 import com.bonkan.brao.state.GameStateManager;
 
@@ -31,10 +31,15 @@ import com.bonkan.brao.state.GameStateManager;
 public class PlayState extends AbstractGameState {
 	
     private Player player;
-    private HashMap<UUID, Enemy> enemiesInViewport;
+    private HashMap<UUID, Enemy> enemiesInViewport; // otros jugadores en el área de visión
     private Box2DDebugRenderer b2dr;
     private MapManager map;
     private ArrayList<Shape> mapBlocks;
+    
+    private static final int DIR_DOWN = 0;
+    private static final int DIR_UP = 1;
+    private static final int DIR_LEFT = 2;
+    private static final int DIR_RIGHT = 3;
     
     public PlayState(GameStateManager gameState) {
         super(gameState);
@@ -70,61 +75,272 @@ public class PlayState extends AbstractGameState {
     	map.getRayHandler().update();
     }
     
+    /**
+     * <p>Maneja los inputs del player.
+     * TODO: inputs customizables y cargados desde un JSON</p>
+     * @param delta		&emsp;<b>float</b> el deltaTime (Gdx)
+     */
     private void inputUpdate(float delta) {
         
     	boolean[] blockedDirs = blockedDirections();
+    	boolean changedState = false;
+    	Vector2 playerPos = new Vector2(player.getPos().x, player.getPos().y);
     	
+    	// solamente cambiamos el state cuando no hay bloqueo para no marear al server
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
         {
-        	if(!blockedDirs[3])
+        	if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
         	{
-        		player.setPos(player.getPos().x, player.getPos().y - 2);
-        		player.setState(playerState.MOVE_DOWN);
+        		if(!blockedDirs[DIR_RIGHT] && !blockedDirs[DIR_DOWN])
+        		{
+        			
+        			if(player.getState() != PlayerState.MOVE_RIGHT_DOWN)
+        				changedState = true;
+        			
+        			player.setState(PlayerState.MOVE_RIGHT_DOWN);
+        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y - 2);
+        			
+        		} else if (!blockedDirs[DIR_DOWN]) { 
+        			
+        			if(player.getState() != PlayerState.MOVE_DOWN)
+        				changedState = true;
+        			
+        			player.setState(PlayerState.MOVE_DOWN);
+        			player.setPos((int) player.getPos().x, (int) player.getPos().y - 2);
+        			
+        		} else if (!blockedDirs[DIR_RIGHT]) {
+        			
+        			if(player.getState() != PlayerState.MOVE_RIGHT)
+        				changedState = true;
+        			
+        			player.setState(PlayerState.MOVE_RIGHT);
+        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y);
+        			
+        		} else {
+        			
+        			if(player.getState() != PlayerState.NONE)
+        				changedState = true;
+        			
+        			player.setState(PlayerState.NONE);
+        			
+        		}
+        	} else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        		if(!blockedDirs[DIR_LEFT] && !blockedDirs[DIR_DOWN])
+        		{
+        			
+        			if(player.getState() != PlayerState.MOVE_LEFT_DOWN)
+        				changedState = true;
+        			
+        			player.setState(PlayerState.MOVE_LEFT_DOWN);
+        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y - 2);
+        			
+        		} else if (!blockedDirs[DIR_DOWN]) { 
+        			
+        			if(player.getState() != PlayerState.MOVE_DOWN)
+        				changedState = true;
+        			
+        			player.setState(PlayerState.MOVE_DOWN);
+        			player.setPos((int) player.getPos().x, (int) player.getPos().y - 2);
+        			
+        		} else if (!blockedDirs[DIR_LEFT]) {
+        			
+        			if(player.getState() != PlayerState.MOVE_LEFT)
+        				changedState = true;
+        			
+        			player.setState(PlayerState.MOVE_LEFT);
+        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y);
+        			
+        		} else {
+        			
+        			if(player.getState() != PlayerState.NONE)
+        				changedState = true;
+        			
+        			player.setState(PlayerState.NONE);
+        			
+        		}
+        	} else if(!blockedDirs[DIR_DOWN]) {
+
+    			if(player.getState() != PlayerState.MOVE_DOWN)
+    				changedState = true;
+    			
+    			player.setState(PlayerState.MOVE_DOWN);
+    			player.setPos((int) player.getPos().x, (int) player.getPos().y - 2);
+
+        	} else {
+        	
+        		if(player.getState() != PlayerState.NONE)
+    				changedState = true;
+    			
+    			player.setState(PlayerState.NONE);
+        		
         	}
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
+        else if(Gdx.input.isKeyPressed(Input.Keys.UP))
     	{
-        	if(!blockedDirs[0])
+        	if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
         	{
-        		player.setPos(player.getPos().x - 2, player.getPos().y);
-        		player.setState(playerState.MOVE_LEFT);
+        		if(!blockedDirs[DIR_RIGHT] && !blockedDirs[DIR_UP])
+        		{
+        			
+        			if(player.getState() != PlayerState.MOVE_RIGHT_UP)
+        				changedState = true;
+        			
+        			player.setState(PlayerState.MOVE_RIGHT_UP);
+        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y + 2);
+        			
+        		} else if (!blockedDirs[DIR_UP]) { 
+        			
+        			if(player.getState() != PlayerState.MOVE_UP)
+        				changedState = true;
+        			
+        			player.setState(PlayerState.MOVE_UP);
+        			player.setPos((int) player.getPos().x, (int) player.getPos().y + 2);
+        			
+        		} else if (!blockedDirs[DIR_RIGHT]) {
+        			
+        			if(player.getState() != PlayerState.MOVE_RIGHT)
+        				changedState = true;
+        			
+        			player.setState(PlayerState.MOVE_RIGHT);
+        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y);
+        			
+        		} else {
+        			
+        			if(player.getState() != PlayerState.NONE)
+        				changedState = true;
+        			
+        			player.setState(PlayerState.NONE);
+        			
+        		}
+        	} else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        		if(!blockedDirs[DIR_LEFT] && !blockedDirs[DIR_UP])
+        		{
+        			
+        			if(player.getState() != PlayerState.MOVE_LEFT_UP)
+        				changedState = true;
+        			
+        			player.setState(PlayerState.MOVE_LEFT_UP);
+        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y + 2);
+        			
+        		} else if (!blockedDirs[DIR_UP]) { 
+        			
+        			if(player.getState() != PlayerState.MOVE_UP)
+        				changedState = true;
+        			
+        			player.setState(PlayerState.MOVE_UP);
+        			player.setPos((int) player.getPos().x, (int) player.getPos().y + 2);
+        			
+        		} else if (!blockedDirs[DIR_LEFT]) {
+        			
+        			if(player.getState() != PlayerState.MOVE_LEFT)
+        				changedState = true;
+        			
+        			player.setState(PlayerState.MOVE_LEFT);
+        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y);
+        			
+        		} else {
+        			
+        			if(player.getState() != PlayerState.NONE)
+        				changedState = true;
+        			
+        			player.setState(PlayerState.NONE);
+        			
+        		}
+        	} else if(!blockedDirs[DIR_UP]) {
+        		
+    			if(player.getState() != PlayerState.MOVE_UP)
+    				changedState = true;
+    			
+    			player.setState(PlayerState.MOVE_UP);
+    			player.setPos((int) player.getPos().x, (int) player.getPos().y + 2);
+        			
+        	} else {
+        		
+        		if(player.getState() != PlayerState.NONE)
+    				changedState = true;
+    			
+    			player.setState(PlayerState.NONE);
+        		
+        	}	
+    	}
+        else if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
+    	{
+        	if(!blockedDirs[DIR_LEFT])
+        	{
+        		
+        		if(player.getState() != PlayerState.MOVE_LEFT)
+    				changedState = true;
+        		
+        		player.setState(PlayerState.MOVE_LEFT);
+        		player.setPos((int) player.getPos().x - 2, (int) player.getPos().y);
+        		
+        	} else {
+        		
+        		if(player.getState() != PlayerState.NONE)
+    				changedState = true;
+    			
+    			player.setState(PlayerState.NONE);
+        		
         	}
     	}
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+        else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
     	{
-        	if(!blockedDirs[1])
+        	if(!blockedDirs[DIR_RIGHT])
         	{
-        		player.setPos(player.getPos().x + 2, player.getPos().y);
-        		player.setState(playerState.MOVE_RIGHT);
+        		
+        		if(player.getState() != PlayerState.MOVE_RIGHT)
+    				changedState = true;
+        		
+        		player.setPos((int) player.getPos().x + 2, (int) player.getPos().y);
+        		player.setState(PlayerState.MOVE_RIGHT);
+        		
+        	} else {
+        		
+        		if(player.getState() != PlayerState.NONE)
+    				changedState = true;
+    			
+    			player.setState(PlayerState.NONE);
+        		
         	}
     	}
-        if(Gdx.input.isKeyPressed(Input.Keys.UP))
-    	{
-        	if(!blockedDirs[2])
-        	{
-        		player.setPos(player.getPos().x, player.getPos().y + 2);
-        		player.setState(playerState.MOVE_UP);
-        	}
-    	}
-    	
+
         if(	!Gdx.input.isKeyPressed(Input.Keys.DOWN) 	&& 
         	!Gdx.input.isKeyPressed(Input.Keys.UP) 		&& 
         	!Gdx.input.isKeyPressed(Input.Keys.LEFT) 	&& 
         	!Gdx.input.isKeyPressed(Input.Keys.RIGHT)) 
         {
-        	player.setState(playerState.NONE);
+        	if(player.getState() != PlayerState.NONE)
+				changedState = true;
+
+        	player.setState(PlayerState.NONE);
+        }
+        
+        if(changedState) {
+        	System.out.println("Nuevo STATE: " + player.getState());
+        
+        	ArrayList<String> args = new ArrayList<String>();
+        	args.add(String.valueOf(player.getState()));
+        	
+        	app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_CHANGED_STATE, player.getID().toString(), args));
+        }
+        
+        if(playerPos.x != player.getPos().x || playerPos.y != player.getPos().y)
+        {
+        	ArrayList<String> args = new ArrayList<String>();
+        	args.add(String.valueOf((int) player.getPos().x));
+        	args.add(String.valueOf((int) player.getPos().y));
+        	
+        	app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_MOVED, player.getID().toString(), args));
         }
         
     }
     
+    /**
+     * <p>Devuelve un array booleano con las direcciones bloqueadas.</p>
+     */
     private boolean[] blockedDirections()
     {
     	boolean[] ret = new boolean[8];
-    	
-    	int LEFT = 0;
-    	int RIGHT = 1;
-    	int UP = 2;
-    	int DOWN = 3;
     	
     	int realX = (int) player.getPos().x - Constants.BODY_WIDTH / 2;
     	int realY = (int) player.getPos().y - Constants.BODY_HEIGHT / 2;
@@ -137,13 +353,13 @@ public class PlayState extends AbstractGameState {
     	for(Shape s : mapBlocks)
     	{
     		if(s.intersects(playerRectLeft))
-    			ret[LEFT] = true;
+    			ret[DIR_LEFT] = true;
     		if(s.intersects(playerRectRight))
-    			ret[RIGHT] = true;
+    			ret[DIR_RIGHT] = true;
     		if(s.intersects(playerRectDown))
-    			ret[DOWN] = true;
+    			ret[DIR_DOWN] = true;
     		if(s.intersects(playerRectUp))
-    			ret[UP] = true;
+    			ret[DIR_UP] = true;
     	}
     	
     	return ret;
@@ -163,15 +379,21 @@ public class PlayState extends AbstractGameState {
         camera.update();
     }
     
-    public void addEnemyToArea(int bodyIndex, int headIndex, float x, float y, UUID id, String nick)
+    public void addEnemyToArea(int bodyIndex, int headIndex, int x, int y, UUID id, String nick)
     {
     	enemiesInViewport.put(id, new Enemy(x, y, bodyIndex, headIndex, id, nick, WorldManager.world));
     }
     
-    public void setEnemyState(UUID enemyID, playerState newState)
+    public void setEnemyState(UUID enemyID, PlayerState newState)
     {
     	if(enemiesInViewport.get(enemyID) != null)
     		enemiesInViewport.get(enemyID).setState(newState);
+    }
+    
+    public void setEnemyPos(UUID enemyID, int x, int y)
+    {
+    	if(enemiesInViewport.get(enemyID) != null)
+    		enemiesInViewport.get(enemyID).setPos(x, y);
     }
     
     public boolean getEnemyInArea(UUID enemyID)

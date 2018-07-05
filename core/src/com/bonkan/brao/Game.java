@@ -10,6 +10,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bonkan.brao.engine.entity.Human.PlayerState;
 import com.bonkan.brao.engine.utils.AtlasManager;
 import com.bonkan.brao.networking.LoggedUser;
 import com.bonkan.brao.networking.Packet;
@@ -17,6 +18,7 @@ import com.bonkan.brao.networking.PacketIDs;
 import com.bonkan.brao.state.AbstractGameState;
 import com.bonkan.brao.state.GameStateManager;
 import com.bonkan.brao.state.app.LoginState;
+import com.bonkan.brao.state.app.PlayState;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -122,12 +124,66 @@ public class Game extends ApplicationAdapter {
 		switch(p.getID())
 		{
 			case PacketIDs.PACKET_LOGIN_SUCCESS:
-				loggedUser = new LoggedUser(UUID.fromString(p.getArgs().get(0)), p.getArgs().get(1), Integer.valueOf(p.getArgs().get(2)), Integer.valueOf(p.getArgs().get(3)), Integer.valueOf(p.getArgs().get(4)), Float.valueOf(p.getArgs().get(5)), Float.valueOf(p.getArgs().get(6)));
+				loggedUser = new LoggedUser(UUID.fromString(p.getArgs().get(0)), p.getArgs().get(1), Integer.valueOf(p.getArgs().get(2)), Integer.valueOf(p.getArgs().get(3)), Integer.valueOf(p.getArgs().get(4)), Integer.valueOf(p.getArgs().get(5)), Integer.valueOf(p.getArgs().get(6)));
 				break;
 				
 			case PacketIDs.PACKET_LOGIN_FAILED:
 				if(ags instanceof LoginState)
 					((LoginState) ags).setErrorLabelText("Nickname or password invalid.");
+				break;
+				
+			case PacketIDs.PACKET_USER_CHANGED_STATE:
+				
+				if(ags instanceof PlayState)
+				{
+					
+					final UUID id = UUID.fromString((String) p.getData());
+					final int bodyIndex = Integer.parseInt(p.getArgs().get(0)); 
+					final int headIndex = Integer.parseInt(p.getArgs().get(1)); 
+					final int x = Integer.parseInt(p.getArgs().get(2)); 
+					final int y = Integer.parseInt(p.getArgs().get(3)); 
+					final String nick = p.getArgs().get(4);
+					final PlayerState state = PlayerState.valueOf(p.getArgs().get(5));
+					
+					Gdx.app.postRunnable(new Runnable(){
+				        public void run(){
+				            if(!((PlayState) ags).getEnemyInArea(id))
+				            {
+				            	((PlayState) ags).addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
+				            	((PlayState) ags).setEnemyState(id, state);
+				            } else {
+				            	((PlayState) ags).setEnemyState(id, state);
+				            }
+				        }
+				    });
+				}
+				
+				break;
+				
+			case PacketIDs.PACKET_USER_MOVED:
+				
+				if(ags instanceof PlayState)
+				{
+					
+					final UUID id = UUID.fromString((String) p.getData());
+					final int bodyIndex = Integer.parseInt(p.getArgs().get(0)); 
+					final int headIndex = Integer.parseInt(p.getArgs().get(1)); 
+					final int x = Integer.parseInt(p.getArgs().get(2)); 
+					final int y = Integer.parseInt(p.getArgs().get(3)); 
+					final String nick = p.getArgs().get(4);
+
+					Gdx.app.postRunnable(new Runnable(){
+				        public void run(){
+				            if(!((PlayState) ags).getEnemyInArea(id))
+				            {
+				            	((PlayState) ags).addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
+				            } else {
+				            	((PlayState) ags).setEnemyPos(id, x, y);
+				            }
+				        }
+				    });
+				}
+				
 				break;
 		}
 	}

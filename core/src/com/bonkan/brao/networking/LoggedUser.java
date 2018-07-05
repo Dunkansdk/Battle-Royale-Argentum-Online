@@ -15,9 +15,9 @@ public class LoggedUser {
 	
 	//TODO: ESTO DESPUES HAY QUE BORRARLO Y PASARLO A OTRA CLASE, ESTA CORRESSPONDE AL USER DEL LOBBY
 	private int hp, mana;
-	private float xPos, yPos;
+	private int xPos, yPos;
 	
-	public LoggedUser(UUID loggedID, String loggedUserName, int loggedDefaultBody, int hp, int mana, float x, float y)
+	public LoggedUser(UUID loggedID, String loggedUserName, int loggedDefaultBody, int hp, int mana, int x, int y)
 	{
 		this.loggedID = loggedID;
 		this.loggedUserName = loggedUserName;
@@ -53,12 +53,12 @@ public class LoggedUser {
 		return mana;
 	}
 
-	public float getX()
+	public int getX()
 	{
 		return xPos;
 	}
 
-	public float getY() 
+	public int getY() 
 	{
 		return yPos;
 	}

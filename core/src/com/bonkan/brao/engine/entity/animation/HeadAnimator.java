@@ -2,7 +2,7 @@ package com.bonkan.brao.engine.entity.animation;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.bonkan.brao.engine.entity.Human.playerState;
+import com.bonkan.brao.engine.entity.Human.PlayerState;
 
 public class HeadAnimator {
 	
@@ -11,7 +11,7 @@ public class HeadAnimator {
 	private TextureRegion headSheet;
 	private TextureRegion[] headFrames;
 	
-	private playerState lastState;
+	private PlayerState lastState;
 	
 	public HeadAnimator(TextureRegion texture) {
 		headSheet = texture;
@@ -23,32 +23,32 @@ public class HeadAnimator {
 			headFrames[i] = tmp[0][i];
 		}
 		
-		lastState = playerState.NONE;
+		lastState = PlayerState.NONE;
 
 	}
 	
-	public void render(SpriteBatch batch, float x, float y, playerState state) {
+	public void render(SpriteBatch batch, float x, float y, PlayerState state) {
 		
 		TextureRegion currentFrame = null;
+
+		if(state == PlayerState.MOVE_UP || state == PlayerState.MOVE_LEFT_UP || state == PlayerState.MOVE_RIGHT_UP) currentFrame = headFrames[3];
+		if(state == PlayerState.MOVE_DOWN || state == PlayerState.MOVE_LEFT_DOWN || state == PlayerState.MOVE_RIGHT_DOWN) currentFrame = headFrames[0];
+		if(state == PlayerState.MOVE_RIGHT) currentFrame = headFrames[1];
+		if(state == PlayerState.MOVE_LEFT) currentFrame = headFrames[2];
 		
-		if(state == playerState.MOVE_UP || state == playerState.MOVE_LEFT_UP || state == playerState.MOVE_RIGHT_UP) currentFrame = headFrames[3];
-		if(state == playerState.MOVE_DOWN || state == playerState.MOVE_LEFT_DOWN || state == playerState.MOVE_RIGHT_DOWN) currentFrame = headFrames[0];
-		if(state == playerState.MOVE_RIGHT) currentFrame = headFrames[1];
-		if(state == playerState.MOVE_LEFT) currentFrame = headFrames[2];
-		
-		if(state == playerState.NONE) {
-			if(lastState == playerState.MOVE_UP || lastState == playerState.MOVE_LEFT_UP || lastState == playerState.MOVE_RIGHT_UP) currentFrame = headFrames[3];
-			if(lastState == playerState.MOVE_DOWN || lastState == playerState.MOVE_LEFT_DOWN || lastState == playerState.MOVE_RIGHT_DOWN) currentFrame = headFrames[0];
-			if(lastState == playerState.MOVE_RIGHT) currentFrame = headFrames[1];
-			if(lastState == playerState.MOVE_LEFT) currentFrame = headFrames[2];
-			if(lastState == playerState.NONE) currentFrame = headFrames[0]; // StateRecienArranco
+		if(state == PlayerState.NONE) {
+			if(lastState == PlayerState.MOVE_UP || lastState == PlayerState.MOVE_LEFT_UP || lastState == PlayerState.MOVE_RIGHT_UP) currentFrame = headFrames[3];
+			if(lastState == PlayerState.MOVE_DOWN || lastState == PlayerState.MOVE_LEFT_DOWN || lastState == PlayerState.MOVE_RIGHT_DOWN) currentFrame = headFrames[0];
+			if(lastState == PlayerState.MOVE_RIGHT) currentFrame = headFrames[1];
+			if(lastState == PlayerState.MOVE_LEFT) currentFrame = headFrames[2];
+			if(lastState == PlayerState.NONE) currentFrame = headFrames[0]; // StateRecienArranco
 		}
 		
 		if(!lastState.equals(state)) {
-			if(state != playerState.NONE) lastState = state;
+			if(state != PlayerState.NONE) lastState = state;
 		}
 
-		batch.draw(currentFrame, x, y); // Draw current frame at (50, 50)
+		batch.draw(currentFrame, x, y); 
 	}
 
 }
