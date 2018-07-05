@@ -1,5 +1,6 @@
 package com.bonkan.brao.engine.entity;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import com.badlogic.gdx.Gdx;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.bonkan.brao.engine.entity.animation.BodyAnimator;
 import com.bonkan.brao.engine.entity.animation.HeadAnimator;
 import com.bonkan.brao.engine.map.factory.BodyFactory;
+import com.bonkan.brao.engine.map.factory.Sensor;
 import com.bonkan.brao.engine.utils.AtlasManager;
 import com.bonkan.brao.engine.utils.Constants;
 
@@ -35,6 +37,7 @@ public abstract class Human extends Entity {
 	protected int headIndex;
 	
 	protected Body body;
+	protected ArrayList<Sensor> sensors;
 
 	public Human(float x, float y, int bodyIndex, int headIndex, UUID id, String userName, World world) {
 		super(AtlasManager.getBody(bodyIndex), x, y);
@@ -45,7 +48,12 @@ public abstract class Human extends Entity {
 		this.state = playerState.NONE;
 		this.headAnimator = new HeadAnimator(AtlasManager.getHeads(headIndex));
 		this.bodyAnimator = new BodyAnimator(texture);
-		this.body = BodyFactory.createPlayerBox(world, x, y, Constants.BODY_WIDTH, Constants.BODY_HEIGHT, this);
+		this.sensors = new ArrayList<Sensor>();
+		this.sensors.add(new Sensor(0));
+		this.sensors.add(new Sensor(1));
+		this.sensors.add(new Sensor(2));
+		this.sensors.add(new Sensor(3));
+		this.body = BodyFactory.createPlayerBox(world, x, y, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
 		
 		FreeTypeFontGenerator freeTypeFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("segoeui.ttf"));
  		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -98,5 +106,10 @@ public abstract class Human extends Entity {
 	public String getUserName()
 	{
 		return userName;
+	}
+	
+	public Sensor getSensor(int index)
+	{
+		return sensors.get(index);
 	}
 }

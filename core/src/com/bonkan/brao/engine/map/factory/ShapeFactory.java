@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.bonkan.brao.engine.utils.Physics;
 
 public final class ShapeFactory {
 
@@ -23,13 +22,13 @@ public final class ShapeFactory {
         PolygonShape polygon = new PolygonShape();
 
         Vector2 size = new Vector2(
-                Physics.toUnits(rectangle.x + rectangle.width * 0.5f),
-                Physics.toUnits(rectangle.y + rectangle.height * 0.5f)
+                rectangle.x + rectangle.width * 0.5f,
+                rectangle.y + rectangle.height * 0.5f
         );
 
         polygon.setAsBox(
-                Physics.toUnits(rectangle.width * 0.5f),
-                Physics.toUnits(rectangle.height * 0.5f),
+                rectangle.width * 0.5f,
+                rectangle.height * 0.5f,
                 size,
                 0.0f
         );
@@ -48,7 +47,7 @@ public final class ShapeFactory {
         float[] worldVertices = new float[vertices.length];
 
         for (int i = 0; i < vertices.length; ++i) {
-            worldVertices[i] = Physics.toUnits(vertices[i]);
+            worldVertices[i] = vertices[i];
         }
 
         polygonShape.set(worldVertices);
@@ -68,8 +67,8 @@ public final class ShapeFactory {
 
         for (int i = 0; i < vertices.length / 2; ++i) {
             worldVertices[i] = new Vector2();
-            worldVertices[i].x = Physics.toUnits(vertices[i * 2]);
-            worldVertices[i].y = Physics.toUnits(vertices[i * 2 + 1]);
+            worldVertices[i].x = vertices[i * 2];
+            worldVertices[i].y = vertices[i * 2 + 1];
         }
 
         chain.createChain(worldVertices);

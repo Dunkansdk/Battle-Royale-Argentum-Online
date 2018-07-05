@@ -20,17 +20,15 @@ public class BodyFactory {
     public static final short BIT_BREAKABLE = 16;
 
     /**
-     * <p>Crea el {@link com.badlogic.gdx.physics.box2d.Body} de un player.</p>
-     * @param data		&emsp;{@link java.lang.Object Object} instancia que crea el body
+     * <p>Crea el {@link com.badlogic.gdx.physics.box2d.Body} de un Human.</p>
      * @return {@link com.badlogic.gdx.physics.box2d.Body}
      */
-    public static Body createPlayerBox(final World world, float x, float y, int width, int height, Object data) 
+    public static Body createPlayerBox(final World world, float x, float y, int width, int height) 
     {
     	Body pBody;
         BodyDef bodyDef = new BodyDef(); 
 
-        // Siempre va a ser dinamico un player
-		bodyDef.type = BodyDef.BodyType.DynamicBody;
+		bodyDef.type = BodyDef.BodyType.KinematicBody;
         
         bodyDef.position.set(x, y);
         bodyDef.fixedRotation = true;
@@ -42,75 +40,33 @@ public class BodyFactory {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1.0f;
-        fixtureDef.filter.categoryBits = BIT_PLAYER; // Es un...
-		fixtureDef.filter.maskBits = 0; // Collisiona contra...
-		fixtureDef.filter.groupIndex = 0;
         
-        // Asociamos la instancia que lo crea como UserData (Para acceder a los datos desde el WorldContactListener)
-        pBody.createFixture(fixtureDef).setUserData(data);
-        
-        /*
-        FixtureDef SensorLeft = getSensorFixture(2, height / 2, new Vector2(-width / 2 - 1, 0));
-        FixtureDef SensorRight = getSensorFixture(2, height / 2, new Vector2(width / 2 + 1, 0));
-        FixtureDef SensorUp = getSensorFixture(width / 2, 2, new Vector2(0, height / 2 + 1));
-        FixtureDef SensorDown = getSensorFixture(width / 2, 2, new Vector2(0, -height / 2 - 1));
-        
-        if(data instanceof Player) {
-        	pBody.createFixture(SensorLeft).setUserData(((Player)data).getSensor(0));
-            pBody.createFixture(SensorRight).setUserData(((Player)data).getSensor(1));
-            pBody.createFixture(SensorUp).setUserData(((Player)data).getSensor(2));
-            pBody.createFixture(SensorDown).setUserData(((Player)data).getSensor(3));
-        }*/
+        pBody.createFixture(fixtureDef);
         
         shape.dispose();
         return pBody;
     }
     
-    /*
-    private static FixtureDef getSensorFixture(float width, float height, Vector2 position) {
-    	
-    	PolygonShape shapeSensor = new PolygonShape();
-        shapeSensor.setAsBox(width, height, position, 0);
-        
-        FixtureDef sensorDef = new FixtureDef();
-        sensorDef.shape = shapeSensor;
-        sensorDef.filter.categoryBits = BIT_SENSOR;
-        sensorDef.filter.maskBits = BIT_PLAYER | BIT_WALL | BIT_SENSOR;
-        sensorDef.filter.groupIndex = 0;
-        sensorDef.isSensor = true;
-        
-        return sensorDef;
-    }*/
-    
     /**
      * <p>Crea un objeto en el mapa (Los obtiene de el editor Tiled).</p>
      * @param {@link com.bonkan.brao.engine.map.factory.ShapeFactory} Shape que crea el MapManager dependiendo de que se haya creado en el Tiled
-     * @param data		&emsp;{@link java.lang.Object Object} instancia que crea el bodyInstancia que crea el body
      * @return {@link com.badlogic.gdx.physics.box2d.Body}
      */
-    public static Body createMapBox(final World world, Shape shape, boolean isStatic, boolean fixedRotation, Object data) {
+    public static Body createMapBox(final World world, Shape shape) {
     	Body pBody;
 		BodyDef bodyDef = new BodyDef();
-		bodyDef.fixedRotation = fixedRotation;
-		
-		if(isStatic) {
-			bodyDef.type = BodyDef.BodyType.StaticBody;
-		} else {
-			bodyDef.type = BodyDef.BodyType.DynamicBody;
-		}
+		bodyDef.fixedRotation = true;
+
+		bodyDef.type = BodyDef.BodyType.StaticBody;
 		
 		pBody = world.createBody(bodyDef);  
 		
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
 		fixtureDef.density = 1.0f;
-		fixtureDef.filter.categoryBits = BIT_WALL; // Es un...
-		fixtureDef.filter.maskBits = 0; // Collisiona contra...
-		fixtureDef.filter.groupIndex = 0;
-		fixtureDef.density = 0f;
 		
 		// Asociamos la instancia que lo crea como UserData (Para acceder a los datos desde el WorldContactListener)
-		pBody.createFixture(fixtureDef).setUserData(data);
+		pBody.createFixture(fixtureDef);
 		
 		return pBody;
 	}

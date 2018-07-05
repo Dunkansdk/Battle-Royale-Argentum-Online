@@ -1,5 +1,8 @@
 package com.bonkan.brao.state.app;
 
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -16,6 +19,7 @@ import com.bonkan.brao.engine.entity.humans.Enemy;
 import com.bonkan.brao.engine.entity.humans.Player;
 import com.bonkan.brao.engine.map.MapManager;
 import com.bonkan.brao.engine.map.WorldManager;
+import com.bonkan.brao.engine.utils.Constants;
 import com.bonkan.brao.networking.LoggedUser;
 import com.bonkan.brao.state.AbstractGameState;
 import com.bonkan.brao.state.GameStateManager;
@@ -30,12 +34,14 @@ public class PlayState extends AbstractGameState {
     private WorldManager world;
     private Box2DDebugRenderer b2dr;
     private MapManager map;
+    private ArrayList<Shape> mapBlocks;
     
     public PlayState(GameStateManager gameState) {
         super(gameState);
         world = new WorldManager();
         map = new MapManager(world.getWorld());
         b2dr = new Box2DDebugRenderer();
+        mapBlocks = map.createBlocks();
 
         LoggedUser aux = app.getLoggedUser();
         
@@ -58,66 +64,44 @@ public class PlayState extends AbstractGameState {
     	
     	map.getTiled().setView(camera);
     	map.getRayHandler().setCombinedMatrix(camera);
-    	
-    	//lastPositionUpdate += delta;
     }
     
-    /**
-     * 
-     * TODO: HAY QUE SEPARAR ESTO!
-     * 
-     * @param delta
-     */
     private void inputUpdate(float delta) {
         
-        /*if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-        {
-        	if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-        		player.setState(playerState.MOVE_LEFT_DOWN);
-        	else if (Gdx.input.isKeyPressed(Input.Keys.UP))
-        		player.setState(playerState.MOVE_LEFT_UP);
-        	else
-        		player.setState(playerState.MOVE_LEFT);
-        }
-        
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-        {
-        	if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-        		player.setState(playerState.MOVE_RIGHT_DOWN);
-        	else if (Gdx.input.isKeyPressed(Input.Keys.UP))
-        		player.setState(playerState.MOVE_RIGHT_UP);
-        	else
-        		player.setState(playerState.MOVE_RIGHT);
-        }
-        
+    	boolean[] blockedDirs = blockedDirections();
+    	
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
         {
-        	if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-        		player.setState(playerState.MOVE_RIGHT_DOWN);
-        	else if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-        		player.setState(playerState.MOVE_LEFT_DOWN);
-        	else
+        	if(!blockedDirs[3])
+        	{
+        		player.setPos(player.getPos().x, player.getPos().y - 2);
         		player.setState(playerState.MOVE_DOWN);
+        	}
         }
-        
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
+    	{
+        	if(!blockedDirs[0])
+        	{
+        		player.setPos(player.getPos().x - 2, player.getPos().y);
+        		player.setState(playerState.MOVE_LEFT);
+        	}
+    	}
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+    	{
+        	if(!blockedDirs[1])
+        	{
+        		player.setPos(player.getPos().x + 2, player.getPos().y);
+        		player.setState(playerState.MOVE_RIGHT);
+        	}
+    	}
         if(Gdx.input.isKeyPressed(Input.Keys.UP))
-        {
-        	if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-        		player.setState(playerState.MOVE_RIGHT_UP);
-        	else if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-        		player.setState(playerState.MOVE_LEFT_UP);
-        	else
+    	{
+        	if(!blockedDirs[2])
+        	{
+        		player.setPos(player.getPos().x, player.getPos().y + 2);
         		player.setState(playerState.MOVE_UP);
-        }*/
-    	
-    	if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-    		player.setPos(player.getPos().x, player.getPos().y - 1);
-    	if(Gdx.input.isKeyPressed(Input.Keys.UP))
-    		player.setPos(player.getPos().x, player.getPos().y + 1);
-    	if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-    		player.setPos(player.getPos().x + 1, player.getPos().y);
-    	if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-    		player.setPos(player.getPos().x - 1, player.getPos().y);
+        	}
+    	}
     	
         if(	!Gdx.input.isKeyPressed(Input.Keys.DOWN) 	&& 
         	!Gdx.input.isKeyPressed(Input.Keys.UP) 		&& 
@@ -126,6 +110,38 @@ public class PlayState extends AbstractGameState {
         {
         	player.setState(playerState.NONE);
         }
+    }
+    
+    private boolean[] blockedDirections()
+    {
+    	boolean[] ret = new boolean[8];
+    	
+    	int LEFT = 0;
+    	int RIGHT = 1;
+    	int UP = 2;
+    	int DOWN = 3;
+    	
+    	int realX = (int) player.getPos().x - Constants.BODY_WIDTH / 2;
+    	int realY = (int) player.getPos().y - Constants.BODY_HEIGHT / 2;
+    	
+    	Rectangle playerRectLeft = new Rectangle(realX - 2, realY, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
+    	Rectangle playerRectRight = new Rectangle(realX + 2, realY, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
+    	Rectangle playerRectUp = new Rectangle(realX, realY + 2, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
+    	Rectangle playerRectDown = new Rectangle(realX, realY - 2, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
+    	
+    	for(Shape s : mapBlocks)
+    	{
+    		if(s.intersects(playerRectLeft))
+    			ret[LEFT] = true;
+    		if(s.intersects(playerRectRight))
+    			ret[RIGHT] = true;
+    		if(s.intersects(playerRectDown))
+    			ret[DOWN] = true;
+    		if(s.intersects(playerRectUp))
+    			ret[UP] = true;
+    	}
+    	
+    	return ret;
     }
     
     /**

@@ -10,6 +10,7 @@ public class DesktopLauncher {
 		config.title = Game.TITLE;
 		config.width = Game.V_WIDTH;
 		config.height = Game.V_HEIGHT;
+		config.vSyncEnabled = true;
 		config.backgroundFPS = 60;
 		config.foregroundFPS = 60;
 		config.resizable = false;

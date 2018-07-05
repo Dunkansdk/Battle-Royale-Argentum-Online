@@ -1,5 +1,6 @@
 package com.bonkan.brao.engine.map;
 
+import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
@@ -98,13 +99,14 @@ public class MapManager {
                 shape = ShapeFactory.getRectangle((RectangleMapObject) object);
             } else if (object instanceof PolygonMapObject) {
                 shape = ShapeFactory.getPolygon((PolygonMapObject) object);
+                
             } else if (object instanceof PolylineMapObject) {
                 shape = ShapeFactory.getPolyline((PolylineMapObject) object);
             } else {
                 continue;
             }
 
-            BodyFactory.createMapBox(world, shape, true, false, this);
+            BodyFactory.createMapBox(world, shape);
 
             shape.dispose();
         }
@@ -115,7 +117,7 @@ public class MapManager {
 	 */
 	private void createLights() {
 		MapObjects objects = getCurrentMap().getLayers().get("lights").getObjects();
-		
+
 		for(MapObject object : objects) {
 			if(!object.getProperties().containsKey("angle")) {
 				new PointLight(rays, 120, (Color)object.getProperties().get("color"), (Integer)object.getProperties().get("size"), 
@@ -126,6 +128,46 @@ public class MapManager {
 										 270, (Integer)object.getProperties().get("amplitude")).setXray(true);
 			}
 		}
+	}
+	
+	/**
+	 * <p>En tu vida vas a programar una funcion asi hermano</p>
+	 * @return
+	 */
+	public ArrayList<java.awt.Shape> createBlocks()
+	{
+		ArrayList<java.awt.Shape> blocks = new ArrayList<java.awt.Shape>();
+		
+		MapObjects objects = getCurrentMap().getLayers().get("collision").getObjects();
+
+        for (MapObject object : objects) {
+            if (object instanceof TextureMapObject) {
+                continue;
+            }
+            
+            if (object instanceof RectangleMapObject) {
+            	RectangleMapObject rmo = (RectangleMapObject) object;
+                Rectangle rect = new Rectangle((int) rmo.getRectangle().x, (int) rmo.getRectangle().y, (int) rmo.getRectangle().width, (int) rmo.getRectangle().height);
+                blocks.add(rect);
+            } else if(object instanceof PolylineMapObject) {
+            	PolylineMapObject plo = (PolylineMapObject) object;
+                
+                float[] vertices = plo.getPolyline().getTransformedVertices();
+                
+                int polisX[] = new int[vertices.length / 2];
+                int polisY[] = new int[vertices.length / 2];
+
+                for (int i = 0; i < vertices.length / 2; ++i) {
+                    polisX[i] = (int) vertices[i * 2];
+                    polisY[i] = (int) vertices[i * 2 + 1];
+                }
+                
+                java.awt.Polygon poly = new java.awt.Polygon(polisX, polisY, vertices.length / 2);
+                blocks.add(poly);
+            }
+        }
+		
+		return blocks;
 	}
 	
 	/**

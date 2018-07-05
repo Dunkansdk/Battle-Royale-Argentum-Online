@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.bonkan.brao.engine.map.factory.Sensor;
 
 /**
  * <p>Collisiones entre {@link com.badlogic.gdx.physics.box2d.Body Bodies}</p>
@@ -18,26 +19,17 @@ public class WorldContactListener implements ContactListener {
         
         if(fa == null || fb == null) return;
         if(fa.getUserData() == null || fb.getUserData() == null) return;
-        
-        /*
-        if(fa.isSensor() || fb.isSensor())
-        {
-        	if(fa.getUserData() instanceof Sensor) {
-        		Sensor s = (Sensor) fa.getUserData();
-        		s.setColliding(true);
-        		
-        		if(fb.getUserData() instanceof Enemy)
-        			s.setCollidingWithEnemy(true);
-        	}
-        	if(fb.getUserData() instanceof Sensor) {
-        		Sensor s = (Sensor) fb.getUserData();
-        		s.setColliding(true);
-        		
-        		if(fa.getUserData() instanceof Enemy)
-        			s.setCollidingWithEnemy(true);
-        	}
-        }*/
 
+    	if(fa.getUserData() instanceof Sensor) {
+    		Sensor s = (Sensor) fa.getUserData();
+    		s.setColliding(true);
+    		System.out.println("COLLIDING");
+    	}
+    	if(fb.getUserData() instanceof Sensor) {
+    		Sensor s = (Sensor) fb.getUserData();
+    		System.out.println("COLLIDING");
+    		s.setColliding(true);
+    	}
 	}
 
 	@Override
@@ -47,21 +39,17 @@ public class WorldContactListener implements ContactListener {
         
         if(fa == null || fb == null) return;
         if(fa.getUserData() == null || fb.getUserData() == null) return;
-        
-        /*
-        if(fa.isSensor() || fb.isSensor())
-        {
-        	if(fa.getUserData() instanceof Sensor) {
-        		Sensor s = (Sensor) fa.getUserData();
-        		s.setColliding(false);
-        		s.setCollidingWithEnemy(false);
-        	}
-        	if(fb.getUserData() instanceof Sensor) {
-        		Sensor s = (Sensor) fb.getUserData();
-        		s.setColliding(false);
-        		s.setCollidingWithEnemy(false);
-        	}
-        }*/
+
+    	if(fa.getUserData() instanceof Sensor) {
+    		Sensor s = (Sensor) fa.getUserData();
+    		s.setColliding(false);
+    		System.out.println("NOT COLLIDING");
+    	}
+    	if(fb.getUserData() instanceof Sensor) {
+    		Sensor s = (Sensor) fb.getUserData();
+    		s.setColliding(false);
+    		System.out.println("NOT COLLIDING");
+    	}
 
 	}
 
