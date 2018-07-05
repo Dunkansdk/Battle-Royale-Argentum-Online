@@ -60,9 +60,9 @@ public class MapManager {
 		RayHandler.useDiffuseLight(true);
 		this.rays.setAmbientLight(0.4f, 0.4f, 0.4f, 0.1f);
 		this.rays.setBlur(true);           // enabled or disable blur
-		this.rays.setBlurNum(1);           // set number of gaussian blur passes
+		this.rays.setBlurNum(2);           // set number of gaussian blur passes
 		this.rays.setShadows(true);        // enable or disable shadow
-		this.rays.setCulling(true);        // enable or disable culling
+		this.rays.setCulling(false);        // enable or disable culling
 		
 		System.out.println("Maps: " + map.size());
 

@@ -27,7 +27,7 @@ import com.esotericsoftware.kryonet.Listener;
  */
 public class Game extends ApplicationAdapter {
 
-	public boolean DEBUG = true;
+	public boolean DEBUG = false;
 
 	// Game information
 	public static final String TITLE = "Battle Royale AO";
@@ -98,7 +98,7 @@ public class Game extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(camera.combined);
 		gameState.update(Gdx.graphics.getDeltaTime());
-		gameState.render();		
+		gameState.render();
 		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
 		if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) DEBUG = !DEBUG;
 	}

@@ -10,6 +10,7 @@ import java.util.UUID;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -31,21 +32,20 @@ public class PlayState extends AbstractGameState {
 	
     private Player player;
     private HashMap<UUID, Enemy> enemiesInViewport;
-    private WorldManager world;
     private Box2DDebugRenderer b2dr;
     private MapManager map;
     private ArrayList<Shape> mapBlocks;
     
     public PlayState(GameStateManager gameState) {
         super(gameState);
-        world = new WorldManager();
-        map = new MapManager(world.getWorld());
+        WorldManager.init();
+        map = new MapManager(WorldManager.world);
         b2dr = new Box2DDebugRenderer();
         mapBlocks = map.createBlocks();
 
         LoggedUser aux = app.getLoggedUser();
         
-        player = new Player(aux.getX(), aux.getY(), aux.getLoggedDefaultBody(), 1, aux.getHP(), aux.getMana(), aux.getLoggedID(), aux.getLoggedUserName(), world.getWorld());
+        player = new Player(aux.getX(), aux.getY(), aux.getLoggedDefaultBody(), 1, aux.getHP(), aux.getMana(), aux.getLoggedID(), aux.getLoggedUserName(), WorldManager.world);
         enemiesInViewport = new HashMap<UUID, Enemy>();
     }
 
@@ -56,7 +56,10 @@ public class PlayState extends AbstractGameState {
     	lerpToTarget(camera, player.getPos());
     	inputUpdate(delta);
     	//TODO: ESTO HAY QUE VOLARLO!
-    	world.step();
+    	
+    	// Limitamos para que no consuma tanto recursos
+    	WorldManager.doPhysicsStep(delta);
+    	
     	player.update(delta);
     	
     	for (Map.Entry<UUID, Enemy> entry : enemiesInViewport.entrySet())
@@ -64,6 +67,7 @@ public class PlayState extends AbstractGameState {
     	
     	map.getTiled().setView(camera);
     	map.getRayHandler().setCombinedMatrix(camera);
+    	map.getRayHandler().update();
     }
     
     private void inputUpdate(float delta) {
@@ -110,6 +114,7 @@ public class PlayState extends AbstractGameState {
         {
         	player.setState(playerState.NONE);
         }
+        
     }
     
     private boolean[] blockedDirections()
@@ -160,7 +165,7 @@ public class PlayState extends AbstractGameState {
     
     public void addEnemyToArea(int bodyIndex, int headIndex, float x, float y, UUID id, String nick)
     {
-    	enemiesInViewport.put(id, new Enemy(x, y, bodyIndex, headIndex, id, nick, world.getWorld()));
+    	enemiesInViewport.put(id, new Enemy(x, y, bodyIndex, headIndex, id, nick, WorldManager.world));
     }
     
     public void setEnemyState(UUID enemyID, playerState newState)
@@ -173,17 +178,13 @@ public class PlayState extends AbstractGameState {
     {
     	return (enemiesInViewport.get(enemyID) != null);
     }
-    
-    public World getWorld()
-    {
-    	return world.getWorld();
-    }
 
     @Override
     public void render()
     {
+
     	map.getTiled().render();
-    	
+
     	app.getBatch().begin();
     	player.render(app.getBatch());
     	
@@ -192,9 +193,9 @@ public class PlayState extends AbstractGameState {
     	
     	app.getBatch().end();
     	
-    	if(app.DEBUG) b2dr.render(world.getWorld(), camera.combined.cpy());
-    	
-    	map.getRayHandler().updateAndRender();
+    	if(app.DEBUG) b2dr.render(WorldManager.world, camera.combined.cpy());
+
+    	map.getRayHandler().render();
     }
 
     @Override
