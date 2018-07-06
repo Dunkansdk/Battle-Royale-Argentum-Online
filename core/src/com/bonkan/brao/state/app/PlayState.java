@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.bonkan.brao.engine.entity.EntityManager;
 import com.bonkan.brao.engine.entity.Human.PlayerState;
 import com.bonkan.brao.engine.entity.humans.Enemy;
 import com.bonkan.brao.engine.entity.humans.Player;
@@ -30,11 +31,10 @@ import com.bonkan.brao.state.GameStateManager;
  */
 public class PlayState extends AbstractGameState {
 	
-    private Player player;
-    private HashMap<UUID, Enemy> enemiesInViewport; // otros jugadores en el área de visión
     private Box2DDebugRenderer b2dr;
     private MapManager map;
     private ArrayList<Shape> mapBlocks;
+    private EntityManager entities;
     
     private static final int DIR_DOWN = 0;
     private static final int DIR_UP = 1;
@@ -47,28 +47,25 @@ public class PlayState extends AbstractGameState {
         map = new MapManager(WorldManager.world);
         b2dr = new Box2DDebugRenderer();
         mapBlocks = map.createBlocks();
+        entities = new EntityManager();
 
         LoggedUser aux = app.getLoggedUser();
         
-        player = new Player(aux.getX(), aux.getY(), aux.getLoggedDefaultBody(), 1, aux.getHP(), aux.getMana(), aux.getLoggedID(), aux.getLoggedUserName(), WorldManager.world);
-        enemiesInViewport = new HashMap<UUID, Enemy>();
+        entities.addPlayer(aux.getLoggedID(), new Player(aux.getX(), aux.getY(), aux.getLoggedDefaultBody(), 1, aux.getHP(), aux.getMana(), aux.getLoggedID(), aux.getLoggedUserName(), WorldManager.world));
     }
 
     @Override
     public void update(float delta)
     {
     	//TODO: ESTO HAY QUE VOLARLO!
-    	lerpToTarget(camera, player.getPos());
-    	inputUpdate(delta);
+    	lerpToTarget(camera, entities.getPlayer().getPos());
+    	inputUpdate(delta, entities.getPlayer());
     	//TODO: ESTO HAY QUE VOLARLO!
     	
     	// Limitamos para que no consuma tanto recursos
     	WorldManager.doPhysicsStep(delta);
     	
-    	player.update(delta);
-    	
-    	for (Map.Entry<UUID, Enemy> entry : enemiesInViewport.entrySet())
-    		entry.getValue().update(delta);
+    	entities.update(delta);
     	
     	map.getTiled().setView(camera);
     	map.getRayHandler().setCombinedMatrix(camera);
@@ -80,9 +77,9 @@ public class PlayState extends AbstractGameState {
      * TODO: inputs customizables y cargados desde un JSON</p>
      * @param delta		&emsp;<b>float</b> el deltaTime (Gdx)
      */
-    private void inputUpdate(float delta) {
+    private void inputUpdate(float delta, Player player) {
         
-    	boolean[] blockedDirs = blockedDirections();
+    	boolean[] blockedDirs = blockedDirections(player);
     	boolean changedState = false;
     	Vector2 currPlayerPos = new Vector2(player.getPos().x, player.getPos().y);
     	
@@ -334,7 +331,7 @@ public class PlayState extends AbstractGameState {
     /**
      * <p>Devuelve un array booleano con las direcciones bloqueadas.</p>
      */
-    private boolean[] blockedDirections()
+    private boolean[] blockedDirections(Player player)
     {
     	boolean[] ret = new boolean[8];
     	
@@ -377,24 +374,24 @@ public class PlayState extends AbstractGameState {
     
     public void addEnemyToArea(int bodyIndex, int headIndex, int x, int y, UUID id, String nick)
     {
-    	enemiesInViewport.put(id, new Enemy(x, y, bodyIndex, headIndex, id, nick, WorldManager.world));
+    	entities.addEnemy(id, new Enemy(x, y, bodyIndex, headIndex, id, nick, WorldManager.world));
     }
     
     public void setEnemyState(UUID enemyID, PlayerState newState)
     {
-    	if(enemiesInViewport.get(enemyID) != null)
-    		enemiesInViewport.get(enemyID).setState(newState);
+    	if(entities.getEnemy(enemyID) != null)
+    		entities.getEnemy(enemyID).setState(newState);
     }
     
     public void setEnemyPos(UUID enemyID, int x, int y)
     {
-    	if(enemiesInViewport.get(enemyID) != null)
-    		enemiesInViewport.get(enemyID).setPos(x, y);
+    	if(entities.getEnemy(enemyID) != null)
+    		entities.getEnemy(enemyID).setPos(x, y);
     }
     
     public boolean getEnemyInArea(UUID enemyID)
     {
-    	return (enemiesInViewport.get(enemyID) != null);
+    	return (entities.getEnemy(enemyID) != null);
     }
 
     @Override
@@ -406,10 +403,8 @@ public class PlayState extends AbstractGameState {
     	map.getTiled().render(bglayers);
 
     	app.getBatch().begin();
-    	player.render(app.getBatch());
     	
-    	for (Map.Entry<UUID, Enemy> entry : enemiesInViewport.entrySet())
-    		entry.getValue().render(app.getBatch());
+    	entities.render(batch);
     	
     	app.getBatch().end();
 
