@@ -35,7 +35,6 @@ public class PlayState extends AbstractGameState {
     private Box2DDebugRenderer b2dr;
     private MapManager map;
     private ArrayList<Shape> mapBlocks;
-    private EntityManager entities;
     
     private static final int DIR_DOWN = 0;
     private static final int DIR_UP = 1;
@@ -45,30 +44,30 @@ public class PlayState extends AbstractGameState {
     public PlayState(GameStateManager gameState) {
         super(gameState);
         WorldManager.init();
+        EntityManager.init();
         map = new MapManager(WorldManager.world);
         b2dr = new Box2DDebugRenderer();
         mapBlocks = map.createBlocks();
-        entities = new EntityManager();
 
         LoggedUser aux = app.getLoggedUser();
-        
-        entities.addPlayer(aux.getLoggedID(), new Player(aux.getX(), aux.getY(), aux.getLoggedDefaultBody(), 1, aux.getHP(), aux.getMana(), aux.getLoggedID(), aux.getLoggedUserName(), WorldManager.world));
+   
+        EntityManager.addPlayer(aux.getLoggedID(), new Player(aux.getX(), aux.getY(), aux.getLoggedDefaultBody(), 1, aux.getHP(), aux.getMana(), aux.getLoggedID(), aux.getLoggedUserName(), WorldManager.world));
     }
 
     @Override
     public void update(float delta)
     {
+    	map.getTiled().setView(camera);
+    	
     	//TODO: ESTO HAY QUE VOLARLO!
-    	lerpToTarget(camera, entities.getPlayer().getPos());
-    	inputUpdate(delta, entities.getPlayer());
+    	lerpToTarget(camera, EntityManager.getPlayer().getPos());
+    	inputUpdate(delta, EntityManager.getPlayer());
     	//TODO: ESTO HAY QUE VOLARLO!
     	
     	// Limitamos para que no consuma tanto recursos
-    	WorldManager.doPhysicsStep(delta);
-    	
-    	entities.update(delta);
-    	
-    	map.getTiled().setView(camera);
+    	WorldManager.doPhysicsStep(delta);    	
+    	EntityManager.update(delta);
+
     	map.getRayHandler().setCombinedMatrix(camera);
     	map.getRayHandler().update();
     }
@@ -488,7 +487,7 @@ public class PlayState extends AbstractGameState {
     	Rectangle playerRect = new Rectangle(x - Constants.BODY_WIDTH / 2, y - Constants.BODY_HEIGHT / 2, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
     	
     	// iteramos las entidades
-    	HashMap<UUID, Entity> entidades = entities.getAllEntities();
+    	HashMap<UUID, Entity> entidades = EntityManager.getAllEntities();
     	
     	for (Map.Entry<UUID, Entity> entry : entidades.entrySet()) {
 			if(entry.getValue() instanceof Enemy)
@@ -519,41 +518,36 @@ public class PlayState extends AbstractGameState {
     
     public void addEnemyToArea(int bodyIndex, int headIndex, int x, int y, UUID id, String nick)
     {
-    	entities.addEnemy(id, new Enemy(x, y, bodyIndex, headIndex, id, nick, WorldManager.world));
+    	EntityManager.addEnemy(id, new Enemy(x, y, bodyIndex, headIndex, id, nick, WorldManager.world));
     }
     
     public void setEnemyState(UUID enemyID, PlayerState newState)
     {
-    	if(entities.getEnemy(enemyID) != null)
-    		entities.getEnemy(enemyID).setState(newState);
+    	if(EntityManager.getEnemy(enemyID) != null)
+    		EntityManager.getEnemy(enemyID).setState(newState);
     }
     
     public void setEnemyPos(UUID enemyID, int x, int y)
     {
-    	if(entities.getEnemy(enemyID) != null)
-    		entities.getEnemy(enemyID).setPos(x, y);
+    	if(EntityManager.getEnemy(enemyID) != null)
+    		EntityManager.getEnemy(enemyID).setPos(x, y);
     }
     
     public boolean getEnemyInArea(UUID enemyID)
     {
-    	return (entities.getEnemy(enemyID) != null);
+    	return (EntityManager.getEnemy(enemyID) != null);
     }
 
     @Override
     public void render()
     {
-    	int[] bglayers = {0, 1};
-    	int[] foreground = {2};
-    	
-    	map.getTiled().render(bglayers);
+    	map.getTiled().render();
 
     	app.getBatch().begin();
     	
-    	entities.render(batch);
+    	EntityManager.render(batch);
     	
     	app.getBatch().end();
-
-    	map.getTiled().render(foreground);
     	
     	if(app.DEBUG) b2dr.render(WorldManager.world, camera.combined.cpy());
 

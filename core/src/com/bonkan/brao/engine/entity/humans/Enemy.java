@@ -10,4 +10,5 @@ public class Enemy extends Human {
 	public Enemy(int x, int y, int bodyIndex, int headIndex, UUID id, String userName, World world) {
 		super(x, y, bodyIndex, headIndex, id, userName, world);
 	}
+	
 }

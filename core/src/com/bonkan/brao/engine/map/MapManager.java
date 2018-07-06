@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
@@ -17,8 +18,11 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.bonkan.brao.engine.entity.EntityManager;
+import com.bonkan.brao.engine.entity.WorldObject;
 import com.bonkan.brao.engine.map.factory.BodyFactory;
 import com.bonkan.brao.engine.map.factory.ShapeFactory;
+import com.bonkan.brao.engine.utils.AtlasManager;
 
 import box2dLight.ConeLight;
 import box2dLight.PointLight;
@@ -66,7 +70,7 @@ public class MapManager {
 		
 		System.out.println("Maps: " + map.size());
 
-		load(world,  1); // ESTAMOS CARGANDO POR DEFECTO!
+		load(world,  0); // ESTAMOS CARGANDO POR DEFECTO!
 	}
 	
 	/**
@@ -79,6 +83,7 @@ public class MapManager {
 		tiled = new OrthogonalTiledMapRenderer(getCurrentMap());
 		createCollision(world);
 		createLights();
+		createObjects(world);
 	}
 	
 	/**
@@ -111,6 +116,20 @@ public class MapManager {
             shape.dispose();
         }
     }
+	
+	private void createObjects(World world) {
+		MapObjects objects = getCurrentMap().getLayers().get("sprites").getObjects();
+
+        for (MapObject object : objects) {
+        	if(object.getProperties().containsKey("sprite")) {
+        		TextureRegion texture = AtlasManager.getWorldSprite((String)object.getProperties().get("sprite"));
+        		EntityManager.addWorldObject(new WorldObject(texture,
+        													 (Float)object.getProperties().get("x"),
+        													 (Float)object.getProperties().get("y") - texture.getRegionHeight()));
+        		
+        	}
+        }
+	}
 	
 	/**
 	 * <p>Crea las luces !!! (las carga de la capa "lights" del .tmx).</p>

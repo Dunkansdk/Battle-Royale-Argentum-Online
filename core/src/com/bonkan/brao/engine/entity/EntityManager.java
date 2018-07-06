@@ -19,25 +19,28 @@ import com.bonkan.brao.engine.utils.Constants;
  */
 public class EntityManager {
 	
-	private HashMap<UUID, Entity> entities;
+	private static HashMap<UUID, Entity> entities;
+	private static ArrayList<Entity> worldEntities;
 	
-	public EntityManager() {
+	public static void init() {
 		entities = new HashMap<UUID, Entity>();
+		worldEntities = new ArrayList<Entity>();
 	}
 	
-	public void addPlayer(UUID id, Player player) {
+	public static void addPlayer(UUID id, Player player) {
 		entities.put(id, player);
 	}
 	
-	public void addEnemy(UUID id, Enemy enemy) {
+	public static void addEnemy(UUID id, Enemy enemy) {
 		entities.put(id, enemy);
 	}
 	
 	/**
 	 * <p>Compara si la una entidad esta abajo de la otra (y >) y la dibuja por encima</p>
 	 */
-	public void render(SpriteBatch batch) {
+	public static void render(SpriteBatch batch) {
 		List<Entity> entityValues = new ArrayList<Entity>(entities.values());
+		entityValues.addAll(worldEntities);
 		
 		Collections.sort(entityValues, new Comparator<Entity>() {
 			@Override
@@ -51,14 +54,13 @@ public class EntityManager {
 		}
 	}
 	
-	public void update(float delta) {
+	public static void update(float delta) {
 		for (Map.Entry<UUID, Entity> entry : entities.entrySet()) {
 			entry.getValue().update(delta);
 		}
 	}
 	
-	public void removeEnemy(UUID id) {
-		
+	public static void removeEnemy(UUID id) {
 		Iterator<Map.Entry<UUID, Entity>> it = entities.entrySet().iterator();
 	    while (it.hasNext()) {
 	    	if(it.next().getKey().compareTo(id) == 0) {
@@ -68,7 +70,7 @@ public class EntityManager {
 	    } 
 	}
 
-	public Enemy getEnemy(UUID id) {
+	public static Enemy getEnemy(UUID id) {
 		for (Map.Entry<UUID, Entity> entry : entities.entrySet()) {
 			if(entry.getValue() instanceof Enemy)
 				if(entry.getKey().compareTo(id) == 0)
@@ -77,7 +79,7 @@ public class EntityManager {
 		return null;
 	}
 	
-	public Player getPlayer() {
+	public static Player getPlayer() {
 		for (Map.Entry<UUID, Entity> entry : entities.entrySet()) {
 			if(entry.getValue() instanceof Player)
 				return (Player) entry.getValue();
@@ -85,7 +87,11 @@ public class EntityManager {
 		return null;
 	}
 	
-	public HashMap<UUID, Entity> getAllEntities()
+	public static void addWorldObject(WorldObject entity) {
+		worldEntities.add(entity);
+	}
+	
+	public static HashMap<UUID, Entity> getAllEntities()
 	{
 		return entities;
 	}
