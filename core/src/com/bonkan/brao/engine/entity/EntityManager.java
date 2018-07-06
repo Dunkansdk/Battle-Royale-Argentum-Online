@@ -14,9 +14,12 @@ import com.bonkan.brao.engine.entity.humans.Enemy;
 import com.bonkan.brao.engine.entity.humans.Player;
 import com.bonkan.brao.engine.utils.Constants;
 
+/**
+ * <p>Maneja las entidades... Quién lo hubiera dicho !!</p>
+ */
 public class EntityManager {
 	
-	public HashMap<UUID, Entity> entities;
+	private HashMap<UUID, Entity> entities;
 	
 	public EntityManager() {
 		entities = new HashMap<UUID, Entity>();
@@ -58,10 +61,13 @@ public class EntityManager {
 		
 		Iterator<Map.Entry<UUID, Entity>> it = entities.entrySet().iterator();
 	    while (it.hasNext()) {
-	    	if(it.next().getKey().compareTo(id) == 0) it.remove();
+	    	if(it.next().getKey().compareTo(id) == 0) {
+	    		it.remove();
+	    		break;
+	    	}
 	    } 
 	}
-	
+
 	public Enemy getEnemy(UUID id) {
 		for (Map.Entry<UUID, Entity> entry : entities.entrySet()) {
 			if(entry.getValue() instanceof Enemy)
@@ -77,6 +83,11 @@ public class EntityManager {
 				return (Player) entry.getValue();
 		}
 		return null;
+	}
+	
+	public HashMap<UUID, Entity> getAllEntities()
+	{
+		return entities;
 	}
 
 }

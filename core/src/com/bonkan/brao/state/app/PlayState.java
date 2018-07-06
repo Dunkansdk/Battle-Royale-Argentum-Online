@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.bonkan.brao.engine.entity.Entity;
 import com.bonkan.brao.engine.entity.EntityManager;
 import com.bonkan.brao.engine.entity.Human.PlayerState;
 import com.bonkan.brao.engine.entity.humans.Enemy;
@@ -90,28 +91,53 @@ public class PlayState extends AbstractGameState {
         	{
         		if(!blockedDirs[DIR_RIGHT] && !blockedDirs[DIR_DOWN])
         		{
+        			if(!checkCollisionWithEnemies(player, (int) player.getPos().x + 2, (int) player.getPos().y - 2))
+        			{
+        				if(player.getState() != PlayerState.MOVE_RIGHT_DOWN)
+        					changedState = true;
+            			
+            			player.setState(PlayerState.MOVE_RIGHT_DOWN);
+            			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y - 2);
         			
-        			if(player.getState() != PlayerState.MOVE_RIGHT_DOWN)
-        				changedState = true;
+        			} else if(!checkCollisionWithEnemies(player, (int) player.getPos().x, (int) player.getPos().y - 2)) {
+        				
+        				if(player.getState() != PlayerState.MOVE_DOWN)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_DOWN);
+	        			player.setPos((int) player.getPos().x, (int) player.getPos().y - 2);
         			
-        			player.setState(PlayerState.MOVE_RIGHT_DOWN);
-        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y - 2);
-        		
+        			} else if(!checkCollisionWithEnemies(player, (int) player.getPos().x + 2, (int) player.getPos().y)) {
+        				
+        				if(player.getState() != PlayerState.MOVE_RIGHT)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_RIGHT);
+	        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y);
+        			
+        			}
+
         		} else if (!blockedDirs[DIR_DOWN]) { 
         			
-        			if(player.getState() != PlayerState.MOVE_DOWN)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_DOWN);
-        			player.setPos((int) player.getPos().x, (int) player.getPos().y - 2);
+        			if(!checkCollisionWithEnemies(player, (int) player.getPos().x, (int) player.getPos().y - 2))
+        			{
+	        			if(player.getState() != PlayerState.MOVE_DOWN)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_DOWN);
+	        			player.setPos((int) player.getPos().x, (int) player.getPos().y - 2);
+        			}
         			
         		} else if (!blockedDirs[DIR_RIGHT]) {
-        			
-        			if(player.getState() != PlayerState.MOVE_RIGHT)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_RIGHT);
-        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y);
+
+        			if(!checkCollisionWithEnemies(player, (int) player.getPos().x + 2, (int) player.getPos().y))
+        			{
+	        			if(player.getState() != PlayerState.MOVE_RIGHT)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_RIGHT);
+	        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y);
+        			}
         			
         		} else {
         			
@@ -125,27 +151,53 @@ public class PlayState extends AbstractGameState {
         		if(!blockedDirs[DIR_LEFT] && !blockedDirs[DIR_DOWN])
         		{
         			
-        			if(player.getState() != PlayerState.MOVE_LEFT_DOWN)
-        				changedState = true;
+        			if(!checkCollisionWithEnemies(player, (int) player.getPos().x - 2, (int) player.getPos().y - 2))
+        			{
+	        			if(player.getState() != PlayerState.MOVE_LEFT_DOWN)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_LEFT_DOWN);
+	        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y - 2);
         			
-        			player.setState(PlayerState.MOVE_LEFT_DOWN);
-        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y - 2);
+        			} else if(!checkCollisionWithEnemies(player, (int) player.getPos().x - 2, (int) player.getPos().y)) {
+        				
+        				if(player.getState() != PlayerState.MOVE_LEFT)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_LEFT);
+	        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y);
+        				
+        			} else if(!checkCollisionWithEnemies(player, (int) player.getPos().x, (int) player.getPos().y - 2)) {
+        				
+        				if(player.getState() != PlayerState.MOVE_DOWN)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_DOWN);
+	        			player.setPos((int) player.getPos().x, (int) player.getPos().y - 2);
+        				
+        			}
         			
         		} else if (!blockedDirs[DIR_DOWN]) { 
         			
-        			if(player.getState() != PlayerState.MOVE_DOWN)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_DOWN);
-        			player.setPos((int) player.getPos().x, (int) player.getPos().y - 2);
+        			if(!checkCollisionWithEnemies(player, (int) player.getPos().x, (int) player.getPos().y - 2))
+        			{
+	        			if(player.getState() != PlayerState.MOVE_DOWN)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_DOWN);
+	        			player.setPos((int) player.getPos().x, (int) player.getPos().y - 2);
+        			}
         			
         		} else if (!blockedDirs[DIR_LEFT]) {
         			
-        			if(player.getState() != PlayerState.MOVE_LEFT)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_LEFT);
-        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y);
+        			if(!checkCollisionWithEnemies(player, (int) player.getPos().x - 2, (int) player.getPos().y))
+        			{
+	        			if(player.getState() != PlayerState.MOVE_LEFT)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_LEFT);
+	        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y);
+        			}
         			
         		} else {
         			
@@ -157,11 +209,14 @@ public class PlayState extends AbstractGameState {
         		}
         	} else if(!blockedDirs[DIR_DOWN]) {
 
-    			if(player.getState() != PlayerState.MOVE_DOWN)
-    				changedState = true;
-    			
-    			player.setState(PlayerState.MOVE_DOWN);
-    			player.setPos((int) player.getPos().x, (int) player.getPos().y - 2);
+        		if(!checkCollisionWithEnemies(player, (int) player.getPos().x, (int) player.getPos().y - 2))
+    			{
+	    			if(player.getState() != PlayerState.MOVE_DOWN)
+	    				changedState = true;
+	    			
+	    			player.setState(PlayerState.MOVE_DOWN);
+	    			player.setPos((int) player.getPos().x, (int) player.getPos().y - 2);
+    			}
 
         	} else {
         	
@@ -179,27 +234,54 @@ public class PlayState extends AbstractGameState {
         		if(!blockedDirs[DIR_RIGHT] && !blockedDirs[DIR_UP])
         		{
         			
-        			if(player.getState() != PlayerState.MOVE_RIGHT_UP)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_RIGHT_UP);
-        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y + 2);
+        			if(!checkCollisionWithEnemies(player, (int) player.getPos().x + 2, (int) player.getPos().y + 2))
+        			{
+        				
+	        			if(player.getState() != PlayerState.MOVE_RIGHT_UP)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_RIGHT_UP);
+	        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y + 2);
+	        			
+        			} else if(!checkCollisionWithEnemies(player, (int) player.getPos().x + 2, (int) player.getPos().y)) {
+        				
+        				if(player.getState() != PlayerState.MOVE_RIGHT)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_RIGHT);
+	        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y);
+        				
+        			} else if(!checkCollisionWithEnemies(player, (int) player.getPos().x, (int) player.getPos().y + 2)) {
+        				
+        				if(player.getState() != PlayerState.MOVE_UP)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_UP);
+	        			player.setPos((int) player.getPos().x, (int) player.getPos().y + 2);
+        				
+        			}
         			
         		} else if (!blockedDirs[DIR_UP]) { 
         			
-        			if(player.getState() != PlayerState.MOVE_UP)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_UP);
-        			player.setPos((int) player.getPos().x, (int) player.getPos().y + 2);
+        			if(!checkCollisionWithEnemies(player, (int) player.getPos().x, (int) player.getPos().y + 2))
+        			{
+	        			if(player.getState() != PlayerState.MOVE_UP)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_UP);
+	        			player.setPos((int) player.getPos().x, (int) player.getPos().y + 2);
+        			}
         			
         		} else if (!blockedDirs[DIR_RIGHT]) {
         			
-        			if(player.getState() != PlayerState.MOVE_RIGHT)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_RIGHT);
-        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y);
+        			if(!checkCollisionWithEnemies(player, (int) player.getPos().x + 2, (int) player.getPos().y))
+        			{
+	        			if(player.getState() != PlayerState.MOVE_RIGHT)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_RIGHT);
+	        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y);
+        			}
         			
         		} else {
         			
@@ -213,27 +295,54 @@ public class PlayState extends AbstractGameState {
         		if(!blockedDirs[DIR_LEFT] && !blockedDirs[DIR_UP])
         		{
         			
-        			if(player.getState() != PlayerState.MOVE_LEFT_UP)
-        				changedState = true;
+        			if(!checkCollisionWithEnemies(player, (int) player.getPos().x - 2, (int) player.getPos().y + 2))
+        			{
+        				
+	        			if(player.getState() != PlayerState.MOVE_LEFT_UP)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_LEFT_UP);
+	        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y + 2);
         			
-        			player.setState(PlayerState.MOVE_LEFT_UP);
-        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y + 2);
+        			} else if(!checkCollisionWithEnemies(player, (int) player.getPos().x - 2, (int) player.getPos().y)) {
+        				
+	        			if(player.getState() != PlayerState.MOVE_LEFT)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_LEFT);
+	        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y);
+        			
+        			} else if(!checkCollisionWithEnemies(player, (int) player.getPos().x, (int) player.getPos().y + 2)) {
+        				
+	        			if(player.getState() != PlayerState.MOVE_UP)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_UP);
+	        			player.setPos((int) player.getPos().x, (int) player.getPos().y + 2);
+        			
+        			}
         			
         		} else if (!blockedDirs[DIR_UP]) { 
         			
-        			if(player.getState() != PlayerState.MOVE_UP)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_UP);
-        			player.setPos((int) player.getPos().x, (int) player.getPos().y + 2);
+        			if(!checkCollisionWithEnemies(player, (int) player.getPos().x, (int) player.getPos().y + 2))
+        			{
+	        			if(player.getState() != PlayerState.MOVE_UP)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_UP);
+	        			player.setPos((int) player.getPos().x, (int) player.getPos().y + 2);
+        			}
         			
         		} else if (!blockedDirs[DIR_LEFT]) {
         			
-        			if(player.getState() != PlayerState.MOVE_LEFT)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_LEFT);
-        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y);
+        			if(!checkCollisionWithEnemies(player, (int) player.getPos().x - 2, (int) player.getPos().y))
+        			{
+	        			if(player.getState() != PlayerState.MOVE_LEFT)
+	        				changedState = true;
+	        			
+	        			player.setState(PlayerState.MOVE_LEFT);
+	        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y);
+        			}
         			
         		} else {
         			
@@ -245,11 +354,14 @@ public class PlayState extends AbstractGameState {
         		}
         	} else if(!blockedDirs[DIR_UP]) {
         		
-    			if(player.getState() != PlayerState.MOVE_UP)
-    				changedState = true;
-    			
-    			player.setState(PlayerState.MOVE_UP);
-    			player.setPos((int) player.getPos().x, (int) player.getPos().y + 2);
+        		if(!checkCollisionWithEnemies(player, (int) player.getPos().x, (int) player.getPos().y + 2))
+    			{
+	    			if(player.getState() != PlayerState.MOVE_UP)
+	    				changedState = true;
+	    			
+	    			player.setState(PlayerState.MOVE_UP);
+	    			player.setPos((int) player.getPos().x, (int) player.getPos().y + 2);
+    			}
         			
         	} else {
         		
@@ -265,11 +377,14 @@ public class PlayState extends AbstractGameState {
         	if(!blockedDirs[DIR_LEFT])
         	{
         		
-        		if(player.getState() != PlayerState.MOVE_LEFT)
-    				changedState = true;
-        		
-        		player.setState(PlayerState.MOVE_LEFT);
-        		player.setPos((int) player.getPos().x - 2, (int) player.getPos().y);
+        		if(!checkCollisionWithEnemies(player, (int) player.getPos().x - 2, (int) player.getPos().y))
+    			{
+	        		if(player.getState() != PlayerState.MOVE_LEFT)
+	    				changedState = true;
+	        		
+	        		player.setState(PlayerState.MOVE_LEFT);
+	        		player.setPos((int) player.getPos().x - 2, (int) player.getPos().y);
+    			}
         		
         	} else {
         		
@@ -285,11 +400,14 @@ public class PlayState extends AbstractGameState {
         	if(!blockedDirs[DIR_RIGHT])
         	{
         		
-        		if(player.getState() != PlayerState.MOVE_RIGHT)
-    				changedState = true;
-        		
-        		player.setPos((int) player.getPos().x + 2, (int) player.getPos().y);
-        		player.setState(PlayerState.MOVE_RIGHT);
+        		if(!checkCollisionWithEnemies(player, (int) player.getPos().x + 2, (int) player.getPos().y))
+    			{
+	        		if(player.getState() != PlayerState.MOVE_RIGHT)
+	    				changedState = true;
+	        		
+	        		player.setPos((int) player.getPos().x + 2, (int) player.getPos().y);
+	        		player.setState(PlayerState.MOVE_RIGHT);
+    			}
         		
         	} else {
         		
@@ -356,6 +474,33 @@ public class PlayState extends AbstractGameState {
     	}
     	
     	return ret;
+    }
+    
+    /**
+     * <p>Chequea si el player en la posición destino colisiona con algún otro player</p>
+     * @param p		&emsp;{@link com.bonkan.brao.engine.entity.humans.Player Player} el player
+     * @param x		&emsp;<b>int</b> la posición destino X
+     * @param y		&emsp;<b>int</b> la posición destino Y
+     * @return	<b>boolean</b>
+     */
+    private boolean checkCollisionWithEnemies(Player p, int x, int y)
+    {
+    	Rectangle playerRect = new Rectangle(x - Constants.BODY_WIDTH / 2, y - Constants.BODY_HEIGHT / 2, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
+    	
+    	// iteramos las entidades
+    	HashMap<UUID, Entity> entidades = entities.getAllEntities();
+    	
+    	for (Map.Entry<UUID, Entity> entry : entidades.entrySet()) {
+			if(entry.getValue() instanceof Enemy)
+			{
+				Enemy e = (Enemy) entry.getValue(); 
+				Rectangle enemyRect = new Rectangle((int) e.getPos().x - Constants.BODY_WIDTH / 2 - 5, (int) e.getPos().y - Constants.BODY_HEIGHT / 2, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
+				
+				if(enemyRect.intersects(playerRect)) return true;
+			}
+		}
+    	
+    	return false;
     }
     
     /**
