@@ -2,6 +2,7 @@ package com.bonkan.brao.server.users;
 
 import java.util.UUID;
 
+import com.bonkan.brao.server.ui.ServerInterface;
 import com.bonkan.brao.server.utils.Position;
 import com.esotericsoftware.kryonet.Connection;
 
@@ -23,6 +24,29 @@ public class MatchUser extends LobbyUser {
 		this.pos = pos;
 		this.matchID = matchID;
 		this.state = PlayerState.NONE;
+	}
+	
+	public void update()
+	{
+		if(state == PlayerState.MOVE_DOWN)
+			this.pos.set(this.pos.getX(), this.pos.getY() - 2);
+		else if(state == PlayerState.MOVE_UP)
+			this.pos.set(this.pos.getX(), this.pos.getY() + 2);
+		else if(state == PlayerState.MOVE_LEFT_DOWN)
+			this.pos.set(this.pos.getX() - 2, this.pos.getY() - 2);
+		else if(state == PlayerState.MOVE_RIGHT_DOWN)
+			this.pos.set(this.pos.getX() + 2, this.pos.getY() - 2);
+		else if(state == PlayerState.MOVE_LEFT_UP)
+			this.pos.set(this.pos.getX() - 2, this.pos.getY() + 2);
+		else if(state == PlayerState.MOVE_RIGHT_UP)
+			this.pos.set(this.pos.getX() + 2, this.pos.getY() + 2);
+		else if(state == PlayerState.MOVE_RIGHT)
+			this.pos.set(this.pos.getX() + 2, this.pos.getY());
+		else if(state == PlayerState.MOVE_LEFT)
+			this.pos.set(this.pos.getX() - 2, this.pos.getY());
+		
+		if(state != PlayerState.NONE)
+			ServerInterface.addMessage("EL PLAYER " + this.getNickName() + " SE MOVIO A " + this.getPos().getX() + ", " + this.getPos().getY());
 	}
 
 	public void setPosition(int x, int y)

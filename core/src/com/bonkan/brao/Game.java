@@ -119,7 +119,7 @@ public class Game extends ApplicationAdapter {
 	// para la llegada de paquetes (despues lo movemos a otro lado??)
 	public void handleData(Packet p, Connection conn)
 	{
-		final AbstractGameState ags = gameState.getCurrentState();;
+		final AbstractGameState ags = gameState.getCurrentState();
 		
 		switch(p.getID())
 		{
@@ -160,6 +160,27 @@ public class Game extends ApplicationAdapter {
 				
 				break;
 				
+			case PacketIDs.PACKET_USER_ENTERED_AREA:
+				
+				if(ags instanceof PlayState)
+				{
+					
+					final UUID id = UUID.fromString((String) p.getData());
+					final int bodyIndex = Integer.parseInt(p.getArgs().get(0)); 
+					final int headIndex = Integer.parseInt(p.getArgs().get(1)); 
+					final int x = Integer.parseInt(p.getArgs().get(2)); 
+					final int y = Integer.parseInt(p.getArgs().get(3)); 
+					final String nick = p.getArgs().get(4);
+
+					Gdx.app.postRunnable(new Runnable(){
+				        public void run(){
+				        	((PlayState) ags).addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
+				        }
+				    });
+				}
+				
+				break;
+				
 			case PacketIDs.PACKET_USER_MOVED:
 				
 				if(ags instanceof PlayState)
@@ -174,12 +195,10 @@ public class Game extends ApplicationAdapter {
 
 					Gdx.app.postRunnable(new Runnable(){
 				        public void run(){
-				            if(!((PlayState) ags).getEnemyInArea(id))
-				            {
-				            	((PlayState) ags).addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
-				            } else {
-				            	((PlayState) ags).setEnemyPos(id, x, y);
-				            }
+				        	if(!((PlayState) ags).getEnemyInArea(id))
+				        		((PlayState) ags).addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
+				        	else
+				        		((PlayState) ags).setEnemyPos(id, x, y);
 				        }
 				    });
 				}

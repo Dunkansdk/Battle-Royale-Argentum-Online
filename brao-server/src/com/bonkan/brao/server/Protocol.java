@@ -79,6 +79,15 @@ public class Protocol {
 						
 						ServerInterface.addMessage("LOGUEADO CON ID: " + u.getID());
 						
+						args.clear();
+						args.add(String.valueOf(mu.getDefaultBody())); // body
+						args.add("1"); // head
+						args.add(String.valueOf(mu.getPos().getX())); // x
+						args.add(String.valueOf(mu.getPos().getY())); // y
+						args.add(String.valueOf(mu.getNickName())); // nick
+						
+						currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_ENTERED_AREA, u.getID().toString(), args), u.getID());
+						
 					} else {
 						conn.sendTCP(new Packet(PacketIDs.PACKET_LOGIN_FAILED, "", null));
 					}
@@ -113,14 +122,14 @@ public class Protocol {
 				mu = currentMatch.getUserByID(id);
 				
 				mu.setPosition(Integer.parseInt(p.getArgs().get(0)), Integer.parseInt(p.getArgs().get(1)));
-
-				// mandamos todo por si no lo tenia en el area
+				
 				args.clear();
 				args.add(String.valueOf(mu.getDefaultBody())); // body
 				args.add("1"); // head
 				args.add(String.valueOf(mu.getPos().getX())); // x
 				args.add(String.valueOf(mu.getPos().getY())); // y
 				args.add(String.valueOf(mu.getNickName())); // nick
+				args.add(String.valueOf(mu.getState())); // state
 
 				currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_MOVED, id.toString(), args), id);
 				break;

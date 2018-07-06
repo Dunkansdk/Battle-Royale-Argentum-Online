@@ -15,4 +15,5 @@ public class PacketIDs {
 	public static final int PACKET_USER_CHANGED_STATE = 4;
 	public static final int PACKET_PLAYER_MOVED = 5;
 	public static final int PACKET_USER_MOVED = 6;
+	public static final int PACKET_USER_ENTERED_AREA = 7;
 }

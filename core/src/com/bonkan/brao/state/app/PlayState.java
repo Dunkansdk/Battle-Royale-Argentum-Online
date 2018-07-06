@@ -84,7 +84,7 @@ public class PlayState extends AbstractGameState {
         
     	boolean[] blockedDirs = blockedDirections();
     	boolean changedState = false;
-    	Vector2 playerPos = new Vector2(player.getPos().x, player.getPos().y);
+    	Vector2 currPlayerPos = new Vector2(player.getPos().x, player.getPos().y);
     	
     	// solamente cambiamos el state cuando no hay bloqueo para no marear al server
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
@@ -99,7 +99,7 @@ public class PlayState extends AbstractGameState {
         			
         			player.setState(PlayerState.MOVE_RIGHT_DOWN);
         			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y - 2);
-        			
+        		
         		} else if (!blockedDirs[DIR_DOWN]) { 
         			
         			if(player.getState() != PlayerState.MOVE_DOWN)
@@ -315,24 +315,20 @@ public class PlayState extends AbstractGameState {
         	player.setState(PlayerState.NONE);
         }
         
-        if(changedState) {
-        	System.out.println("Nuevo STATE: " + player.getState());
-        
-        	ArrayList<String> args = new ArrayList<String>();
-        	args.add(String.valueOf(player.getState()));
-        	
-        	app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_CHANGED_STATE, player.getID().toString(), args));
-        }
-        
-        if(playerPos.x != player.getPos().x || playerPos.y != player.getPos().y)
+        // como esto es posible que se mande en cada frame, lo mandamos via UDP
+        if(currPlayerPos.x != player.getPos().x || currPlayerPos.y != player.getPos().y)
         {
         	ArrayList<String> args = new ArrayList<String>();
         	args.add(String.valueOf((int) player.getPos().x));
         	args.add(String.valueOf((int) player.getPos().y));
-        	
-        	app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_MOVED, player.getID().toString(), args));
+        	app.getClient().sendUDP(new Packet(PacketIDs.PACKET_PLAYER_MOVED, player.getID().toString(), args));
         }
         
+        if(changedState) {
+        	ArrayList<String> args = new ArrayList<String>();
+        	args.add(String.valueOf(player.getState()));
+        	app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_CHANGED_STATE, player.getID().toString(), args));
+        }
     }
     
     /**
@@ -404,8 +400,10 @@ public class PlayState extends AbstractGameState {
     @Override
     public void render()
     {
-
-    	map.getTiled().render();
+    	int[] bglayers = {0, 1};
+    	int[] foreground = {2};
+    	
+    	map.getTiled().render(bglayers);
 
     	app.getBatch().begin();
     	player.render(app.getBatch());
@@ -414,6 +412,8 @@ public class PlayState extends AbstractGameState {
     		entry.getValue().render(app.getBatch());
     	
     	app.getBatch().end();
+
+    	map.getTiled().render(foreground);
     	
     	if(app.DEBUG) b2dr.render(WorldManager.world, camera.combined.cpy());
 
