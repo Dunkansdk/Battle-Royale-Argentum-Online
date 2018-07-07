@@ -11,6 +11,8 @@ import java.util.UUID;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bonkan.brao.engine.entity.entities.Chest;
+import com.bonkan.brao.engine.entity.entities.Particle;
+import com.bonkan.brao.engine.entity.entities.Particle.ParticleType;
 import com.bonkan.brao.engine.entity.entities.WorldObject;
 import com.bonkan.brao.engine.entity.entities.human.Enemy;
 import com.bonkan.brao.engine.entity.entities.human.Player;
@@ -22,12 +24,14 @@ import com.bonkan.brao.engine.utils.Constants;
 public class EntityManager {
 	
 	private static HashMap<UUID, Entity> entities;
-	private static ArrayList<Entity> worldEntities;
+	private static ArrayList<Entity> worldSorted;
+	private static ArrayList<Entity> worldUnsorted;
 	private static ArrayList<Chest> chests;
 	
 	public static void init() {
 		entities = new HashMap<UUID, Entity>();
-		worldEntities = new ArrayList<Entity>();
+		worldSorted = new ArrayList<Entity>();
+		worldUnsorted = new ArrayList<Entity>();
 		chests = new ArrayList<Chest>();
 	}
 	
@@ -44,7 +48,7 @@ public class EntityManager {
 	 */
 	public static void render(SpriteBatch batch) {
 		List<Entity> entityValues = new ArrayList<Entity>(entities.values());
-		entityValues.addAll(worldEntities);
+		entityValues.addAll(worldSorted);
 		entityValues.addAll(chests);
 		
 		Collections.sort(entityValues, new Comparator<Entity>() {
@@ -55,6 +59,9 @@ public class EntityManager {
 	    });
 		
 		for (Entity entity : entityValues) {
+			entity.render(batch);
+		}
+		for(Entity entity : worldUnsorted) {
 			entity.render(batch);
 		}
 	}
@@ -103,7 +110,15 @@ public class EntityManager {
 	}
 	
 	public static void addWorldObject(WorldObject entity) {
-		worldEntities.add(entity);
+		worldSorted.add(entity);
+	}
+	
+	public static void addParticle(ParticleType particle, int x, int y, boolean sorted) {
+		if(sorted) {
+			worldSorted.add(new Particle(particle, x, y));
+		} else {
+			worldUnsorted.add(new Particle(particle, x, y));
+		}
 	}
 	
 	public static void addChest(Chest chest)
