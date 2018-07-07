@@ -159,5 +159,7 @@ public class LoginState extends AbstractGameState {
     @Override
     public void dispose() {
     	stage.dispose();
+    	skin.dispose();
+    	defaultFont.dispose();
     }
 }

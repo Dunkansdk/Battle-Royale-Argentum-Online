@@ -70,11 +70,6 @@ public abstract class Human extends Entity {
 		body.setTransform(location, 0.0f);
 	}
 	
-	@Override
-	public void dispose() {
-		
-	}
-	
 	public void setLocation(int x, int y)
 	{
 		location.x = x;

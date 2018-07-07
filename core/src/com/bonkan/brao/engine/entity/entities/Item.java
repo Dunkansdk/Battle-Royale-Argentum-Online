@@ -35,11 +35,6 @@ public class Item extends Entity {
 	public void render(SpriteBatch batch) {
 		batch.draw(texture, location.x, location.y);
 	}
-
-	@Override
-	public void dispose() {
-		
-	}
 	
 	public int getRarity()
 	{

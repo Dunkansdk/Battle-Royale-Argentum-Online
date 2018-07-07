@@ -115,9 +115,11 @@ public class Game extends ApplicationAdapter {
 	}
 
 	@Override
-	public void dispose () {
+	public void dispose() {
 		gameState.dispose();
 		batch.dispose();
+		client.close();
+		AtlasManager.dispose(); // Supongo que esto era lo que explotaba la stack
 	}
 	
 	// para la llegada de paquetes (despues lo movemos a otro lado??)

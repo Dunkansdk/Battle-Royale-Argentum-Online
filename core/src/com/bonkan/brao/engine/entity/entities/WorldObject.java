@@ -23,11 +23,6 @@ public class WorldObject extends Entity {
 		batch.draw(texture, location.x, location.y);
 	}
 
-	@Override
-	public void dispose() {
-
-	}
-	
 	public TextureRegion getTexture() {
 		return texture;
 	}
