@@ -1,6 +1,7 @@
 package com.bonkan.brao.server;
 
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 
@@ -15,11 +16,13 @@ public class Match {
 
 	private HashMap<UUID, MatchUser> users;
 	private UUID id;
+	private ArrayList<Integer> openedChests;
 	
 	public Match(UUID id)
 	{
 		this.id = id;
 		users = new HashMap<UUID, MatchUser>();
+		openedChests = new ArrayList<Integer>();
 	}
 	
 	public void addUser(MatchUser u)
@@ -87,5 +90,15 @@ public class Match {
 	public UUID getID()
 	{
 		return id;
+	}
+	
+	public boolean openedChest(int id)
+	{
+		return(openedChests.contains(id));
+	}
+	
+	public void openChest(int id)
+	{
+		openedChests.add(id);
 	}
 }

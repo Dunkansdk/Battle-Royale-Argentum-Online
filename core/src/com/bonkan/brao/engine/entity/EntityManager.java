@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bonkan.brao.engine.entity.entities.Chest;
 import com.bonkan.brao.engine.entity.entities.WorldObject;
 import com.bonkan.brao.engine.entity.entities.human.Enemy;
 import com.bonkan.brao.engine.entity.entities.human.Player;
@@ -22,10 +23,12 @@ public class EntityManager {
 	
 	private static HashMap<UUID, Entity> entities;
 	private static ArrayList<Entity> worldEntities;
+	private static ArrayList<Chest> chests;
 	
 	public static void init() {
 		entities = new HashMap<UUID, Entity>();
 		worldEntities = new ArrayList<Entity>();
+		chests = new ArrayList<Chest>();
 	}
 	
 	public static void addPlayer(UUID id, Player player) {
@@ -42,6 +45,7 @@ public class EntityManager {
 	public static void render(SpriteBatch batch) {
 		List<Entity> entityValues = new ArrayList<Entity>(entities.values());
 		entityValues.addAll(worldEntities);
+		entityValues.addAll(chests);
 		
 		Collections.sort(entityValues, new Comparator<Entity>() {
 			@Override
@@ -88,13 +92,33 @@ public class EntityManager {
 		return null;
 	}
 	
+	public static Chest getChestByID(int id)
+	{
+		for (Chest c : chests) {
+	        if (c.getID() == id)
+	            return c;
+	    }
+		
+		return null;
+	}
+	
 	public static void addWorldObject(WorldObject entity) {
 		worldEntities.add(entity);
+	}
+	
+	public static void addChest(Chest chest)
+	{
+		chests.add(chest);
 	}
 	
 	public static HashMap<UUID, Entity> getAllEntities()
 	{
 		return entities;
+	}
+	
+	public static ArrayList<Chest> getChests()
+	{
+		return chests;
 	}
 
 }

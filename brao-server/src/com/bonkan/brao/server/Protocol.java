@@ -120,6 +120,8 @@ public class Protocol {
 				
 				id = UUID.fromString(((String)p.getData()));
 				mu = currentMatch.getUserByID(id);
+				
+				mu.setPosition(Integer.parseInt(p.getArgs().get(0)), Integer.parseInt(p.getArgs().get(1)));
 
 				args.clear();
 				args.add(String.valueOf(mu.getDefaultBody())); // body
@@ -130,6 +132,18 @@ public class Protocol {
 				args.add(String.valueOf(mu.getState())); // state
 
 				currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_MOVED, id.toString(), args), id);
+				break;
+				
+			case PacketIDs.PACKET_TRY_OPEN_CHEST:
+				
+				int chestID = Integer.parseInt((String) p.getData());
+				
+				if(!currentMatch.openedChest(chestID))
+				{
+					currentMatch.openChest(chestID);
+					currentMatch.sendDataToAll(new Packet(PacketIDs.PACKET_CHEST_OPENED, p.getData(), null));
+				}
+				
 				break;
 		}
 	}

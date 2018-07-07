@@ -1,6 +1,5 @@
 package com.bonkan.brao.state.app;
 
-import java.awt.Rectangle;
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -15,7 +14,6 @@ import com.bonkan.brao.engine.entity.entities.human.Player;
 import com.bonkan.brao.engine.input.InputController;
 import com.bonkan.brao.engine.map.MapManager;
 import com.bonkan.brao.engine.map.WorldManager;
-import com.bonkan.brao.engine.utils.Constants;
 import com.bonkan.brao.networking.LoggedUser;
 import com.bonkan.brao.networking.Packet;
 import com.bonkan.brao.networking.PacketIDs;
@@ -136,12 +134,17 @@ public class PlayState extends AbstractGameState {
     					x = Integer.parseInt(p.getArgs().get(2)); 
     					y = Integer.parseInt(p.getArgs().get(3)); 
     					nick = p.getArgs().get(4);
-    	
+
     					if(!getEnemyInArea(id))
     						addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
     					else
     						setEnemyPos(id, x, y);
 	    				
+	    				break;
+	    				
+	    			case PacketIDs.PACKET_CHEST_OPENED:
+	    				int chestID = Integer.parseInt((String) p.getData());
+	    				EntityManager.getChestByID(chestID).open();
 	    				break;
     			}
     			
@@ -166,8 +169,7 @@ public class PlayState extends AbstractGameState {
     
     public void addEnemyToArea(int bodyIndex, int headIndex, int x, int y, UUID id, String nick)
     {
-    	if(!collidesWithPlayer(x, y))
-    		EntityManager.addEnemy(id, new Enemy(x, y, bodyIndex, headIndex, id, nick, WorldManager.world));
+    	EntityManager.addEnemy(id, new Enemy(x, y, bodyIndex, headIndex, id, nick, WorldManager.world));
     }
     
     public void setEnemyState(UUID enemyID, PlayerState newState)
@@ -178,21 +180,13 @@ public class PlayState extends AbstractGameState {
     
     public void setEnemyPos(UUID enemyID, int x, int y)
     {
-    	if(EntityManager.getEnemy(enemyID) != null && !collidesWithPlayer(x, y))
+    	if(EntityManager.getEnemy(enemyID) != null)
     		EntityManager.getEnemy(enemyID).setLocation(x, y);
     }
     
     public boolean getEnemyInArea(UUID enemyID)
     {
     	return (EntityManager.getEnemy(enemyID) != null);
-    }
-    
-    public boolean collidesWithPlayer(int x, int y)
-    {
-    	Rectangle rect = new Rectangle(x - Constants.BODY_WIDTH / 2, y - Constants.BODY_HEIGHT / 2, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
-    	Rectangle playerRect = new Rectangle((int) EntityManager.getPlayer().getPos().x - Constants.BODY_WIDTH / 2, (int) EntityManager.getPlayer().getPos().y - Constants.BODY_HEIGHT / 2, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
-    
-    	return(rect.intersects(playerRect));
     }
 
     @Override

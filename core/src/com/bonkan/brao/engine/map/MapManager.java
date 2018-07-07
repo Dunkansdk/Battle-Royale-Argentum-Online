@@ -17,6 +17,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.bonkan.brao.engine.entity.EntityManager;
+import com.bonkan.brao.engine.entity.entities.Chest;
 import com.bonkan.brao.engine.entity.entities.WorldObject;
 import com.bonkan.brao.engine.map.factory.BodyFactory;
 import com.bonkan.brao.engine.map.factory.ShapeFactory;
@@ -66,7 +67,8 @@ public class MapManager {
 		tiled = new OrthogonalTiledMapRenderer(getCurrentMap());
 		createCollision(world);
 		createLights();
-		createObjects(world);
+		createObjects();
+		createChests();
 	}
 	
 	/**
@@ -100,7 +102,7 @@ public class MapManager {
         }
     }
 	
-	private void createObjects(World world) {
+	private void createObjects() {
 		MapObjects objects = getCurrentMap().getLayers().get("sprites").getObjects();
 
         for (MapObject object : objects) {
@@ -171,6 +173,21 @@ public class MapManager {
         }
 		
 		return blocks;
+	}
+	
+	private void createChests()
+	{
+		MapObjects objects = getCurrentMap().getLayers().get("chests").getObjects();
+
+        for (MapObject object : objects) {
+        	if(object.getProperties().containsKey("chestID")) {
+        		TextureRegion texture = AtlasManager.getWorldSprite("closed_chest");
+        		EntityManager.addChest(new Chest(texture,
+											 (Float) object.getProperties().get("x"),
+											 (Float) object.getProperties().get("y") - texture.getRegionHeight(),
+											 (Integer) object.getProperties().get("chestID")));
+        	}
+        }
 	}
 	
 	/**

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+import com.bonkan.brao.engine.entity.EntityManager;
+import com.bonkan.brao.engine.entity.entities.Chest;
 import com.bonkan.brao.engine.entity.entities.Human.PlayerState;
 import com.bonkan.brao.engine.entity.entities.human.Player;
 import com.bonkan.brao.engine.utils.Constants;
@@ -44,219 +46,107 @@ public class InputController {
     	// solamente cambiamos el state cuando no hay bloqueo para no marear al server
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
         {
+        	if(player.getState() != PlayerState.MOVE_DOWN)
+				changedState = true;
+    		
+    		player.setLastValidState(player.getState());
+			player.setState(PlayerState.MOVE_DOWN);
+        	
         	if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
         	{
+        		if(player.getState() != PlayerState.MOVE_RIGHT_DOWN)
+					changedState = true;
+        		
+        		player.setLastValidState(player.getState());
+    			player.setState(PlayerState.MOVE_RIGHT_DOWN);
+        		
         		if(!blockedDirs[DIR_RIGHT] && !blockedDirs[DIR_DOWN])
-        		{
-
-    				if(player.getState() != PlayerState.MOVE_RIGHT_DOWN)
-    					changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_RIGHT_DOWN);
         			player.setLocation((int) player.getPos().x + 2, (int) player.getPos().y - 2);
-        			
-        		} else if (!blockedDirs[DIR_DOWN]) { 
-
-        			if(player.getState() != PlayerState.MOVE_DOWN)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_DOWN);
+        		else if (!blockedDirs[DIR_DOWN])
         			player.setLocation((int) player.getPos().x, (int) player.getPos().y - 2);
-        			
-        		} else if (!blockedDirs[DIR_RIGHT]) {
-
-        			if(player.getState() != PlayerState.MOVE_RIGHT)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_RIGHT);
+        		else if (!blockedDirs[DIR_RIGHT]) 
         			player.setLocation((int) player.getPos().x + 2, (int) player.getPos().y);
-        			
-        		} else {
-        			
-        			if(player.getState() != PlayerState.NONE)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.NONE);
-        			
-        		}
+        		
         	} else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        		if(player.getState() != PlayerState.MOVE_LEFT_DOWN)
+    				changedState = true;
+    			
+    			player.setLastValidState(player.getState());
+    			player.setState(PlayerState.MOVE_LEFT_DOWN);
+        		
         		if(!blockedDirs[DIR_LEFT] && !blockedDirs[DIR_DOWN])
-        		{
-
-        			if(player.getState() != PlayerState.MOVE_LEFT_DOWN)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_LEFT_DOWN);
         			player.setLocation((int) player.getPos().x - 2, (int) player.getPos().y - 2);
-        			
-        		} else if (!blockedDirs[DIR_DOWN]) { 
-        			
-        			if(player.getState() != PlayerState.MOVE_DOWN)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_DOWN);
+        		else if (!blockedDirs[DIR_DOWN])
         			player.setLocation((int) player.getPos().x, (int) player.getPos().y - 2);
-        			
-        		} else if (!blockedDirs[DIR_LEFT]) {
-
-        			if(player.getState() != PlayerState.MOVE_LEFT)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_LEFT);
+        		else if (!blockedDirs[DIR_LEFT]) 
         			player.setLocation((int) player.getPos().x - 2, (int) player.getPos().y);
-        			
-        		} else {
-        			
-        			if(player.getState() != PlayerState.NONE)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.NONE);
-        			
-        		}
         	} else if(!blockedDirs[DIR_DOWN]) {
 
-    			if(player.getState() != PlayerState.MOVE_DOWN)
-    				changedState = true;
-    			
-    			player.setState(PlayerState.MOVE_DOWN);
     			player.setLocation((int) player.getPos().x, (int) player.getPos().y - 2);
 
-        	} else {
-        	
-        		if(player.getState() != PlayerState.NONE)
-    				changedState = true;
-    			
-    			player.setState(PlayerState.NONE);
-        		
         	}
-        }
-        else if(Gdx.input.isKeyPressed(Input.Keys.UP))
-    	{
+        } else if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        	
+        	if(player.getState() != PlayerState.MOVE_UP)
+				changedState = true;
+    		
+    		player.setLastValidState(player.getState());
+			player.setState(PlayerState.MOVE_UP);
+        	
         	if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
         	{
+        		if(player.getState() != PlayerState.MOVE_RIGHT_UP)
+    				changedState = true;
+    			
+    			player.setLastValidState(player.getState());
+    			player.setState(PlayerState.MOVE_RIGHT_UP);
+        		
         		if(!blockedDirs[DIR_RIGHT] && !blockedDirs[DIR_UP])
-        		{
-
-        			if(player.getState() != PlayerState.MOVE_RIGHT_UP)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_RIGHT_UP);
         			player.setLocation((int) player.getPos().x + 2, (int) player.getPos().y + 2);
-
-        		} else if (!blockedDirs[DIR_UP]) { 
-
-        			if(player.getState() != PlayerState.MOVE_UP)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_UP);
+        		else if (!blockedDirs[DIR_UP])
         			player.setLocation((int) player.getPos().x, (int) player.getPos().y + 2);
-        			
-        		} else if (!blockedDirs[DIR_RIGHT]) {
-
-        			if(player.getState() != PlayerState.MOVE_RIGHT)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_RIGHT);
+        		else if (!blockedDirs[DIR_RIGHT])
         			player.setLocation((int) player.getPos().x + 2, (int) player.getPos().y);
-        			
-        		} else {
-        			
-        			if(player.getState() != PlayerState.NONE)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.NONE);
-        			
-        		}
+ 
         	} else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        		if(player.getState() != PlayerState.MOVE_LEFT_UP)
+    				changedState = true;
+    			
+    			player.setLastValidState(player.getState());
+    			player.setState(PlayerState.MOVE_LEFT_UP);
+        		
         		if(!blockedDirs[DIR_LEFT] && !blockedDirs[DIR_UP])
-        		{
-
-        			if(player.getState() != PlayerState.MOVE_LEFT_UP)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_LEFT_UP);
         			player.setLocation((int) player.getPos().x - 2, (int) player.getPos().y + 2);
-        			
-        		} else if (!blockedDirs[DIR_UP]) { 
-
-        			if(player.getState() != PlayerState.MOVE_UP)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_UP);
+        		else if (!blockedDirs[DIR_UP])
         			player.setLocation((int) player.getPos().x, (int) player.getPos().y + 2);
-        			
-        		} else if (!blockedDirs[DIR_LEFT]) {
-
-        			if(player.getState() != PlayerState.MOVE_LEFT)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.MOVE_LEFT);
+        		else if (!blockedDirs[DIR_LEFT])
         			player.setLocation((int) player.getPos().x - 2, (int) player.getPos().y);
-        			
-        		} else {
-        			
-        			if(player.getState() != PlayerState.NONE)
-        				changedState = true;
-        			
-        			player.setState(PlayerState.NONE);
-        			
-        		}
+
         	} else if(!blockedDirs[DIR_UP]) {
 
-    			if(player.getState() != PlayerState.MOVE_UP)
-    				changedState = true;
-    			
-    			player.setState(PlayerState.MOVE_UP);
     			player.setLocation((int) player.getPos().x, (int) player.getPos().y + 2);
         			
-        	} else {
-        		
-        		if(player.getState() != PlayerState.NONE)
-    				changedState = true;
-    			
-    			player.setState(PlayerState.NONE);
-        		
         	}	
-    	}
-        else if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-    	{
+    	} else if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+    		if(player.getState() != PlayerState.MOVE_LEFT)
+				changedState = true;
+    		
+    		player.setLastValidState(player.getState());
+    		player.setState(PlayerState.MOVE_LEFT);
+    		
         	if(!blockedDirs[DIR_LEFT])
-        	{
-
-        		if(player.getState() != PlayerState.MOVE_LEFT)
-    				changedState = true;
-        		
-        		player.setState(PlayerState.MOVE_LEFT);
         		player.setLocation((int) player.getPos().x - 2, (int) player.getPos().y);
-        		
-        	} else {
-        		
-        		if(player.getState() != PlayerState.NONE)
-    				changedState = true;
-    			
-    			player.setState(PlayerState.NONE);
-        		
-        	}
-    	}
-        else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-    	{
-        	if(!blockedDirs[DIR_RIGHT])
-        	{
 
-        		if(player.getState() != PlayerState.MOVE_RIGHT)
-    				changedState = true;
+    	} else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+    		if(player.getState() != PlayerState.MOVE_RIGHT)
+				changedState = true;
+    		
+    		player.setState(PlayerState.MOVE_RIGHT);
+    		player.setLastValidState(player.getState());
+    		
+    		if(!blockedDirs[DIR_RIGHT])
+    			player.setLocation((int) player.getPos().x + 2, (int) player.getPos().y);
         		
-        		player.setLocation((int) player.getPos().x + 2, (int) player.getPos().y);
-        		player.setState(PlayerState.MOVE_RIGHT);
-        		
-        	} else {
-        		
-        		if(player.getState() != PlayerState.NONE)
-    				changedState = true;
-    			
-    			player.setState(PlayerState.NONE);
-        		
-        	}
     	}
 
         if(	!Gdx.input.isKeyPressed(Input.Keys.DOWN) 	&& 
@@ -265,9 +155,19 @@ public class InputController {
         	!Gdx.input.isKeyPressed(Input.Keys.RIGHT)) 
         {
         	if(player.getState() != PlayerState.NONE)
-				changedState = true;
+        	{
+        		changedState = true;
+        		player.setLastValidState(player.getState());
+        	}
 
         	player.setState(PlayerState.NONE);
+        }
+        
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
+        {
+        	int chestID = checkChestPosition(player);
+        	if(chestID > -1 && !EntityManager.getChestByID(chestID).getOpened())
+        		client.sendTCP(new Packet(PacketIDs.PACKET_TRY_OPEN_CHEST, String.valueOf(chestID), null));
         }
         
         // como esto es posible que se mande en cada frame, lo mandamos via UDP
@@ -314,5 +214,51 @@ public class InputController {
     	}
     	
     	return ret;
+    }
+    
+    private int checkChestPosition(Player player)
+    {
+    	int realX = (int) player.getPos().x - Constants.BODY_WIDTH / 2;
+    	int realY = (int) player.getPos().y - Constants.BODY_HEIGHT / 2;
+    	
+    	if(player.getLastValidState() == PlayerState.MOVE_DOWN)
+    		realY -= 5;
+    	else if(player.getLastValidState() == PlayerState.MOVE_UP)
+    		realY += 5;
+    	else if(player.getLastValidState() == PlayerState.MOVE_LEFT)
+    		realX -= 5;
+    	else if(player.getLastValidState() == PlayerState.MOVE_RIGHT)
+    		realX += 5;
+    	else if(player.getLastValidState() == PlayerState.MOVE_LEFT_DOWN)
+    	{
+    		realY -= 5;
+    		realX -= 5;
+    	}
+    	else if(player.getLastValidState() == PlayerState.MOVE_LEFT_UP)
+    	{
+    		realY += 5;
+    		realX -= 5;
+    	}
+    	else if(player.getLastValidState() == PlayerState.MOVE_RIGHT_DOWN)
+    	{
+    		realY -= 5;
+    		realX += 5;
+    	}
+    	else if(player.getLastValidState() == PlayerState.MOVE_RIGHT_UP)
+    	{
+    		realY += 5;
+    		realX += 5;
+    	}
+    	
+    	Rectangle playerRect = new Rectangle(realX, realY, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
+
+    	for(Chest c : EntityManager.getChests())
+    	{
+    		Rectangle chestRect = new Rectangle((int) c.getPos().x, (int) c.getPos().y, 32, 32);
+    		if(chestRect.intersects(playerRect))
+    			return c.getID();
+    	}
+    	
+    	return -1;
     }
 }

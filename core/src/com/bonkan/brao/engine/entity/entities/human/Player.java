@@ -12,18 +12,32 @@ public class Player extends Human {
 	
 	private int health;
 	private int mana;
+	private PlayerState lastValidState; // ultimo state distinto de NONE (para chequear orientacion)
 	
 	public Player(int x, int y, int bodyIndex, int headIndex, int health, int mana, UUID id, String userName, World world) {
 		super(x, y, bodyIndex, headIndex, id, userName, world);		
 		this.health = health;
 		this.mana = mana;
+		lastValidState = PlayerState.MOVE_DOWN;
 	}
 	
-	public int getHealth() {
+	public int getHealth() 
+	{
 		return health;
 	}
 	
-	public int getMana() {
+	public int getMana() 
+	{
 		return mana;
+	}
+	
+	public void setLastValidState(PlayerState state)
+	{
+		lastValidState = state;
+	}
+	
+	public PlayerState getLastValidState()
+	{
+		return lastValidState;
 	}
 }
