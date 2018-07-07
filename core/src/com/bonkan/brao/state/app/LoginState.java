@@ -8,7 +8,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -20,6 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.bonkan.brao.engine.utils.AssetsManager;
+import com.bonkan.brao.engine.utils.AtlasManager;
 import com.bonkan.brao.networking.Packet;
 import com.bonkan.brao.networking.PacketIDs;
 import com.bonkan.brao.state.AbstractGameState;
@@ -44,15 +45,14 @@ public class LoginState extends AbstractGameState {
     public LoginState(GameStateManager gameState) {
         super(gameState);
         
+        AtlasManager.init();
+        
         labelTimer = 0;
-
+        
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         
-        FreeTypeFontGenerator freeTypeFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("segoeui.ttf"));
- 		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
- 		parameter.size = 14;
- 		defaultFont = freeTypeFontGenerator.generateFont(parameter);
+        defaultFont = AssetsManager.getDefaultFont();
 
  		skin = new Skin();
  		skin.add("default-font", defaultFont, BitmapFont.class);
@@ -158,8 +158,8 @@ public class LoginState extends AbstractGameState {
 
     @Override
     public void dispose() {
-    	stage.dispose();
+    	/*stage.dispose();
     	skin.dispose();
-    	defaultFont.dispose();
+    	defaultFont.dispose();*/
     }
 }

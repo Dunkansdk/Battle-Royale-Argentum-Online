@@ -54,9 +54,6 @@ public class Game extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		gameState = new GameStateManager(this);
 		
-		// inicializo el atlas manager para tener todos los atlases cargados
-		AtlasManager.init();
-		
 		// instanciamos el cliente y tratamos de conectar
 		// esto también se hace en otro thread
 		client = new Client(); // el constrctor de client puede recibir un buffersize, si hay errores probablemente sean por paquetes muy grandes, hay que tocar aca
@@ -70,7 +67,7 @@ public class Game extends ApplicationAdapter {
 	    kryo.register(ArrayList.class);
 	    kryo.register(String.class);
 	    kryo.register(UUID.class);
-	    
+
 	    try {
 			Thread.sleep(100);
 		} catch (InterruptedException e1) {
@@ -146,19 +143,23 @@ public class Game extends ApplicationAdapter {
 		}
 	}
 
-	public OrthographicCamera getCamera() {
+	public OrthographicCamera getCamera() 
+	{
 		return camera;
 	}
 	
-	public void setCamera(OrthographicCamera camera) {
+	public void setCamera(OrthographicCamera camera) 
+	{
 		this.camera = camera;
 	}
 
-	public SpriteBatch getBatch() {
+	public SpriteBatch getBatch() 
+	{
 		return batch;
 	}
 	
-	public Client getClient() {
+	public Client getClient() 
+	{
 		return client;
 	}
 	

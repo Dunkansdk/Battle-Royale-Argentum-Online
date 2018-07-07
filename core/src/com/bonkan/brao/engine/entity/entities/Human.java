@@ -2,17 +2,16 @@ package com.bonkan.brao.engine.entity.entities;
 
 import java.util.UUID;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.bonkan.brao.engine.entity.Entity;
 import com.bonkan.brao.engine.entity.animation.BodyAnimator;
 import com.bonkan.brao.engine.entity.animation.HeadAnimator;
 import com.bonkan.brao.engine.map.factory.BodyFactory;
+import com.bonkan.brao.engine.utils.AssetsManager;
 import com.bonkan.brao.engine.utils.AtlasManager;
 import com.bonkan.brao.engine.utils.Constants;
 
@@ -29,7 +28,7 @@ public abstract class Human extends Entity {
 	protected UUID id;
 	protected PlayerState state;
 	protected String userName;
-	protected BitmapFont defaultFont;
+	protected BitmapFont nameFont;
 		
 	// Texturas del player
 	protected BodyAnimator bodyAnimator;
@@ -51,18 +50,14 @@ public abstract class Human extends Entity {
 		this.headAnimator = new HeadAnimator(AtlasManager.getHeads(headIndex));
 		this.bodyAnimator = new BodyAnimator(texture);
 		this.body = BodyFactory.createPlayerBox(world, x, y, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
-		
-		FreeTypeFontGenerator freeTypeFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("segoeui.ttf"));
- 		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
- 		parameter.size = 14;
- 		this.defaultFont = freeTypeFontGenerator.generateFont(parameter);
+		this.nameFont = AssetsManager.getDefaultFont();
 	}
 
 	@Override
 	public void render(SpriteBatch batch) {
 		bodyAnimator.render(batch, location.x - Constants.BODY_WIDTH / 2, location.y - Constants.BODY_HEIGHT / 2, state);
 		headAnimator.render(batch, location.x - 8, location.y + Constants.BODY_HEIGHT / 2 - 3, state);
-		defaultFont.draw(batch, userName, location.x - (userName.length() / 2 * 14) / 2, location.y - Constants.BODY_HEIGHT / 2);
+		nameFont.draw(batch, userName, location.x - (userName.length() / 2 * 14) / 2, location.y - Constants.BODY_HEIGHT / 2);
 	}
 	
 	@Override

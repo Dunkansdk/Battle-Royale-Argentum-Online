@@ -1,7 +1,5 @@
 package com.bonkan.brao.engine.utils;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -19,11 +17,11 @@ public class AtlasManager {
 	
 	public static void init()
 	{
-		bodies = new TextureAtlas(Gdx.files.internal("bodies.atlas"));
-		heads = new TextureAtlas(Gdx.files.internal("heads.atlas"));
-		world = new TextureAtlas(Gdx.files.internal("world.atlas"));
-		particles = new TextureAtlas(Gdx.files.internal("particles.atlas"));
-		items = new TextureAtlas(Gdx.files.internal("items.atlas"));
+		bodies = AssetsManager.getBodies();
+		heads = AssetsManager.getHeads();
+		world = AssetsManager.getWorldAtlas();
+		particles = AssetsManager.getParticlesAtlas();
+		items = AssetsManager.getItems();
 	}
 	
 	public static TextureRegion getBody(int bodyIndex)
@@ -53,9 +51,9 @@ public class AtlasManager {
 
 	public static void dispose() 
 	{
-		bodies.dispose();
+		/*bodies.dispose();
 		heads.dispose();
 		world.dispose();
-		particles.dispose();
+		particles.dispose();*/
 	}
 }

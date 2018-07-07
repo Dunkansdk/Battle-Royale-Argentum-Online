@@ -1,6 +1,7 @@
 package com.bonkan.brao.state;
 
 import com.bonkan.brao.Game;
+import com.bonkan.brao.state.app.LoadingState;
 import com.bonkan.brao.state.app.LobbyState;
 import com.bonkan.brao.state.app.LoginState;
 import com.bonkan.brao.state.app.OptionState;
@@ -22,14 +23,14 @@ public class GameStateManager {
         LOGIN,
         PLAY,
         OPTION,
-        LOBBY
+        LOBBY,
+        LOADING
     }
 
     public GameStateManager(final Game app) {
         this.app = app;
         this.states = new Stack<AbstractGameState>();
-        //this.setState(State.PLAY);
-        this.setState(State.LOGIN);
+        this.setState(State.LOADING);
     }
 
     public Game getApp() {
@@ -89,6 +90,8 @@ public class GameStateManager {
                 return new LobbyState(this);
             case OPTION:
                 return new OptionState(this);
+            case LOADING:
+            	return new LoadingState(this);
         }
         return null;
     }
