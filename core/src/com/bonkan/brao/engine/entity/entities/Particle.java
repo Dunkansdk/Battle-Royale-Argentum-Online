@@ -39,11 +39,6 @@ public class Particle extends Entity {
 		effect.draw(batch, Gdx.graphics.getDeltaTime());
 	}
 
-	@Override
-	public void dispose() {
-		effect.dispose();
-	}
-	
 	public boolean isComplete() {
 		return effect.isComplete();
 	}

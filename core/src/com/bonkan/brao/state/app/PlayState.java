@@ -41,8 +41,9 @@ public class PlayState extends AbstractGameState {
         LoggedUser aux = app.getLoggedUser();
    
         EntityManager.addPlayer(aux.getLoggedID(), new Player(aux.getX(), aux.getY(), aux.getLoggedDefaultBody(), 1, aux.getHP(), aux.getMana(), aux.getLoggedID(), aux.getLoggedUserName(), WorldManager.world));
+        
         EntityManager.addParticle(ParticleType.TEST1, 10, 10, true);
-        EntityManager.addParticle(ParticleType.TEST1, 400, 400, false);
+        EntityManager.addParticle(ParticleType.TEST2, 400, 400, false);
     }
 
     @Override

@@ -35,7 +35,7 @@ public class MapManager {
 	
     private OrthogonalTiledMapRenderer tiled;
     private RayHandler rays;
-    private TiledMap mapa;
+    private TiledMap map;
 	
     /**
      * <p>Carga los mapas desde el directorio /maps/</p>
@@ -43,7 +43,7 @@ public class MapManager {
      */
 	public MapManager(World world) {
 		
-		mapa = new TmxMapLoader().load("map1.tmx");
+		map = new TmxMapLoader().load("map1.tmx");
 		
 		rays = new RayHandler(world);
 		RayHandler.setGammaCorrection(true);     // enable or disable gamma correction
@@ -196,7 +196,7 @@ public class MapManager {
 	 */
 	public TiledMap getCurrentMap() 
 	{
-		return mapa;
+		return map;
 	}
 	
 	public OrthogonalTiledMapRenderer getTiled() {
@@ -208,8 +208,9 @@ public class MapManager {
 	}
 
 	public void dispose() {
-		mapa.dispose();
+		map.dispose();
 		tiled.dispose();
+		rays.dispose();
 	}
 
 }

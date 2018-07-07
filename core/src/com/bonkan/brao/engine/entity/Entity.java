@@ -17,8 +17,7 @@ public abstract class Entity {
 	
 	public abstract void update(float delta);
 	public abstract void render(SpriteBatch batch);
-	public abstract void dispose();
-	
+
 	public Vector2 getPos() {
 		return location;
 	}
