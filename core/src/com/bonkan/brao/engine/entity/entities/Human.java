@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
@@ -23,6 +24,8 @@ public abstract class Human extends Entity {
 		MOVE_LEFT_DOWN, MOVE_LEFT_UP, MOVE_RIGHT_DOWN, MOVE_RIGHT_UP
 	}
 	
+	protected TextureRegion texture;
+	
 	protected UUID id;
 	protected PlayerState state;
 	protected String userName;
@@ -38,7 +41,8 @@ public abstract class Human extends Entity {
 	protected Body body;
 
 	public Human(int x, int y, int bodyIndex, int headIndex, UUID id, String userName, World world) {
-		super(AtlasManager.getBody(bodyIndex), x, y);
+		super(x, y);
+		this.texture = AtlasManager.getBody(bodyIndex);
 		this.bodyIndex = bodyIndex;
 		this.headIndex = headIndex;
 		this.userName = userName;
@@ -105,6 +109,10 @@ public abstract class Human extends Entity {
 	public String getUserName()
 	{
 		return userName;
+	}
+	
+	public TextureRegion getTexture() {
+		return texture;
 	}
 	
 }

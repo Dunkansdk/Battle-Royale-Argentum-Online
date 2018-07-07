@@ -7,25 +7,22 @@ import com.bonkan.brao.engine.entity.Entity;
 public class Particle extends Entity {
 
 	public Particle(TextureRegion texture, int x, int y) {
-		super(texture, x, y);
-		// TODO Auto-generated constructor stub
+		super(x, y);
+
 	}
 
 	@Override
 	public void update(float delta) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void render(SpriteBatch batch) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 		
 	}
 

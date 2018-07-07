@@ -5,9 +5,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.bonkan.brao.engine.entity.Entity;
 
 public class WorldObject extends Entity {
-
+	
+	private TextureRegion texture;
+	
 	public WorldObject(TextureRegion texture, float x, float y) {
-		super(texture, (int)x, (int)y);
+		super((int)x, (int)y);
+		this.texture = texture;
 	}
 
 	@Override
@@ -23,6 +26,10 @@ public class WorldObject extends Entity {
 	@Override
 	public void dispose() {
 
+	}
+	
+	public TextureRegion getTexture() {
+		return texture;
 	}
 
 }
