@@ -6,7 +6,7 @@ filter: Nearest,Nearest
 repeat: none
 1
   rotate: false
-  xy: 1024, 512
+  xy: 512, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
@@ -76,23 +76,16 @@ repeat: none
   index: -1
 12061
   rotate: false
-  xy: 768, 352
+  xy: 512, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 5503
   rotate: false
-  xy: 896, 416
+  xy: 768, 416
   size: 64, 64
   orig: 64, 64
-  offset: 0, 0
-  index: -1
-MD
-  rotate: false
-  xy: 320, 0
-  size: 32, 32
-  orig: 32, 32
   offset: 0, 0
   index: -1
 arbol1
@@ -123,14 +116,14 @@ casa_atras
   orig: 256, 96
   offset: 0, 0
   index: -1
-casa_frente
+casa_entrada
   rotate: false
   xy: 768, 480
   size: 256, 160
   orig: 256, 160
   offset: 0, 0
   index: -1
-casa_frente2
+casa_frente
   rotate: false
   xy: 256, 32
   size: 256, 32
@@ -144,9 +137,9 @@ casa_techo
   orig: 256, 320
   offset: 0, 0
   index: -1
-casco
+closed_chest
   rotate: false
-  xy: 256, 0
+  xy: 288, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -158,34 +151,6 @@ costa
   orig: 256, 384
   offset: 0, 0
   index: -1
-dosfi
-  rotate: false
-  xy: 288, 0
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-entrada
-  rotate: false
-  xy: 512, 0
-  size: 256, 256
-  orig: 256, 256
-  offset: 0, 0
-  index: -1
-escutortu
-  rotate: false
-  xy: 416, 0
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-espadaplata
-  rotate: false
-  xy: 384, 0
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
 fuentefuego
   rotate: false
   xy: 512, 256
@@ -193,52 +158,17 @@ fuentefuego
   orig: 256, 256
   offset: 0, 0
   index: -1
-hachaorca
-  rotate: false
-  xy: 448, 0
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-otraespada
-  rotate: false
-  xy: 352, 0
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-pared1
-  rotate: false
-  xy: 1408, 672
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-pared2
-  rotate: false
-  xy: 1664, 800
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
-pared3
-  rotate: false
-  xy: 1280, 640
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-paredrara
-  rotate: false
-  xy: 768, 256
-  size: 95, 96
-  orig: 95, 96
-  offset: 0, 0
-  index: -1
-techo
+madera
   rotate: false
   xy: 1152, 640
   size: 128, 128
   orig: 128, 128
+  offset: 0, 0
+  index: -1
+opened_chest
+  rotate: false
+  xy: 256, 0
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
