@@ -13,9 +13,8 @@ public class PacketIDs {
 	// paquetes de PARTIDA
 	public static final int PACKET_PLAYER_CHANGED_STATE = 3;
 	public static final int PACKET_USER_CHANGED_STATE = 4;
-	public static final int PACKET_PLAYER_REQUESTED_MOVE = 5;
+	public static final int PACKET_PLAYER_MOVED = 5;
 	public static final int PACKET_USER_MOVED = 6;
 	public static final int PACKET_USER_ENTERED_AREA = 7;
-	public static final int PACKET_CONFIRM_PLAYER_MOVEMENT = 8;
 	
 }

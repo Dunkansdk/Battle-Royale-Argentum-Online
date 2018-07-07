@@ -143,10 +143,6 @@ public class PlayState extends AbstractGameState {
     						setEnemyPos(id, x, y);
 	    				
 	    				break;
-	    				
-	    			case PacketIDs.PACKET_CONFIRM_PLAYER_MOVEMENT:
-	    				EntityManager.getPlayer().setPos(Integer.parseInt(p.getArgs().get(0)), Integer.parseInt(p.getArgs().get(1)));
-	    				break;
     			}
     			
     			it.remove();

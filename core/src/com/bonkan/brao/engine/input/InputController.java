@@ -39,7 +39,7 @@ public class InputController {
         
     	boolean[] blockedDirs = blockedDirections(player);
     	boolean changedState = false;
-    	Vector2 newDirection = null;
+    	Vector2 oldPos = new Vector2(player.getPos().x, player.getPos().y);
     	
     	// solamente cambiamos el state cuando no hay bloqueo para no marear al server
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
@@ -53,7 +53,7 @@ public class InputController {
     					changedState = true;
         			
         			player.setState(PlayerState.MOVE_RIGHT_DOWN);
-        			newDirection = new Vector2((int) player.getPos().x + 2, (int) player.getPos().y - 2);
+        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y - 2);
         			
         		} else if (!blockedDirs[DIR_DOWN]) { 
 
@@ -61,7 +61,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_DOWN);
-        			newDirection = new Vector2((int) player.getPos().x, (int) player.getPos().y - 2);
+        			player.setPos((int) player.getPos().x, (int) player.getPos().y - 2);
         			
         		} else if (!blockedDirs[DIR_RIGHT]) {
 
@@ -69,7 +69,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_RIGHT);
-        			newDirection = new Vector2((int) player.getPos().x + 2, (int) player.getPos().y);
+        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y);
         			
         		} else {
         			
@@ -87,7 +87,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_LEFT_DOWN);
-        			newDirection = new Vector2((int) player.getPos().x - 2, (int) player.getPos().y - 2);
+        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y - 2);
         			
         		} else if (!blockedDirs[DIR_DOWN]) { 
         			
@@ -95,7 +95,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_DOWN);
-        			newDirection = new Vector2((int) player.getPos().x, (int) player.getPos().y - 2);
+        			player.setPos((int) player.getPos().x, (int) player.getPos().y - 2);
         			
         		} else if (!blockedDirs[DIR_LEFT]) {
 
@@ -103,7 +103,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_LEFT);
-        			newDirection = new Vector2((int) player.getPos().x - 2, (int) player.getPos().y);
+        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y);
         			
         		} else {
         			
@@ -119,7 +119,7 @@ public class InputController {
     				changedState = true;
     			
     			player.setState(PlayerState.MOVE_DOWN);
-    			newDirection = new Vector2((int) player.getPos().x, (int) player.getPos().y - 2);
+    			player.setPos((int) player.getPos().x, (int) player.getPos().y - 2);
 
         	} else {
         	
@@ -141,7 +141,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_RIGHT_UP);
-        			newDirection = new Vector2((int) player.getPos().x + 2, (int) player.getPos().y + 2);
+        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y + 2);
 
         		} else if (!blockedDirs[DIR_UP]) { 
 
@@ -149,7 +149,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_UP);
-        			newDirection = new Vector2((int) player.getPos().x, (int) player.getPos().y + 2);
+        			player.setPos((int) player.getPos().x, (int) player.getPos().y + 2);
         			
         		} else if (!blockedDirs[DIR_RIGHT]) {
 
@@ -157,7 +157,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_RIGHT);
-        			newDirection = new Vector2((int) player.getPos().x + 2, (int) player.getPos().y);
+        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y);
         			
         		} else {
         			
@@ -175,7 +175,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_LEFT_UP);
-        			newDirection = new Vector2((int) player.getPos().x - 2, (int) player.getPos().y + 2);
+        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y + 2);
         			
         		} else if (!blockedDirs[DIR_UP]) { 
 
@@ -183,7 +183,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_UP);
-        			newDirection = new Vector2((int) player.getPos().x, (int) player.getPos().y + 2);
+        			player.setPos((int) player.getPos().x, (int) player.getPos().y + 2);
         			
         		} else if (!blockedDirs[DIR_LEFT]) {
 
@@ -191,7 +191,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_LEFT);
-        			newDirection = new Vector2((int) player.getPos().x - 2, (int) player.getPos().y);
+        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y);
         			
         		} else {
         			
@@ -207,7 +207,7 @@ public class InputController {
     				changedState = true;
     			
     			player.setState(PlayerState.MOVE_UP);
-    			newDirection = new Vector2((int) player.getPos().x, (int) player.getPos().y + 2);
+    			player.setPos((int) player.getPos().x, (int) player.getPos().y + 2);
         			
         	} else {
         		
@@ -227,7 +227,7 @@ public class InputController {
     				changedState = true;
         		
         		player.setState(PlayerState.MOVE_LEFT);
-        		newDirection = new Vector2((int) player.getPos().x - 2, (int) player.getPos().y);
+        		player.setPos((int) player.getPos().x - 2, (int) player.getPos().y);
         		
         	} else {
         		
@@ -246,7 +246,7 @@ public class InputController {
         		if(player.getState() != PlayerState.MOVE_RIGHT)
     				changedState = true;
         		
-        		newDirection = new Vector2((int) player.getPos().x + 2, (int) player.getPos().y);
+        		player.setPos((int) player.getPos().x + 2, (int) player.getPos().y);
         		player.setState(PlayerState.MOVE_RIGHT);
         		
         	} else {
@@ -270,13 +270,13 @@ public class InputController {
         	player.setState(PlayerState.NONE);
         }
         
-     // como esto es posible que se mande en cada frame, lo mandamos via UDP
-        if(newDirection != null)
+        // como esto es posible que se mande en cada frame, lo mandamos via UDP
+        if(oldPos.x != player.getPos().x || oldPos.y != player.getPos().y)
         {
         	ArrayList<String> args = new ArrayList<String>();
-        	args.add(String.valueOf((int) newDirection.x));
-        	args.add(String.valueOf((int) newDirection.y));
-        	client.sendUDP(new Packet(PacketIDs.PACKET_PLAYER_REQUESTED_MOVE, player.getID().toString(), args));
+        	args.add(String.valueOf((int) player.getPos().x));
+        	args.add(String.valueOf((int) player.getPos().y));
+        	client.sendUDP(new Packet(PacketIDs.PACKET_PLAYER_MOVED, player.getID().toString(), args));
         }
         
         if(changedState) {
