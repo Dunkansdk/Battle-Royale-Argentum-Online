@@ -3,8 +3,6 @@ package com.bonkan.brao.engine.map;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
@@ -34,10 +32,9 @@ import box2dLight.RayHandler;
  */
 public class MapManager {
 	
-	private ArrayList<TiledMap> map;
     private OrthogonalTiledMapRenderer tiled;
     private RayHandler rays;
-    private int currentMap;
+    private TiledMap mapa;
 	
     /**
      * <p>Carga los mapas desde el directorio /maps/</p>
@@ -45,19 +42,7 @@ public class MapManager {
      */
 	public MapManager(World world) {
 		
-		map = new ArrayList<TiledMap>();
-   
-		FileHandle dirHandle = Gdx.files.internal("maps/");
-		
-		// Recorre la carpeta maps y devuelve los archivos
-		for (FileHandle entry: dirHandle.list()) {
-			
-			if(entry.extension().compareTo("tmx") == 0) {
-				map.add(new TmxMapLoader().load("" + entry.toString()));
-				System.out.println("Agregue: " + entry.toString());
-			}
-
-		}
+		mapa = new TmxMapLoader().load("map1.tmx");
 		
 		rays = new RayHandler(world);
 		RayHandler.setGammaCorrection(true);     // enable or disable gamma correction
@@ -67,8 +52,6 @@ public class MapManager {
 		this.rays.setBlurNum(2);           // set number of gaussian blur passes
 		this.rays.setShadows(true);        // enable or disable shadow
 		this.rays.setCulling(false);        // enable or disable culling
-		
-		System.out.println("Maps: " + map.size());
 
 		load(world,  0); // ESTAMOS CARGANDO POR DEFECTO!
 	}
@@ -79,7 +62,7 @@ public class MapManager {
 	 * @param actual	&emsp;<b>int</b> subindice del mapa (en el ArrayList de mapas)
 	 */
 	public void load(World world, int actual) {
-		currentMap = actual;
+		//currentMap = actual;
 		tiled = new OrthogonalTiledMapRenderer(getCurrentMap());
 		createCollision(world);
 		createLights();
@@ -196,7 +179,7 @@ public class MapManager {
 	 */
 	public TiledMap getCurrentMap() 
 	{
-		return map.get(currentMap);
+		return mapa;
 	}
 	
 	public OrthogonalTiledMapRenderer getTiled() {
@@ -208,7 +191,7 @@ public class MapManager {
 	}
 
 	public void dispose() {
-		map.clear();
+		mapa.dispose();
 		tiled.dispose();
 	}
 

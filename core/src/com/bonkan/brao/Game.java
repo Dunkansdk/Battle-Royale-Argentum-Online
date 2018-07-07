@@ -10,7 +10,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.bonkan.brao.engine.entity.Human.PlayerState;
 import com.bonkan.brao.engine.utils.AtlasManager;
 import com.bonkan.brao.networking.LoggedUser;
 import com.bonkan.brao.networking.Packet;
@@ -18,7 +17,6 @@ import com.bonkan.brao.networking.PacketIDs;
 import com.bonkan.brao.state.AbstractGameState;
 import com.bonkan.brao.state.GameStateManager;
 import com.bonkan.brao.state.app.LoginState;
-import com.bonkan.brao.state.app.PlayState;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -74,8 +72,14 @@ public class Game extends ApplicationAdapter {
 	    kryo.register(UUID.class);
 	    
 	    try {
+			Thread.sleep(100);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+	    
+	    try {
 	    	// 5000 es la cant. maxima de milisegundos que se bloquea el thread tratando de conectar
-			client.connect(5000, "127.0.0.1", 7666, 7667); //190.191.191.51
+			client.connect(5000, "190.191.191.51", 7666, 7667); //190.191.191.51
 
 		    client.addListener(new Listener() {
 		        public void received (Connection connection, Object object) {
@@ -119,7 +123,7 @@ public class Game extends ApplicationAdapter {
 	// para la llegada de paquetes (despues lo movemos a otro lado??)
 	public void handleData(Packet p, Connection conn)
 	{
-		final AbstractGameState ags = gameState.getCurrentState();
+		final AbstractGameState ags;
 		
 		switch(p.getID())
 		{
@@ -128,81 +132,14 @@ public class Game extends ApplicationAdapter {
 				break;
 				
 			case PacketIDs.PACKET_LOGIN_FAILED:
+				ags = gameState.getCurrentState();
+				
 				if(ags instanceof LoginState)
 					((LoginState) ags).setErrorLabelText("Nickname or password invalid.");
 				break;
 				
-			case PacketIDs.PACKET_USER_CHANGED_STATE:
-				
-				if(ags instanceof PlayState)
-				{
-					
-					final UUID id = UUID.fromString((String) p.getData());
-					final int bodyIndex = Integer.parseInt(p.getArgs().get(0)); 
-					final int headIndex = Integer.parseInt(p.getArgs().get(1)); 
-					final int x = Integer.parseInt(p.getArgs().get(2)); 
-					final int y = Integer.parseInt(p.getArgs().get(3)); 
-					final String nick = p.getArgs().get(4);
-					final PlayerState state = PlayerState.valueOf(p.getArgs().get(5));
-					
-					Gdx.app.postRunnable(new Runnable(){
-				        public void run(){
-				            if(!((PlayState) ags).getEnemyInArea(id))
-				            {
-				            	((PlayState) ags).addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
-				            	((PlayState) ags).setEnemyState(id, state);
-				            } else {
-				            	((PlayState) ags).setEnemyState(id, state);
-				            }
-				        }
-				    });
-				}
-				
-				break;
-				
-			case PacketIDs.PACKET_USER_ENTERED_AREA:
-				
-				if(ags instanceof PlayState)
-				{
-					
-					final UUID id = UUID.fromString((String) p.getData());
-					final int bodyIndex = Integer.parseInt(p.getArgs().get(0)); 
-					final int headIndex = Integer.parseInt(p.getArgs().get(1)); 
-					final int x = Integer.parseInt(p.getArgs().get(2)); 
-					final int y = Integer.parseInt(p.getArgs().get(3)); 
-					final String nick = p.getArgs().get(4);
-
-					Gdx.app.postRunnable(new Runnable(){
-				        public void run(){
-				        	((PlayState) ags).addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
-				        }
-				    });
-				}
-				
-				break;
-				
-			case PacketIDs.PACKET_USER_MOVED:
-				
-				if(ags instanceof PlayState)
-				{
-					
-					final UUID id = UUID.fromString((String) p.getData());
-					final int bodyIndex = Integer.parseInt(p.getArgs().get(0)); 
-					final int headIndex = Integer.parseInt(p.getArgs().get(1)); 
-					final int x = Integer.parseInt(p.getArgs().get(2)); 
-					final int y = Integer.parseInt(p.getArgs().get(3)); 
-					final String nick = p.getArgs().get(4);
-
-					Gdx.app.postRunnable(new Runnable(){
-				        public void run(){
-				        	if(!((PlayState) ags).getEnemyInArea(id))
-				        		((PlayState) ags).addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
-				        	else
-				        		((PlayState) ags).setEnemyPos(id, x, y);
-				        }
-				    });
-				}
-				
+			default:
+				loggedUser.addIncomingData(p);
 				break;
 		}
 	}

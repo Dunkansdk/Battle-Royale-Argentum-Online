@@ -61,6 +61,19 @@ public class Match {
 		}
 	}
 	
+	public void sendDataToAreaUDP(Packet p, UUID id)
+	{
+		for (Map.Entry<UUID, MatchUser> entry : users.entrySet())
+		{
+			if(!entry.getKey().equals(id))
+			{
+				MatchUser mu = entry.getValue();
+				if(CommonUtils.areInViewport(users.get(id).getPos(), mu.getPos()))
+					mu.sendDataUDP(p);
+			}
+		}
+	}
+	
 	public HashMap<UUID, MatchUser> getUsers()
 	{
 		return users;

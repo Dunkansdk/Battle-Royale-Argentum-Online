@@ -12,6 +12,8 @@ import com.bonkan.brao.server.packets.PacketIDs;
 import com.bonkan.brao.server.ui.ServerInterface;
 import com.bonkan.brao.server.users.LobbyUser;
 import com.bonkan.brao.server.users.MatchUser;
+import com.bonkan.brao.server.users.PlayerState;
+import com.bonkan.brao.server.utils.CommonUtils;
 import com.bonkan.brao.server.utils.Position;
 import com.esotericsoftware.kryonet.Connection;
 
@@ -116,22 +118,127 @@ public class Protocol {
 				currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_CHANGED_STATE, id.toString(), args), id);
 				break;
 				
-			case PacketIDs.PACKET_PLAYER_MOVED:
+			case PacketIDs.PACKET_PLAYER_REQUESTED_MOVE:
 				
 				id = UUID.fromString(((String)p.getData()));
 				mu = currentMatch.getUserByID(id);
 				
-				mu.setPosition(Integer.parseInt(p.getArgs().get(0)), Integer.parseInt(p.getArgs().get(1)));
+				boolean[] blockedDirs = CommonUtils.blockedDirections(currentMatch.getUsers(), id, Integer.parseInt(p.getArgs().get(0)), Integer.parseInt(p.getArgs().get(1)));
+				boolean moved = false;
 				
-				args.clear();
-				args.add(String.valueOf(mu.getDefaultBody())); // body
-				args.add("1"); // head
-				args.add(String.valueOf(mu.getPos().getX())); // x
-				args.add(String.valueOf(mu.getPos().getY())); // y
-				args.add(String.valueOf(mu.getNickName())); // nick
-				args.add(String.valueOf(mu.getState())); // state
+				if(mu.getState() == PlayerState.MOVE_RIGHT_DOWN)
+				{
+					if(!blockedDirs[CommonUtils.DIR_RIGHT] && !blockedDirs[CommonUtils.DIR_DOWN])
+	        		{
+	        			mu.setPosition((int) mu.getPos().getX() + 2, (int) mu.getPos().getY() - 2);
+	        			moved = true;
+	        			
+	        		} else if (!blockedDirs[CommonUtils.DIR_DOWN]) { 
 
-				currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_MOVED, id.toString(), args), id);
+	        			mu.setPosition((int) mu.getPos().getX(), (int) mu.getPos().getY() - 2);
+	        			moved = true;
+	        			
+	        		} else if (!blockedDirs[CommonUtils.DIR_RIGHT]) {
+
+	        			mu.setPosition((int) mu.getPos().getX() + 2, (int) mu.getPos().getY());
+	        			moved = true;
+	        			
+	        		}
+				} else if(mu.getState() == PlayerState.MOVE_RIGHT_UP) {
+					if(!blockedDirs[CommonUtils.DIR_RIGHT] && !blockedDirs[CommonUtils.DIR_UP])
+	        		{
+	        			mu.setPosition((int) mu.getPos().getX() + 2, (int) mu.getPos().getY() + 2);
+	        			moved = true;
+	        			
+	        		} else if (!blockedDirs[CommonUtils.DIR_UP]) { 
+
+	        			mu.setPosition((int) mu.getPos().getX(), (int) mu.getPos().getY() + 2);
+	        			moved = true;
+	        			
+	        		} else if (!blockedDirs[CommonUtils.DIR_RIGHT]) {
+
+	        			mu.setPosition((int) mu.getPos().getX() + 2, (int) mu.getPos().getY());
+	        			moved = true;
+	        			
+	        		}
+				} else if(mu.getState() == PlayerState.MOVE_LEFT_UP) {
+					if(!blockedDirs[CommonUtils.DIR_LEFT] && !blockedDirs[CommonUtils.DIR_UP])
+	        		{
+	        			mu.setPosition((int) mu.getPos().getX() - 2, (int) mu.getPos().getY() + 2);
+	        			moved = true;
+	        			
+	        		} else if (!blockedDirs[CommonUtils.DIR_UP]) { 
+
+	        			mu.setPosition((int) mu.getPos().getX(), (int) mu.getPos().getY() + 2);
+	        			moved = true;
+	        			
+	        		} else if (!blockedDirs[CommonUtils.DIR_LEFT]) {
+
+	        			mu.setPosition((int) mu.getPos().getX() - 2, (int) mu.getPos().getY());
+	        			moved = true;
+	        			
+	        		}
+				} else if(mu.getState() == PlayerState.MOVE_LEFT_DOWN) {
+					if(!blockedDirs[CommonUtils.DIR_LEFT] && !blockedDirs[CommonUtils.DIR_DOWN])
+	        		{
+	        			mu.setPosition((int) mu.getPos().getX() - 2, (int) mu.getPos().getY() - 2);
+	        			moved = true;
+	        			
+	        		} else if (!blockedDirs[CommonUtils.DIR_DOWN]) { 
+
+	        			mu.setPosition((int) mu.getPos().getX(), (int) mu.getPos().getY() - 2);
+	        			moved = true;
+	        			
+	        		} else if (!blockedDirs[CommonUtils.DIR_LEFT]) {
+
+	        			mu.setPosition((int) mu.getPos().getX() - 2, (int) mu.getPos().getY());
+	        			moved = true;
+	        			
+	        		}
+				} else if(mu.getState() == PlayerState.MOVE_DOWN) {
+					if(!blockedDirs[CommonUtils.DIR_DOWN])
+					{
+						mu.setPosition((int) mu.getPos().getX(), (int) mu.getPos().getY() - 2);
+						moved = true;
+					}
+				} else if(mu.getState() == PlayerState.MOVE_UP) {
+					if(!blockedDirs[CommonUtils.DIR_UP])
+					{
+						mu.setPosition((int) mu.getPos().getX(), (int) mu.getPos().getY() + 2);
+						moved = true;
+					}
+				} else if(mu.getState() == PlayerState.MOVE_LEFT) {
+					if(!blockedDirs[CommonUtils.DIR_LEFT])
+					{
+						mu.setPosition((int) mu.getPos().getX() - 2, (int) mu.getPos().getY());
+						moved = true;
+					}
+				} else if(mu.getState() == PlayerState.MOVE_RIGHT) {
+					if(!blockedDirs[CommonUtils.DIR_RIGHT])
+					{
+						mu.setPosition((int) mu.getPos().getX() + 2, (int) mu.getPos().getY());
+						moved = true;
+					}
+				}
+				
+				if(moved)
+				{
+					args.clear();
+					args.add(String.valueOf(mu.getDefaultBody())); // body
+					args.add("1"); // head
+					args.add(String.valueOf(mu.getPos().getX())); // x
+					args.add(String.valueOf(mu.getPos().getY())); // y
+					args.add(String.valueOf(mu.getNickName())); // nick
+					args.add(String.valueOf(mu.getState())); // state
+	
+					currentMatch.sendDataToAreaUDP(new Packet(PacketIDs.PACKET_USER_MOVED, id.toString(), args), id);
+	
+					args.clear();
+					args.add(String.valueOf(mu.getPos().getX()));
+					args.add(String.valueOf(mu.getPos().getY()));
+					
+					mu.sendDataUDP(new Packet(PacketIDs.PACKET_CONFIRM_PLAYER_MOVEMENT, null, args));
+				}
 				break;
 		}
 	}

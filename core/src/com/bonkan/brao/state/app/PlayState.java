@@ -1,19 +1,13 @@
 package com.bonkan.brao.state.app;
 
 import java.awt.Rectangle;
-import java.awt.Shape;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Iterator;
 import java.util.UUID;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.bonkan.brao.engine.entity.Entity;
 import com.bonkan.brao.engine.entity.EntityManager;
 import com.bonkan.brao.engine.entity.Human.PlayerState;
 import com.bonkan.brao.engine.entity.humans.Enemy;
@@ -53,6 +47,8 @@ public class PlayState extends AbstractGameState {
     @Override
     public void update(float delta)
     {
+    	handlePlayerIncomingData();
+    	
     	map.getTiled().setView(camera);
     	inputController.update(delta, EntityManager.getPlayer());
     	
@@ -80,6 +76,83 @@ public class PlayState extends AbstractGameState {
 
     	map.getRayHandler().render();
     }
+    
+    public void handlePlayerIncomingData()
+    {
+    	LoggedUser lu = app.getLoggedUser();
+    	
+    	if(lu.hasIncomingData())
+    	{
+    		// handleamos la incoming data
+    		Iterator<Packet> it = lu.getIncomingData().iterator();
+    		
+    		while(it.hasNext())
+    		{
+    			Packet p = (Packet) it.next();
+    		
+    			// variables comunes
+    			UUID id;
+    			int bodyIndex, headIndex, x, y;
+    			String nick;
+    			PlayerState state;
+    			
+    			switch(p.getID())
+    			{
+	    			case PacketIDs.PACKET_USER_CHANGED_STATE:
+    					id = UUID.fromString((String) p.getData());
+    					bodyIndex = Integer.parseInt(p.getArgs().get(0)); 
+    					headIndex = Integer.parseInt(p.getArgs().get(1)); 
+    					x = Integer.parseInt(p.getArgs().get(2)); 
+    					y = Integer.parseInt(p.getArgs().get(3)); 
+    					nick = p.getArgs().get(4);
+    					state = PlayerState.valueOf(p.getArgs().get(5));
+    					
+    					if(!getEnemyInArea(id))
+    					{
+    						addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
+    						setEnemyState(id, state);
+    					} else {
+    						setEnemyState(id, state);
+    					}
+
+	    				break;
+	    				
+	    			case PacketIDs.PACKET_USER_ENTERED_AREA:
+    					id = UUID.fromString((String) p.getData());
+    					bodyIndex = Integer.parseInt(p.getArgs().get(0)); 
+    					headIndex = Integer.parseInt(p.getArgs().get(1)); 
+    					x = Integer.parseInt(p.getArgs().get(2)); 
+    					y = Integer.parseInt(p.getArgs().get(3)); 
+    					nick = p.getArgs().get(4);
+    	
+    					addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
+	    				
+	    				break;
+	    				
+	    			case PacketIDs.PACKET_USER_MOVED:
+    					id = UUID.fromString((String) p.getData());
+    					bodyIndex = Integer.parseInt(p.getArgs().get(0)); 
+    					headIndex = Integer.parseInt(p.getArgs().get(1)); 
+    					x = Integer.parseInt(p.getArgs().get(2)); 
+    					y = Integer.parseInt(p.getArgs().get(3)); 
+    					nick = p.getArgs().get(4);
+    	
+    					if(!getEnemyInArea(id))
+    						addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
+    					else
+    						setEnemyPos(id, x, y);
+	    				
+	    				break;
+	    				
+	    			case PacketIDs.PACKET_CONFIRM_PLAYER_MOVEMENT:
+	    				EntityManager.getPlayer().setPos(Integer.parseInt(p.getArgs().get(0)), Integer.parseInt(p.getArgs().get(1)));
+	    				break;
+    			}
+    			
+    			it.remove();
+    		}
+    	}
+    }
 
     /**
      * Setea la camara en la posicion donde se encuentra el personaje (target)
@@ -97,7 +170,8 @@ public class PlayState extends AbstractGameState {
     
     public void addEnemyToArea(int bodyIndex, int headIndex, int x, int y, UUID id, String nick)
     {
-    	EntityManager.addEnemy(id, new Enemy(x, y, bodyIndex, headIndex, id, nick, WorldManager.world));
+    	if(!collidesWithPlayer(x, y))
+    		EntityManager.addEnemy(id, new Enemy(x, y, bodyIndex, headIndex, id, nick, WorldManager.world));
     }
     
     public void setEnemyState(UUID enemyID, PlayerState newState)
@@ -108,13 +182,21 @@ public class PlayState extends AbstractGameState {
     
     public void setEnemyPos(UUID enemyID, int x, int y)
     {
-    	if(EntityManager.getEnemy(enemyID) != null)
+    	if(EntityManager.getEnemy(enemyID) != null && !collidesWithPlayer(x, y))
     		EntityManager.getEnemy(enemyID).setPos(x, y);
     }
     
     public boolean getEnemyInArea(UUID enemyID)
     {
     	return (EntityManager.getEnemy(enemyID) != null);
+    }
+    
+    public boolean collidesWithPlayer(int x, int y)
+    {
+    	Rectangle rect = new Rectangle(x - Constants.BODY_WIDTH / 2, y - Constants.BODY_HEIGHT / 2, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
+    	Rectangle playerRect = new Rectangle((int) EntityManager.getPlayer().getPos().x - Constants.BODY_WIDTH / 2, (int) EntityManager.getPlayer().getPos().y - Constants.BODY_HEIGHT / 2, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
+    
+    	return(rect.intersects(playerRect));
     }
 
     @Override

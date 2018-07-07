@@ -28,6 +28,11 @@ public class LobbyUser {
 		socket.sendTCP(p);
 	}
 	
+	public void sendDataUDP(Packet p)
+	{
+		socket.sendUDP(p);
+	}
+	
 	public String getNickName()
 	{
 		return nickName;

@@ -1,6 +1,7 @@
 package com.bonkan.brao.networking;
 
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 /**
@@ -12,6 +13,7 @@ public class LoggedUser {
 	private UUID loggedID;
 	private String loggedUserName;
 	private int loggedDefaultBody;
+	private ConcurrentLinkedQueue<Packet> incomingData;
 	
 	//TODO: ESTO DESPUES HAY QUE BORRARLO Y PASARLO A OTRA CLASE, ESTA CORRESSPONDE AL USER DEL LOBBY
 	private int hp, mana;
@@ -26,6 +28,7 @@ public class LoggedUser {
 		this.mana = mana;
 		this.xPos = x;
 		this.yPos = y;
+		this.incomingData = new ConcurrentLinkedQueue<Packet>();
 	}
 	
 	public UUID getLoggedID() 
@@ -61,5 +64,20 @@ public class LoggedUser {
 	public int getY() 
 	{
 		return yPos;
+	}
+	
+	public void addIncomingData(Packet p)
+	{
+		incomingData.add(p);
+	}
+	
+	public boolean hasIncomingData()
+	{
+		return(incomingData.size() > 0);
+	}
+	
+	public ConcurrentLinkedQueue<Packet> getIncomingData()
+	{
+		return incomingData;
 	}
 }
