@@ -17,7 +17,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.bonkan.brao.engine.entity.EntityManager;
-import com.bonkan.brao.engine.entity.WorldObject;
+import com.bonkan.brao.engine.entity.entities.WorldObject;
 import com.bonkan.brao.engine.map.factory.BodyFactory;
 import com.bonkan.brao.engine.map.factory.ShapeFactory;
 import com.bonkan.brao.engine.utils.AtlasManager;

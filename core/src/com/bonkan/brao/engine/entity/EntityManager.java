@@ -10,8 +10,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.bonkan.brao.engine.entity.humans.Enemy;
-import com.bonkan.brao.engine.entity.humans.Player;
+import com.bonkan.brao.engine.entity.entities.WorldObject;
+import com.bonkan.brao.engine.entity.entities.human.Enemy;
+import com.bonkan.brao.engine.entity.entities.human.Player;
 import com.bonkan.brao.engine.utils.Constants;
 
 /**

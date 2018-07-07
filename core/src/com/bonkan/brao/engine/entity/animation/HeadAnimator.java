@@ -2,7 +2,7 @@ package com.bonkan.brao.engine.entity.animation;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.bonkan.brao.engine.entity.Human.PlayerState;
+import com.bonkan.brao.engine.entity.entities.Human.PlayerState;
 
 public class HeadAnimator {
 	

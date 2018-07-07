@@ -9,9 +9,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.bonkan.brao.engine.entity.EntityManager;
-import com.bonkan.brao.engine.entity.Human.PlayerState;
-import com.bonkan.brao.engine.entity.humans.Enemy;
-import com.bonkan.brao.engine.entity.humans.Player;
+import com.bonkan.brao.engine.entity.entities.Human.PlayerState;
+import com.bonkan.brao.engine.entity.entities.human.Enemy;
+import com.bonkan.brao.engine.entity.entities.human.Player;
 import com.bonkan.brao.engine.input.InputController;
 import com.bonkan.brao.engine.map.MapManager;
 import com.bonkan.brao.engine.map.WorldManager;
@@ -179,7 +179,7 @@ public class PlayState extends AbstractGameState {
     public void setEnemyPos(UUID enemyID, int x, int y)
     {
     	if(EntityManager.getEnemy(enemyID) != null && !collidesWithPlayer(x, y))
-    		EntityManager.getEnemy(enemyID).setPos(x, y);
+    		EntityManager.getEnemy(enemyID).setLocation(x, y);
     }
     
     public boolean getEnemyInArea(UUID enemyID)

@@ -10,12 +10,12 @@ import com.badlogic.gdx.math.Vector2;
 public abstract class Entity {
 
 	protected TextureRegion texture;
-	protected Vector2 pos;
+	protected Vector2 location;
 	
 	public Entity(TextureRegion texture, int x, int y) 
 	{
 		this.texture = texture;
-		this.pos = new Vector2(x, y);
+		this.location = new Vector2(x, y);
 	}
 	
 	public abstract void update(float delta);
@@ -27,7 +27,7 @@ public abstract class Entity {
 	}
 	
 	public Vector2 getPos() {
-		return pos;
+		return location;
 	}
 
 }

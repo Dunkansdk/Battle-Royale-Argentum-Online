@@ -1,7 +1,8 @@
-package com.bonkan.brao.engine.entity;
+package com.bonkan.brao.engine.entity.entities;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.bonkan.brao.engine.entity.Entity;
 
 public class WorldObject extends Entity {
 
@@ -16,7 +17,7 @@ public class WorldObject extends Entity {
 
 	@Override
 	public void render(SpriteBatch batch) {
-		batch.draw(texture, pos.x, pos.y);
+		batch.draw(texture, location.x, location.y);
 	}
 
 	@Override

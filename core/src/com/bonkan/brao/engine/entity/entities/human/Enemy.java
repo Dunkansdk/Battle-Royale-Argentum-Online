@@ -1,9 +1,9 @@
-package com.bonkan.brao.engine.entity.humans;
+package com.bonkan.brao.engine.entity.entities.human;
 
 import java.util.UUID;
 
 import com.badlogic.gdx.physics.box2d.World;
-import com.bonkan.brao.engine.entity.Human;
+import com.bonkan.brao.engine.entity.entities.Human;
 
 public class Enemy extends Human {
 

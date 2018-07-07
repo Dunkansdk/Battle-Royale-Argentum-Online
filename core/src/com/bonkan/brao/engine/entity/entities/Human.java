@@ -1,4 +1,4 @@
-package com.bonkan.brao.engine.entity;
+package com.bonkan.brao.engine.entity.entities;
 
 import java.util.UUID;
 
@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.bonkan.brao.engine.entity.Entity;
 import com.bonkan.brao.engine.entity.animation.BodyAnimator;
 import com.bonkan.brao.engine.entity.animation.HeadAnimator;
 import com.bonkan.brao.engine.map.factory.BodyFactory;
@@ -55,14 +56,14 @@ public abstract class Human extends Entity {
 
 	@Override
 	public void render(SpriteBatch batch) {
-		bodyAnimator.render(batch, pos.x - Constants.BODY_WIDTH / 2, pos.y - Constants.BODY_HEIGHT / 2, state);
-		headAnimator.render(batch, pos.x - 8, pos.y + Constants.BODY_HEIGHT / 2 - 3, state);
-		defaultFont.draw(batch, userName, pos.x - (userName.length() / 2 * 14) / 2, pos.y - Constants.BODY_HEIGHT / 2);
+		bodyAnimator.render(batch, location.x - Constants.BODY_WIDTH / 2, location.y - Constants.BODY_HEIGHT / 2, state);
+		headAnimator.render(batch, location.x - 8, location.y + Constants.BODY_HEIGHT / 2 - 3, state);
+		defaultFont.draw(batch, userName, location.x - (userName.length() / 2 * 14) / 2, location.y - Constants.BODY_HEIGHT / 2);
 	}
 	
 	@Override
 	public void update(float delta) {
-		body.setTransform(super.pos, 0.0f);
+		body.setTransform(location, 0.0f);
 	}
 	
 	@Override
@@ -70,10 +71,10 @@ public abstract class Human extends Entity {
 		
 	}
 	
-	public void setPos(int x, int y)
+	public void setLocation(int x, int y)
 	{
-		pos.x = x;
-		pos.y = y;
+		location.x = x;
+		location.y = y;
 	}
 
 	public UUID getID() 

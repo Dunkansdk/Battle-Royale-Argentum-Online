@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
-import com.bonkan.brao.engine.entity.Human.PlayerState;
-import com.bonkan.brao.engine.entity.humans.Player;
+import com.bonkan.brao.engine.entity.entities.Human.PlayerState;
+import com.bonkan.brao.engine.entity.entities.human.Player;
 import com.bonkan.brao.engine.utils.Constants;
 import com.bonkan.brao.networking.Packet;
 import com.bonkan.brao.networking.PacketIDs;
@@ -53,7 +53,7 @@ public class InputController {
     					changedState = true;
         			
         			player.setState(PlayerState.MOVE_RIGHT_DOWN);
-        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y - 2);
+        			player.setLocation((int) player.getPos().x + 2, (int) player.getPos().y - 2);
         			
         		} else if (!blockedDirs[DIR_DOWN]) { 
 
@@ -61,7 +61,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_DOWN);
-        			player.setPos((int) player.getPos().x, (int) player.getPos().y - 2);
+        			player.setLocation((int) player.getPos().x, (int) player.getPos().y - 2);
         			
         		} else if (!blockedDirs[DIR_RIGHT]) {
 
@@ -69,7 +69,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_RIGHT);
-        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y);
+        			player.setLocation((int) player.getPos().x + 2, (int) player.getPos().y);
         			
         		} else {
         			
@@ -87,7 +87,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_LEFT_DOWN);
-        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y - 2);
+        			player.setLocation((int) player.getPos().x - 2, (int) player.getPos().y - 2);
         			
         		} else if (!blockedDirs[DIR_DOWN]) { 
         			
@@ -95,7 +95,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_DOWN);
-        			player.setPos((int) player.getPos().x, (int) player.getPos().y - 2);
+        			player.setLocation((int) player.getPos().x, (int) player.getPos().y - 2);
         			
         		} else if (!blockedDirs[DIR_LEFT]) {
 
@@ -103,7 +103,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_LEFT);
-        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y);
+        			player.setLocation((int) player.getPos().x - 2, (int) player.getPos().y);
         			
         		} else {
         			
@@ -119,7 +119,7 @@ public class InputController {
     				changedState = true;
     			
     			player.setState(PlayerState.MOVE_DOWN);
-    			player.setPos((int) player.getPos().x, (int) player.getPos().y - 2);
+    			player.setLocation((int) player.getPos().x, (int) player.getPos().y - 2);
 
         	} else {
         	
@@ -141,7 +141,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_RIGHT_UP);
-        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y + 2);
+        			player.setLocation((int) player.getPos().x + 2, (int) player.getPos().y + 2);
 
         		} else if (!blockedDirs[DIR_UP]) { 
 
@@ -149,7 +149,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_UP);
-        			player.setPos((int) player.getPos().x, (int) player.getPos().y + 2);
+        			player.setLocation((int) player.getPos().x, (int) player.getPos().y + 2);
         			
         		} else if (!blockedDirs[DIR_RIGHT]) {
 
@@ -157,7 +157,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_RIGHT);
-        			player.setPos((int) player.getPos().x + 2, (int) player.getPos().y);
+        			player.setLocation((int) player.getPos().x + 2, (int) player.getPos().y);
         			
         		} else {
         			
@@ -175,7 +175,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_LEFT_UP);
-        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y + 2);
+        			player.setLocation((int) player.getPos().x - 2, (int) player.getPos().y + 2);
         			
         		} else if (!blockedDirs[DIR_UP]) { 
 
@@ -183,7 +183,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_UP);
-        			player.setPos((int) player.getPos().x, (int) player.getPos().y + 2);
+        			player.setLocation((int) player.getPos().x, (int) player.getPos().y + 2);
         			
         		} else if (!blockedDirs[DIR_LEFT]) {
 
@@ -191,7 +191,7 @@ public class InputController {
         				changedState = true;
         			
         			player.setState(PlayerState.MOVE_LEFT);
-        			player.setPos((int) player.getPos().x - 2, (int) player.getPos().y);
+        			player.setLocation((int) player.getPos().x - 2, (int) player.getPos().y);
         			
         		} else {
         			
@@ -207,7 +207,7 @@ public class InputController {
     				changedState = true;
     			
     			player.setState(PlayerState.MOVE_UP);
-    			player.setPos((int) player.getPos().x, (int) player.getPos().y + 2);
+    			player.setLocation((int) player.getPos().x, (int) player.getPos().y + 2);
         			
         	} else {
         		
@@ -227,7 +227,7 @@ public class InputController {
     				changedState = true;
         		
         		player.setState(PlayerState.MOVE_LEFT);
-        		player.setPos((int) player.getPos().x - 2, (int) player.getPos().y);
+        		player.setLocation((int) player.getPos().x - 2, (int) player.getPos().y);
         		
         	} else {
         		
@@ -246,7 +246,7 @@ public class InputController {
         		if(player.getState() != PlayerState.MOVE_RIGHT)
     				changedState = true;
         		
-        		player.setPos((int) player.getPos().x + 2, (int) player.getPos().y);
+        		player.setLocation((int) player.getPos().x + 2, (int) player.getPos().y);
         		player.setState(PlayerState.MOVE_RIGHT);
         		
         	} else {
