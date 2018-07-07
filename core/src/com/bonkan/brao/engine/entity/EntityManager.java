@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bonkan.brao.engine.entity.entities.Chest;
+import com.bonkan.brao.engine.entity.entities.Item;
 import com.bonkan.brao.engine.entity.entities.Particle;
 import com.bonkan.brao.engine.entity.entities.Particle.ParticleType;
 import com.bonkan.brao.engine.entity.entities.WorldObject;
@@ -27,12 +28,14 @@ public class EntityManager {
 	private static ArrayList<Entity> worldSorted;
 	private static ArrayList<Entity> worldUnsorted;
 	private static ArrayList<Chest> chests;
+	private static HashMap<UUID, Item> items;
 	
 	public static void init() {
 		entities = new HashMap<UUID, Entity>();
 		worldSorted = new ArrayList<Entity>();
 		worldUnsorted = new ArrayList<Entity>();
 		chests = new ArrayList<Chest>();
+		items = new HashMap<UUID, Item>();
 	}
 	
 	public static void addPlayer(UUID id, Player player) {
@@ -58,6 +61,10 @@ public class EntityManager {
 			}
 	    });
 		
+		// los items se dibujan abajo de todo
+		for (Map.Entry<UUID, Item> entry : items.entrySet()) {
+			entry.getValue().render(batch);
+		}
 		for (Entity entity : entityValues) {
 			entity.render(batch);
 		}
@@ -126,6 +133,22 @@ public class EntityManager {
 		chests.add(chest);
 	}
 	
+	public static void addItem(Item i)
+	{
+		items.put(i.getID(), i);
+	}
+	
+	public static Item getItem(UUID id)
+	{
+		return items.get(id);
+	}
+	
+	public static void deleteItem(UUID id)
+	{
+		if(items.get(id) != null)
+			items.remove(id);
+	}
+	
 	public static HashMap<UUID, Entity> getAllEntities()
 	{
 		return entities;
@@ -134,6 +157,11 @@ public class EntityManager {
 	public static ArrayList<Chest> getChests()
 	{
 		return chests;
+	}
+	
+	public static HashMap<UUID, Item> getAllItems()
+	{
+		return items;
 	}
 
 }

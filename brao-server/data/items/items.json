@@ -1,0 +1,16 @@
+{
+	"items" : [
+		{
+			"name" : "Escudo de Tortuga",
+			"atlas_name" : "escutortu",
+			"min_def" : 5,
+			"max_def" : 10
+		},
+		{
+			"name" : "Espada de Plata",
+			"atlas_name" : "espadaplata",
+			"min_atk" : 20,
+			"max_atk" : 25
+		},
+	] 
+}

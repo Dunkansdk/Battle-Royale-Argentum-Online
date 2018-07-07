@@ -10,6 +10,9 @@ public class CommonUtils {
 	public static final int VIEWPORT_WIDTH = 1280;
 	public static final int VIEWPORT_HEIGHT = 720;
 	
+	public static final int ITEM_ESPADA = 1;
+	public static final int ITEM_ESCUDO_TORTU = 2;	
+
 	/**
 	 * <p>Chequea si dos usuarios (sus posiciones) están en la misma área de visión.</p>
 	 * <p>Es fácil de hacer porque el área de visión es CONSTANSTE para todos los usuarios
@@ -26,5 +29,19 @@ public class CommonUtils {
 		Rectangle rect2 = new Rectangle((int) p2.getX() - VIEWPORT_WIDTH / 2, (int) p2.getY() - VIEWPORT_HEIGHT / 2, VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 		
 		return rect1.intersects(rect2);
+	}
+	
+	// TODO: ESTO ESTA HORRENDO ! HABRIA QUE PASARLO A UN JSON
+	public static String getItemAtlasID(int itemID)
+	{
+		switch(itemID)
+		{
+			case ITEM_ESPADA:
+				return "espadaplata";
+			case ITEM_ESCUDO_TORTU:
+				return "escutortu";
+			default:
+				return "escutortu";
+		}
 	}
 }

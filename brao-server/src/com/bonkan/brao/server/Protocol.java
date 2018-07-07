@@ -137,11 +137,28 @@ public class Protocol {
 			case PacketIDs.PACKET_TRY_OPEN_CHEST:
 				
 				int chestID = Integer.parseInt((String) p.getData());
+				Position chestPos = new Position(Integer.parseInt(p.getArgs().get(0)), Integer.parseInt(p.getArgs().get(1)));
 				
 				if(!currentMatch.openedChest(chestID))
 				{
-					currentMatch.openChest(chestID);
+					currentMatch.openChest(chestID, chestPos);
 					currentMatch.sendDataToAll(new Packet(PacketIDs.PACKET_CHEST_OPENED, p.getData(), null));
+				}
+				
+				break;
+				
+			case PacketIDs.PACKET_PLAYER_REQUEST_GET_ITEM:
+				
+				id = UUID.fromString((String) p.getData());
+				mu = currentMatch.getUserByID(id);
+				UUID itemID = UUID.fromString(p.getArgs().get(0));
+				
+				if(currentMatch.itemExists(itemID))
+				{
+					mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_CONFIRM_GET_ITEM, itemID.toString(), null));
+					
+					currentMatch.removeItem(itemID);
+					currentMatch.sendDataToAll(new Packet(PacketIDs.PACKET_REMOVE_ITEM_FROM_FLOOR, itemID.toString(), null));
 				}
 				
 				break;

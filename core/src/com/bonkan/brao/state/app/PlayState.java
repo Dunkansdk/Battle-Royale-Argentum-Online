@@ -9,12 +9,14 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.bonkan.brao.engine.entity.EntityManager;
 import com.bonkan.brao.engine.entity.entities.Human.PlayerState;
+import com.bonkan.brao.engine.entity.entities.Item;
 import com.bonkan.brao.engine.entity.entities.Particle.ParticleType;
 import com.bonkan.brao.engine.entity.entities.human.Enemy;
 import com.bonkan.brao.engine.entity.entities.human.Player;
 import com.bonkan.brao.engine.input.InputController;
 import com.bonkan.brao.engine.map.MapManager;
 import com.bonkan.brao.engine.map.WorldManager;
+import com.bonkan.brao.engine.utils.AtlasManager;
 import com.bonkan.brao.networking.LoggedUser;
 import com.bonkan.brao.networking.Packet;
 import com.bonkan.brao.networking.PacketIDs;
@@ -108,7 +110,7 @@ public class PlayState extends AbstractGameState {
     					nick = p.getArgs().get(4);
     					state = PlayerState.valueOf(p.getArgs().get(5));
     					
-    					if(!getEnemyInArea(id))
+    					if(!isEnemyInArea(id))
     					{
     						addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
     						setEnemyState(id, state);
@@ -138,7 +140,7 @@ public class PlayState extends AbstractGameState {
     					y = Integer.parseInt(p.getArgs().get(3)); 
     					nick = p.getArgs().get(4);
 
-    					if(!getEnemyInArea(id))
+    					if(!isEnemyInArea(id))
     						addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
     					else
     						setEnemyPos(id, x, y);
@@ -149,6 +151,27 @@ public class PlayState extends AbstractGameState {
 	    				int chestID = Integer.parseInt((String) p.getData());
 	    				EntityManager.getChestByID(chestID).open();
 	    				break;
+	    				
+	    			case PacketIDs.PACKET_ITEM_THROWN:
+	    				id = UUID.fromString(p.getArgs().get(0));
+	    				int rarity = Integer.parseInt(p.getArgs().get(1));
+	    				x = Integer.parseInt(p.getArgs().get(2));
+	    				y = Integer.parseInt(p.getArgs().get(3));
+	    				nick = p.getArgs().get(4);
+	    				
+	    				EntityManager.addItem(new Item(x, y, rarity, nick, AtlasManager.getItem(p.getArgs().get(5)), id));
+	    				break;
+	    				
+	    			case PacketIDs.PACKET_PLAYER_CONFIRM_GET_ITEM:
+	    				
+	    				Item i = EntityManager.getItem(UUID.fromString((String) p.getData()));
+	    				System.out.println("AGARRASTE EL ITEM " + i.getName() + " CON RAREZA " + i.getRarity());
+	    				
+	    				break;
+	    				
+	    			case PacketIDs.PACKET_REMOVE_ITEM_FROM_FLOOR:
+	    				EntityManager.deleteItem(UUID.fromString((String) p.getData()));
+	    				break;
     			}
     			
     			it.remove();
@@ -157,7 +180,7 @@ public class PlayState extends AbstractGameState {
     }
 
     /**
-     * Setea la camara en la posicion donde se encuentra el personaje (target)
+     * <p>Setea la camara en la posicion donde se encuentra el personaje (target)</p>
      * @param camera
      * @param target
      */
@@ -187,7 +210,7 @@ public class PlayState extends AbstractGameState {
     		EntityManager.getEnemy(enemyID).setLocation(x, y);
     }
     
-    public boolean getEnemyInArea(UUID enemyID)
+    public boolean isEnemyInArea(UUID enemyID)
     {
     	return (EntityManager.getEnemy(enemyID) != null);
     }

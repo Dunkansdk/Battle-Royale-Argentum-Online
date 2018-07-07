@@ -18,4 +18,8 @@ public class PacketIDs {
 	public static final int PACKET_USER_ENTERED_AREA = 7;
 	public static final int PACKET_TRY_OPEN_CHEST = 8;
 	public static final int PACKET_CHEST_OPENED = 9;
+	public static final int PACKET_ITEM_THROWN = 10;
+	public static final int PACKET_PLAYER_REQUEST_GET_ITEM = 11;
+	public static final int PACKET_PLAYER_CONFIRM_GET_ITEM = 12;
+	public static final int PACKET_REMOVE_ITEM_FROM_FLOOR = 13;
 }

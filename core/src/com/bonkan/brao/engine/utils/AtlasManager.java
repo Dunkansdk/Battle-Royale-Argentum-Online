@@ -14,6 +14,7 @@ public class AtlasManager {
 	private static TextureAtlas heads;
 	private static TextureAtlas world;
 	private static TextureAtlas particles;
+	private static TextureAtlas items;
 	
 	public static void init()
 	{
@@ -21,6 +22,7 @@ public class AtlasManager {
 		heads = new TextureAtlas(Gdx.files.internal("heads.atlas"));
 		world = new TextureAtlas(Gdx.files.internal("world.atlas"));
 		particles = new TextureAtlas(Gdx.files.internal("particles.atlas"));
+		items = new TextureAtlas(Gdx.files.internal("items.atlas"));
 	}
 	
 	public static TextureRegion getBody(int bodyIndex)
@@ -33,13 +35,19 @@ public class AtlasManager {
 		return heads.findRegion(String.valueOf(headIndex));
 	}
 	
-	public static TextureRegion getWorldSprite(String id) {
+	public static TextureRegion getWorldSprite(String id) 
+	{
 		return world.findRegion(id);
 	}
 	
-	public static TextureAtlas getParticleAtlas() {
-		return particles;
+	public static TextureRegion getItem(String id)
+	{
+		return items.findRegion(id);
 	}
 	
-	
+	public static TextureAtlas getParticleAtlas() 
+	{
+		return particles;
+	}
+
 }

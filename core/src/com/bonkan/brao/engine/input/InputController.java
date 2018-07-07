@@ -3,12 +3,16 @@ package com.bonkan.brao.engine.input;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.bonkan.brao.engine.entity.EntityManager;
 import com.bonkan.brao.engine.entity.entities.Chest;
+import com.bonkan.brao.engine.entity.entities.Item;
 import com.bonkan.brao.engine.entity.entities.Human.PlayerState;
 import com.bonkan.brao.engine.entity.entities.human.Player;
 import com.bonkan.brao.engine.utils.Constants;
@@ -42,6 +46,7 @@ public class InputController {
     	boolean[] blockedDirs = blockedDirections(player);
     	boolean changedState = false;
     	Vector2 oldPos = new Vector2(player.getPos().x, player.getPos().y);
+    	ArrayList<String> args = new ArrayList<String>();
     	
     	// solamente cambiamos el state cuando no hay bloqueo para no marear al server
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
@@ -165,22 +170,38 @@ public class InputController {
         
         if(Gdx.input.isKeyJustPressed(Input.Keys.E))
         {
+        	// chequeamos cofres
         	int chestID = checkChestPosition(player);
         	if(chestID > -1 && !EntityManager.getChestByID(chestID).getOpened())
-        		client.sendTCP(new Packet(PacketIDs.PACKET_TRY_OPEN_CHEST, String.valueOf(chestID), null));
+        	{
+        		args.clear();
+        		args.add(String.valueOf((int) EntityManager.getChestByID(chestID).getPos().x));
+        		args.add(String.valueOf((int) EntityManager.getChestByID(chestID).getPos().y));
+        		
+        		client.sendTCP(new Packet(PacketIDs.PACKET_TRY_OPEN_CHEST, String.valueOf(chestID), args));
+        	}
+        	
+        	// chequeamos items
+        	UUID itemID = checkItemPosition(player);
+        	if(itemID != null)
+        	{
+        		args.clear();
+        		args.add(itemID.toString());
+        		client.sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_GET_ITEM, player.getID().toString(), args));
+        	}
         }
         
         // como esto es posible que se mande en cada frame, lo mandamos via UDP
         if(oldPos.x != player.getPos().x || oldPos.y != player.getPos().y)
         {
-        	ArrayList<String> args = new ArrayList<String>();
+        	args.clear();
         	args.add(String.valueOf((int) player.getPos().x));
         	args.add(String.valueOf((int) player.getPos().y));
         	client.sendUDP(new Packet(PacketIDs.PACKET_PLAYER_MOVED, player.getID().toString(), args));
         }
         
         if(changedState) {
-        	ArrayList<String> args = new ArrayList<String>();
+        	args.clear();
         	args.add(String.valueOf(player.getState()));
         	client.sendTCP(new Packet(PacketIDs.PACKET_PLAYER_CHANGED_STATE, player.getID().toString(), args));
         }
@@ -214,6 +235,19 @@ public class InputController {
     	}
     	
     	return ret;
+    }
+    
+    private UUID checkItemPosition(Player player)
+    {
+    	HashMap<UUID, Item> items = EntityManager.getAllItems();
+    	Rectangle playerRect = new Rectangle((int) player.getPos().x - Constants.BODY_WIDTH / 2, (int) player.getPos().y - Constants.BODY_HEIGHT / 2, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
+    	for (Map.Entry<UUID, Item> entry : items.entrySet()) 
+    	{
+			Rectangle itemRect = new Rectangle((int) entry.getValue().getPos().x, (int) entry.getValue().getPos().y, Constants.ITEM_SIZE, Constants.ITEM_SIZE);
+			if(itemRect.intersects(playerRect)) return entry.getValue().getID();
+    	}
+    	
+    	return null;
     }
     
     private int checkChestPosition(Player player)

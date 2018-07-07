@@ -8,6 +8,7 @@ import java.util.UUID;
 import com.bonkan.brao.server.mysql.MySQLHandler;
 import com.bonkan.brao.server.packets.Packet;
 import com.bonkan.brao.server.ui.ServerInterface;
+import com.bonkan.brao.server.utils.JSONManager;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -48,6 +49,9 @@ public class Main {
 	    kryo.register(ArrayList.class);
 	    kryo.register(String.class);
 	    kryo.register(UUID.class);
+	    
+	    // cargamos los JSONs
+	    JSONManager.init();
 	    
 	    try {
 			server.bind(7666, 7667);
