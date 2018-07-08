@@ -12,7 +12,6 @@ import com.bonkan.brao.engine.entity.animation.BodyAnimator;
 import com.bonkan.brao.engine.entity.animation.HeadAnimator;
 import com.bonkan.brao.engine.map.factory.BodyFactory;
 import com.bonkan.brao.engine.utils.AssetsManager;
-import com.bonkan.brao.engine.utils.AtlasManager;
 import com.bonkan.brao.engine.utils.Constants;
 
 public abstract class Human extends Entity {
@@ -41,13 +40,13 @@ public abstract class Human extends Entity {
 
 	public Human(int x, int y, int bodyIndex, int headIndex, UUID id, String userName, World world) {
 		super(x, y);
-		this.texture = AtlasManager.getBody(bodyIndex);
+		this.texture = AssetsManager.getBody(bodyIndex);
 		this.bodyIndex = bodyIndex;
 		this.headIndex = headIndex;
 		this.userName = userName;
 		this.id = id;
 		this.state = PlayerState.NONE;
-		this.headAnimator = new HeadAnimator(AtlasManager.getHeads(headIndex));
+		this.headAnimator = new HeadAnimator(AssetsManager.getHead(headIndex));
 		this.bodyAnimator = new BodyAnimator(texture);
 		this.body = BodyFactory.createPlayerBox(world, x, y, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
 		this.nameFont = AssetsManager.getDefaultFont();

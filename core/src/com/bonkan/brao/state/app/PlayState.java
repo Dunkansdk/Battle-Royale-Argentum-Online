@@ -16,7 +16,7 @@ import com.bonkan.brao.engine.entity.entities.human.Player;
 import com.bonkan.brao.engine.input.InputController;
 import com.bonkan.brao.engine.map.MapManager;
 import com.bonkan.brao.engine.map.WorldManager;
-import com.bonkan.brao.engine.utils.AtlasManager;
+import com.bonkan.brao.engine.utils.AssetsManager;
 import com.bonkan.brao.networking.LoggedUser;
 import com.bonkan.brao.networking.Packet;
 import com.bonkan.brao.networking.PacketIDs;
@@ -44,7 +44,9 @@ public class PlayState extends AbstractGameState {
    
         EntityManager.addPlayer(aux.getLoggedID(), new Player(aux.getX(), aux.getY(), aux.getLoggedDefaultBody(), 1, aux.getHP(), aux.getMana(), aux.getLoggedID(), aux.getLoggedUserName(), WorldManager.world));
         
-        EntityManager.addParticle(ParticleType.TEST1, 10, 10, true); 
+        EntityManager.addParticle(ParticleType.TEST2, 10, 10, true); 
+        //EntityManager.addParticle(ParticleType.TEST2, 300, 200, false); 
+       // EntityManager.addParticle(ParticleType.TEST1, 150, 150, false); 
     }
 
     @Override
@@ -159,7 +161,7 @@ public class PlayState extends AbstractGameState {
 	    				y = Integer.parseInt(p.getArgs().get(3));
 	    				nick = p.getArgs().get(4);
 	    				
-	    				EntityManager.addItem(new Item(x, y, rarity, nick, AtlasManager.getItem(p.getArgs().get(5)), id));
+	    				EntityManager.addItem(new Item(x, y, rarity, nick, AssetsManager.getItem(p.getArgs().get(5)), id));
 	    				break;
 	    				
 	    			case PacketIDs.PACKET_PLAYER_CONFIRM_GET_ITEM:

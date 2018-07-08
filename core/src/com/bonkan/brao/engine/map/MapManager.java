@@ -21,7 +21,7 @@ import com.bonkan.brao.engine.entity.entities.Chest;
 import com.bonkan.brao.engine.entity.entities.WorldObject;
 import com.bonkan.brao.engine.map.factory.BodyFactory;
 import com.bonkan.brao.engine.map.factory.ShapeFactory;
-import com.bonkan.brao.engine.utils.AtlasManager;
+import com.bonkan.brao.engine.utils.AssetsManager;
 
 import box2dLight.ConeLight;
 import box2dLight.PointLight;
@@ -107,7 +107,7 @@ public class MapManager {
 
         for (MapObject object : objects) {
         	if(object.getProperties().containsKey("sprite")) {
-        		TextureRegion texture = AtlasManager.getWorldSprite((String)object.getProperties().get("sprite"));
+        		TextureRegion texture = AssetsManager.getWorldSprite((String)object.getProperties().get("sprite"));
         		EntityManager.addWorldObject(new WorldObject(texture,
         													 (Float)object.getProperties().get("x"),
         													 (Float)object.getProperties().get("y") - texture.getRegionHeight()));
@@ -181,7 +181,7 @@ public class MapManager {
 
         for (MapObject object : objects) {
         	if(object.getProperties().containsKey("chestID")) {
-        		TextureRegion texture = AtlasManager.getWorldSprite("closed_chest");
+        		TextureRegion texture = AssetsManager.getWorldSprite("closed_chest");
         		EntityManager.addChest(new Chest(texture,
 											 (Float) object.getProperties().get("x"),
 											 (Float) object.getProperties().get("y") - texture.getRegionHeight(),

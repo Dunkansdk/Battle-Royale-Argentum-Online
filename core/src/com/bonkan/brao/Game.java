@@ -10,7 +10,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.bonkan.brao.engine.utils.AtlasManager;
+import com.bonkan.brao.engine.utils.AssetsManager;
 import com.bonkan.brao.networking.LoggedUser;
 import com.bonkan.brao.networking.Packet;
 import com.bonkan.brao.networking.PacketIDs;
@@ -48,6 +48,9 @@ public class Game extends ApplicationAdapter {
 		float height = Gdx.graphics.getHeight();
 
 		loggedUser = null;
+		
+		AssetsManager.init();
+		AssetsManager.loadAssets();
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, width / SCALE, height / SCALE);
@@ -116,7 +119,7 @@ public class Game extends ApplicationAdapter {
 		gameState.dispose();
 		batch.dispose();
 		client.close();
-		AtlasManager.dispose(); // Supongo que esto era lo que explotaba la stack
+		AssetsManager.dispose();
 	}
 	
 	// para la llegada de paquetes (despues lo movemos a otro lado??)

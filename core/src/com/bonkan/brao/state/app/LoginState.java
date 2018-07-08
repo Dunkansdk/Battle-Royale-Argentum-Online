@@ -4,10 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -20,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.bonkan.brao.engine.utils.AssetsManager;
-import com.bonkan.brao.engine.utils.AtlasManager;
 import com.bonkan.brao.networking.Packet;
 import com.bonkan.brao.networking.PacketIDs;
 import com.bonkan.brao.state.AbstractGameState;
@@ -33,7 +29,6 @@ public class LoginState extends AbstractGameState {
 
 	private Stage stage;
 	private Skin skin;
-	private BitmapFont defaultFont;
 	private TextField username;
 	private TextField password;
 	private TextButton connect;
@@ -44,26 +39,14 @@ public class LoginState extends AbstractGameState {
 	
     public LoginState(GameStateManager gameState) {
         super(gameState);
-        
-        AtlasManager.init();
-        
+
         labelTimer = 0;
         
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-        
-        defaultFont = AssetsManager.getDefaultFont();
 
- 		skin = new Skin();
- 		skin.add("default-font", defaultFont, BitmapFont.class);
- 		FileHandle fileHandle = Gdx.files.internal("uiskin.json");
- 		FileHandle atlasFile = fileHandle.sibling("uiskin.atlas");
-
- 		if (atlasFile.exists()) {
- 		    skin.addRegions(new TextureAtlas(atlasFile));
- 		}
-
- 		skin.load(fileHandle);
+        //skin = new Skin();
+        skin = AssetsManager.getDefaultSkin();
         
         username = new TextField("", skin);
         username.setBlinkTime(0.7f);

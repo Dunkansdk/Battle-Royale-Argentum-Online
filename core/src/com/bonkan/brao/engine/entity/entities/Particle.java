@@ -4,8 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bonkan.brao.engine.entity.Entity;
-import com.bonkan.brao.engine.utils.AtlasManager;
-
+import com.bonkan.brao.engine.utils.AssetsManager;
 
 public class Particle extends Entity {
 	
@@ -23,14 +22,15 @@ public class Particle extends Entity {
 
 	public Particle(ParticleType particle, int x, int y) {
 		super(x, y);
-		this.effect = new ParticleEffect();
-		this.effect.load(Gdx.files.internal(particle.file), AtlasManager.getParticleAtlas());
+		this.effect = AssetsManager.getParticle(particle.file);
+		this.effect.loadEmitterImages(AssetsManager.getParticlesAtlas());
 		this.effect.start();
 		this.effect.setPosition(x, y);
 	}
 
 	@Override	
 	public void update(float delta) {
+		effect.update(delta);
 	}
 
 	@Override

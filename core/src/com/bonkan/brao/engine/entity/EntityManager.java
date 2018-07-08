@@ -60,7 +60,7 @@ public class EntityManager {
 				return ((b.getPos().y + Constants.BODY_HEIGHT / 2) - (a.getPos().y + Constants.BODY_HEIGHT / 2)) > 0 ? 1 : -1;
 			}
 	    });
-		
+
 		// los items se dibujan abajo de todo
 		for (Map.Entry<UUID, Item> entry : items.entrySet()) {
 			entry.getValue().render(batch);

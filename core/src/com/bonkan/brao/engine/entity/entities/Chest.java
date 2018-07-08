@@ -3,7 +3,7 @@ package com.bonkan.brao.engine.entity.entities;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.bonkan.brao.engine.entity.Entity;
-import com.bonkan.brao.engine.utils.AtlasManager;
+import com.bonkan.brao.engine.utils.AssetsManager;
 
 public class Chest extends Entity {
 
@@ -36,7 +36,7 @@ public class Chest extends Entity {
 	public void open()
 	{
 		opened = true;
-		texture = AtlasManager.getWorldSprite("opened_chest");
+		texture = AssetsManager.getWorldSprite("opened_chest");
 	}
 	
 	public boolean getOpened()
