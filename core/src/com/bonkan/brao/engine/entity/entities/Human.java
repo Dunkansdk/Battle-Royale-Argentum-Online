@@ -48,6 +48,7 @@ public abstract class Human extends Entity {
 		this.userName = userName;
 		this.id = id;
 		this.state = PlayerState.NONE;
+		this.lastValidState = PlayerState.NONE;
 		this.headAnimator = new HeadAnimator(AssetsManager.getHead(headIndex));
 		this.bodyAnimator = new CommonAnimator(6, 4);
 		this.bodyAnimator.setTexture(AssetsManager.getBody(bodyIndex), state);
@@ -89,6 +90,9 @@ public abstract class Human extends Entity {
 	
 	public void setState(PlayerState state) 
 	{
+		if(this.state == PlayerState.NONE)
+			lastValidState = this.state;
+		
 		this.state = state;
 	}
 	

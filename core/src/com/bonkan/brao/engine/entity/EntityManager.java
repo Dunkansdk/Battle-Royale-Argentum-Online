@@ -68,9 +68,9 @@ public class EntityManager {
 		for (Entity entity : entityValues) {
 			entity.render(batch);
 		}
-		for(Entity entity : worldUnsorted) {
+		/*for(Entity entity : worldUnsorted) {
 			entity.render(batch);
-		}
+		}*/
 	}
 	
 	public static void update(float delta) {

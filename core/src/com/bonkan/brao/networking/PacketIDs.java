@@ -22,4 +22,5 @@ public class PacketIDs {
 	public static final int PACKET_PLAYER_REQUEST_GET_ITEM = 11;
 	public static final int PACKET_PLAYER_CONFIRM_GET_ITEM = 12;
 	public static final int PACKET_REMOVE_ITEM_FROM_FLOOR = 13;
+	public static final int PACKET_USER_IN_AREA_EQUIPPED_ITEM = 14;
 }

@@ -12,6 +12,8 @@ import com.bonkan.brao.server.packets.PacketIDs;
 import com.bonkan.brao.server.ui.ServerInterface;
 import com.bonkan.brao.server.users.LobbyUser;
 import com.bonkan.brao.server.users.MatchUser;
+import com.bonkan.brao.server.utils.CommonUtils;
+import com.bonkan.brao.server.utils.JSONManager;
 import com.bonkan.brao.server.utils.Position;
 import com.esotericsoftware.kryonet.Connection;
 
@@ -106,11 +108,6 @@ public class Protocol {
 
 				// mandamos todo por si no lo tenia en el area
 				args.clear();
-				args.add(String.valueOf(mu.getDefaultBody())); // body
-				args.add("1"); // head
-				args.add(String.valueOf(mu.getPos().getX())); // x
-				args.add(String.valueOf(mu.getPos().getY())); // y
-				args.add(String.valueOf(mu.getNickName())); // nick
 				args.add(String.valueOf(p.getArgs().get(0))); // state
 
 				currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_CHANGED_STATE, id.toString(), args), id);
@@ -157,7 +154,25 @@ public class Protocol {
 				{
 					mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_CONFIRM_GET_ITEM, itemID.toString(), null));
 					
+					int itemIndex = currentMatch.getItemIndex(itemID);
+
+					switch(JSONManager.getItemType(itemIndex))
+					{
+						case CommonUtils.ITEM_TYPE_SHIELD:
+							mu.setEquippedShield(itemIndex);
+							break;
+							
+						case CommonUtils.ITEM_TYPE_WEAPON:
+							mu.setEquippedWeapon(itemIndex);
+							break;
+					}
+					
 					currentMatch.removeItem(itemID);
+					
+					args.clear();
+					args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedShield()));
+					args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedWeapon()));
+					currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_IN_AREA_EQUIPPED_ITEM, id.toString(), args), id);
 					currentMatch.sendDataToAll(new Packet(PacketIDs.PACKET_REMOVE_ITEM_FROM_FLOOR, itemID.toString(), null));
 				}
 				

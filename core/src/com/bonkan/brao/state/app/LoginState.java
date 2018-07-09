@@ -92,6 +92,12 @@ public class LoginState extends AbstractGameState {
         label.setBounds(stage.getWidth() / 2 - 75, stage.getHeight() - 310, 150, 25);
         label.setAlignment(Align.center);
         
+        if(app.serverOffline()) 
+        {
+        	label.setColor(Color.RED);
+        	label.setText("Server offline");
+        }
+        
         SelectBox<String> test = new SelectBox<String>(skin);
         test.setItems("Clerigo", "Bardo", "Mago", "Druida", "Paladin", "Asesino");
         test.setBounds(stage.getWidth() / 2 - 40, stage.getHeight() - 350, 80, 25);

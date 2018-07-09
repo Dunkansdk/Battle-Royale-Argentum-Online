@@ -30,7 +30,7 @@ public class Particle extends Entity {
 
 	@Override	
 	public void update(float delta) {
-		effect.update(delta);
+		//effect.update(delta);
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.bonkan.brao.state.app;
 import java.util.Iterator;
 import java.util.UUID;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -46,8 +47,8 @@ public class PlayState extends AbstractGameState {
         EntityManager.addPlayer(aux.getLoggedID(), new Player(aux.getX(), aux.getY(), aux.getLoggedDefaultBody(), 1, aux.getHP(), aux.getMana(), aux.getLoggedID(), aux.getLoggedUserName(), WorldManager.world));
         
         EntityManager.addParticle(ParticleType.TEST2, 10, 10, true); 
-        //EntityManager.addParticle(ParticleType.TEST2, 300, 200, false); 
-       // EntityManager.addParticle(ParticleType.TEST1, 150, 150, false); 
+        EntityManager.addParticle(ParticleType.TEST2, 300, 200, false); 
+        EntityManager.addParticle(ParticleType.TEST1, 150, 150, false); 
     }
 
     @Override
@@ -75,12 +76,15 @@ public class PlayState extends AbstractGameState {
     	map.getTiled().render();
     	
     	app.getBatch().begin();    	
-    	EntityManager.render(batch);    	
+    	EntityManager.render(batch); 
+    	AssetsManager.getDefaultFont().draw(app.getBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), 50, 50);
     	app.getBatch().end();
     	
     	if(app.DEBUG) b2dr.render(WorldManager.world, camera.combined.cpy());
 
     	map.getRayHandler().render();
+    	
+    	//System.out.println(Gdx.graphics.getFramesPerSecond());
     }
     
     public void handlePlayerIncomingData()
@@ -106,20 +110,10 @@ public class PlayState extends AbstractGameState {
     			{
 	    			case PacketIDs.PACKET_USER_CHANGED_STATE:
     					id = UUID.fromString((String) p.getData());
-    					bodyIndex = Integer.parseInt(p.getArgs().get(0)); 
-    					headIndex = Integer.parseInt(p.getArgs().get(1)); 
-    					x = Integer.parseInt(p.getArgs().get(2)); 
-    					y = Integer.parseInt(p.getArgs().get(3)); 
-    					nick = p.getArgs().get(4);
-    					state = PlayerState.valueOf(p.getArgs().get(5));
+    					state = PlayerState.valueOf(p.getArgs().get(0));
     					
-    					if(!isEnemyInArea(id))
-    					{
-    						addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
+    					if(isEnemyInArea(id))
     						setEnemyState(id, state);
-    					} else {
-    						setEnemyState(id, state);
-    					}
 
 	    				break;
 	    				
@@ -186,6 +180,22 @@ public class PlayState extends AbstractGameState {
 	    				
 	    			case PacketIDs.PACKET_REMOVE_ITEM_FROM_FLOOR:
 	    				EntityManager.deleteItem(UUID.fromString((String) p.getData()));
+	    				break;
+	    				
+	    			case PacketIDs.PACKET_USER_IN_AREA_EQUIPPED_ITEM:
+	    				id = UUID.fromString((String) p.getData());
+	    				String shieldID = p.getArgs().get(0);
+	    				String weaponID = p.getArgs().get(1);
+	    				
+	    				if(isEnemyInArea(id))
+	    				{
+	    					if(shieldID != null)
+	    						EntityManager.getEnemy(id).setShield(shieldID);
+	    				
+	    					if(weaponID != null)
+	    						EntityManager.getEnemy(id).setWeapon(weaponID);
+	    				}
+	    					
 	    				break;
     			}
     			
