@@ -3,14 +3,18 @@
 		{
 			"name" : "Escudo de Tortuga",
 			"atlas_name" : "escutortu",
+			"anim_atlas_name" : "shield1",
 			"min_def" : 5,
-			"max_def" : 10
+			"max_def" : 10,
+			"item_type" : 0
 		},
 		{
 			"name" : "Espada de Plata",
 			"atlas_name" : "espadaplata",
+			"anim_atlas_name" : "weapon1",
 			"min_atk" : 20,
-			"max_atk" : 25
+			"max_atk" : 25,
+			"item_type" : 1
 		},
 	] 
 }

@@ -34,6 +34,8 @@ public class AssetsManager {
 		am.load("items.atlas", TextureAtlas.class);
 		am.load("heads.atlas", TextureAtlas.class);
 		am.load("world.atlas", TextureAtlas.class);
+		am.load("weapons.atlas", TextureAtlas.class);
+		am.load("shields.atlas", TextureAtlas.class);
 		am.load("particles.atlas", TextureAtlas.class);
 		
 		// FUENTES
@@ -88,6 +90,16 @@ public class AssetsManager {
 	public static TextureRegion getItem(String id)
 	{
 		return ((TextureAtlas) am.get("items.atlas")).findRegion(id);
+	}
+	
+	public static TextureRegion getWeapon(String id)
+	{
+		return ((TextureAtlas) am.get("weapons.atlas")).findRegion(id);
+	}
+	
+	public static TextureRegion getShield(String id)
+	{
+		return ((TextureAtlas) am.get("shields.atlas")).findRegion(id);
 	}
 	
 	public static TextureRegion getHead(int id)

@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.bonkan.brao.engine.entity.Entity;
-import com.bonkan.brao.engine.entity.animation.BodyAnimator;
+import com.bonkan.brao.engine.entity.animation.CommonAnimator;
 import com.bonkan.brao.engine.entity.animation.HeadAnimator;
 import com.bonkan.brao.engine.map.factory.BodyFactory;
 import com.bonkan.brao.engine.utils.AssetsManager;
@@ -26,12 +26,15 @@ public abstract class Human extends Entity {
 	
 	protected UUID id;
 	protected PlayerState state;
+	protected PlayerState lastValidState;// ultimo state distinto de NONE (para chequear orientacion)
 	protected String userName;
 	protected BitmapFont nameFont;
 		
 	// Texturas del player
-	protected BodyAnimator bodyAnimator;
+	protected CommonAnimator bodyAnimator;
 	protected HeadAnimator headAnimator;
+	protected CommonAnimator weaponAnimator;
+	protected CommonAnimator shieldAnimator;
 	
 	protected int bodyIndex;
 	protected int headIndex;
@@ -40,14 +43,16 @@ public abstract class Human extends Entity {
 
 	public Human(int x, int y, int bodyIndex, int headIndex, UUID id, String userName, World world) {
 		super(x, y);
-		this.texture = AssetsManager.getBody(bodyIndex);
 		this.bodyIndex = bodyIndex;
 		this.headIndex = headIndex;
 		this.userName = userName;
 		this.id = id;
 		this.state = PlayerState.NONE;
 		this.headAnimator = new HeadAnimator(AssetsManager.getHead(headIndex));
-		this.bodyAnimator = new BodyAnimator(texture);
+		this.bodyAnimator = new CommonAnimator(6, 4);
+		this.bodyAnimator.setTexture(AssetsManager.getBody(bodyIndex), state);
+		this.weaponAnimator = new CommonAnimator(6, 4);
+		this.shieldAnimator = new CommonAnimator(6, 4);
 		this.body = BodyFactory.createPlayerBox(world, x, y, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
 		this.nameFont = AssetsManager.getDefaultFont();
 	}
@@ -55,6 +60,8 @@ public abstract class Human extends Entity {
 	@Override
 	public void render(SpriteBatch batch) {
 		bodyAnimator.render(batch, location.x - Constants.BODY_WIDTH / 2, location.y - Constants.BODY_HEIGHT / 2, state);
+		weaponAnimator.render(batch, location.x - Constants.BODY_WIDTH / 2, location.y - Constants.BODY_HEIGHT / 2, state);
+		shieldAnimator.render(batch, location.x - Constants.BODY_WIDTH / 2, location.y - Constants.BODY_HEIGHT / 2, state);
 		headAnimator.render(batch, location.x - 8, location.y + Constants.BODY_HEIGHT / 2 - 3, state);
 		nameFont.draw(batch, userName, location.x - (userName.length() / 2 * 14) / 2, location.y - Constants.BODY_HEIGHT / 2);
 	}
@@ -70,9 +77,14 @@ public abstract class Human extends Entity {
 		location.y = y;
 	}
 
-	public UUID getID() 
+	public void setWeapon(String weaponID)
 	{
-		return id; 
+		weaponAnimator.setTexture(AssetsManager.getWeapon(weaponID), lastValidState);
+	}
+	
+	public void setShield(String shieldID)
+	{
+		shieldAnimator.setTexture(AssetsManager.getShield(shieldID), lastValidState);
 	}
 	
 	public void setState(PlayerState state) 
@@ -80,9 +92,19 @@ public abstract class Human extends Entity {
 		this.state = state;
 	}
 	
+	public void setLastValidState(PlayerState state)
+	{
+		lastValidState = state;
+	}
+	
 	public PlayerState getState() 
 	{
 		return state;
+	}
+	
+	public PlayerState getLastValidState()
+	{
+		return lastValidState;
 	}
 
 	public int getBodyIndex()
@@ -100,8 +122,8 @@ public abstract class Human extends Entity {
 		return userName;
 	}
 	
-	public TextureRegion getTexture() {
-		return texture;
+	public UUID getID()
+	{
+		return id;
 	}
-	
 }

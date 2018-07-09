@@ -36,4 +36,28 @@ public class JSONManager {
 		
 		return null;
 	}
+	
+	public static String getItemAnimAtlasName(int id)
+	{
+		if(itemsJSON.getJSONObject(id) != null)
+		{
+			JSONObject aux = itemsJSON.getJSONObject(id);
+			
+			return (String) aux.get("anim_atlas_name");
+		}
+		
+		return null;
+	}
+	
+	public static int getItemType(int id)
+	{
+		if(itemsJSON.getJSONObject(id) != null)
+		{
+			JSONObject aux = itemsJSON.getJSONObject(id);
+			
+			return (Integer) aux.get("item_type");
+		}
+		
+		return -1;
+	}
 }

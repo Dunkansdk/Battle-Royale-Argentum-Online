@@ -17,6 +17,7 @@ import com.bonkan.brao.engine.input.InputController;
 import com.bonkan.brao.engine.map.MapManager;
 import com.bonkan.brao.engine.map.WorldManager;
 import com.bonkan.brao.engine.utils.AssetsManager;
+import com.bonkan.brao.engine.utils.Constants;
 import com.bonkan.brao.networking.LoggedUser;
 import com.bonkan.brao.networking.Packet;
 import com.bonkan.brao.networking.PacketIDs;
@@ -160,14 +161,26 @@ public class PlayState extends AbstractGameState {
 	    				x = Integer.parseInt(p.getArgs().get(2));
 	    				y = Integer.parseInt(p.getArgs().get(3));
 	    				nick = p.getArgs().get(4);
-	    				
-	    				EntityManager.addItem(new Item(x, y, rarity, nick, AssetsManager.getItem(p.getArgs().get(5)), id));
+	    				String animTexture = p.getArgs().get(6);
+	    				int type = Integer.parseInt(p.getArgs().get(7));
+
+	    				EntityManager.addItem(new Item(x, y, rarity, nick, AssetsManager.getItem(p.getArgs().get(5)), animTexture, type, id));
 	    				break;
 	    				
 	    			case PacketIDs.PACKET_PLAYER_CONFIRM_GET_ITEM:
 	    				
 	    				Item i = EntityManager.getItem(UUID.fromString((String) p.getData()));
-	    				System.out.println("AGARRASTE EL ITEM " + i.getName() + " CON RAREZA " + i.getRarity());
+	    				
+	    				switch(i.getType())
+	    				{
+	    					case Constants.ITEM_TYPE_WEAPON:
+		    					EntityManager.getPlayer().setWeapon(i.getAnimTexture());
+		    					break;
+	    				
+	    					case Constants.ITEM_TYPE_SHIELD:
+		    					EntityManager.getPlayer().setShield(i.getAnimTexture());
+		    					break;
+	    				}
 	    				
 	    				break;
 	    				

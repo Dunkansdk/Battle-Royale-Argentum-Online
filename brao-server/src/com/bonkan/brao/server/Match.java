@@ -128,7 +128,9 @@ public class Match {
 		args.add(String.valueOf(chestPos.getX())); // posicion X del item
 		args.add(String.valueOf(chestPos.getY() - 48)); // posicion Y del item
 		args.add(JSONManager.getItemName(1)); // nombre del item (en este caso el item 1)
-		args.add(JSONManager.getItemAtlasName(1)); // nombre en el atlas del cliente del item (en este caso el item 1)
+		args.add(JSONManager.getItemAtlasName(1)); // nombre en el atlas del cliente del item (en este caso del item 1)
+		args.add(JSONManager.getItemAnimAtlasName(1)); // nombre en el atlas del cliente de la animación del item (en este caso del item 1)
+		args.add(String.valueOf(JSONManager.getItemType(1))); // tipo del item
 		
 		// agregamos el item al mapa de items
 		mapItems.put(itemID, new Item(itemID, chestPos.getX(), chestPos.getY() - 48));
