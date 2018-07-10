@@ -9,15 +9,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bonkan.brao.Game;
 import com.bonkan.brao.engine.entity.entities.Chest;
 import com.bonkan.brao.engine.entity.entities.Item;
-import com.bonkan.brao.engine.entity.entities.Particle;
-import com.bonkan.brao.engine.entity.entities.Particle.ParticleType;
 import com.bonkan.brao.engine.entity.entities.WorldObject;
 import com.bonkan.brao.engine.entity.entities.human.Enemy;
 import com.bonkan.brao.engine.entity.entities.human.Player;
+import com.bonkan.brao.engine.entity.entities.particle.ParticlePool;
+import com.bonkan.brao.engine.entity.entities.particle.ParticleType;
 import com.bonkan.brao.engine.utils.CommonUtils;
 import com.bonkan.brao.engine.utils.Constants;
 
@@ -32,6 +33,7 @@ public class EntityManager {
 	private static ArrayList<Entity> worldUnsorted;
 	private static ArrayList<Chest> chests;
 	private static HashMap<UUID, Item> items;
+	private static ParticlePool particles;
 	private static Game app;
 	
 	public static void init(Game app) {
@@ -40,6 +42,7 @@ public class EntityManager {
 		worldUnsorted = new ArrayList<Entity>();
 		chests = new ArrayList<Chest>();
 		items = new HashMap<UUID, Item>();
+		particles = new ParticlePool();
 	}
 	
 	public static void setPlayer(Player p) {
@@ -76,6 +79,7 @@ public class EntityManager {
 		for(Entity entity : worldUnsorted) {
 			entity.render(batch);
 		}
+		particles.render(batch, Gdx.graphics.getDeltaTime());
 	}
 	
 	public static void update(float delta) {
@@ -116,11 +120,7 @@ public class EntityManager {
 	}
 	
 	public static void addParticle(ParticleType particle, int x, int y, boolean sorted) {
-		if(sorted) {
-			worldSorted.add(new Particle(particle, x, y));
-		} else {
-			worldUnsorted.add(new Particle(particle, x, y));
-		}
+		particles.create(particle, x, y);
 	}
 	
 	public static void addChest(Chest chest)
