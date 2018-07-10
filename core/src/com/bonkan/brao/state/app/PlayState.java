@@ -54,7 +54,7 @@ public class PlayState extends AbstractGameState {
         EntityManager.setPlayer(new Player(aux.getX(), aux.getY(), aux.getLoggedDefaultBody(), 1, aux.getHP(), aux.getMana(), aux.getLoggedID(), aux.getLoggedUserName(), WorldManager.world));
         
         EntityManager.addParticle(ParticleType.TEST2, 10, 10, true); 
-        EntityManager.addParticle(ParticleType.TEST2, 300, 200, false); 
+        //hinchapelotas EntityManager.addParticle(ParticleType.TEST2, 300, 200, false); 
         EntityManager.addParticle(ParticleType.TEST1, 150, 150, false); 
         
         inventory = new ItemSlot[3]; // casco, escudo, arma
@@ -108,12 +108,9 @@ public class PlayState extends AbstractGameState {
     	/**
     	 * Todo lo del world
     	 */
-    	app.getBatch().begin();    	
-    		EntityManager.render(batch); 
-    	app.getBatch().end();
+    	EntityManager.render(batch); 
     	
     	if(app.DEBUG) b2dr.render(WorldManager.world, camera.combined.cpy());
-
     	map.getRayHandler().render();
     	
     	/**

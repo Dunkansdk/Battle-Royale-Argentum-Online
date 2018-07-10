@@ -75,13 +75,15 @@ public class EntityManager {
 		for (Map.Entry<UUID, Item> entry : items.entrySet())
 			entry.getValue().render(batch);
 		
-		for (Entity entity : entityValues)
-			entity.render(batch);
-		
-		for(Entity entity : worldUnsorted) // esto se usa?
-			entity.render(batch);
-		
-		particles.render(batch, Gdx.graphics.getDeltaTime());
+		batch.begin();
+			for (Entity entity : entityValues)
+				entity.render(batch);
+			
+			for(Entity entity : worldUnsorted) // esto se usa? - Hay que ver
+				entity.render(batch);
+			
+			particles.render(batch, Gdx.graphics.getDeltaTime());
+		batch.end();
 	}
 	
 	public static void update(float delta) {
