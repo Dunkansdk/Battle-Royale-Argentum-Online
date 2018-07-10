@@ -1,8 +1,6 @@
 package com.bonkan.brao.engine.entity.entities.particle;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect;

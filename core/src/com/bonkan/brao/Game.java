@@ -36,8 +36,10 @@ public class Game extends ApplicationAdapter {
 	public static final int V_HEIGHT = 720;
 
 	private OrthographicCamera camera;
+	private OrthographicCamera hud;
 	private GameStateManager gameState;
 	private SpriteBatch batch;
+	private SpriteBatch hudBatch;
 	private Client client;
 
 	private LoggedUser loggedUser; // cuando loguea un user
@@ -59,7 +61,10 @@ public class Game extends ApplicationAdapter {
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, width / SCALE, height / SCALE);
+		hud = new OrthographicCamera();
+		hud.setToOrtho(false, width / SCALE, height / SCALE);
 		batch = new SpriteBatch();
+		hudBatch = new SpriteBatch();
 		gameState = new GameStateManager(this);
 		
 		// inicializa el nuevo thread
@@ -94,6 +99,7 @@ public class Game extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(camera.combined);
+		hudBatch.setProjectionMatrix(hud.combined);
 		gameState.update(Gdx.graphics.getDeltaTime());
 		gameState.render();
 		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
@@ -109,6 +115,7 @@ public class Game extends ApplicationAdapter {
 	public void dispose() {
 		gameState.dispose();
 		batch.dispose();
+		hudBatch.dispose();
 		client.close();
 		AssetsManager.dispose();
 	}
@@ -142,6 +149,10 @@ public class Game extends ApplicationAdapter {
 		return camera;
 	}
 	
+	public OrthographicCamera getHud() {
+		return hud;
+	}
+	
 	public void setCamera(OrthographicCamera camera) 
 	{
 		this.camera = camera;
@@ -150,6 +161,10 @@ public class Game extends ApplicationAdapter {
 	public SpriteBatch getBatch() 
 	{
 		return batch;
+	}
+	
+	public SpriteBatch getHudBatch() {
+		return hudBatch;
 	}
 	
 	public Client getClient() 

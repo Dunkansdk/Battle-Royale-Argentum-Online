@@ -77,16 +77,23 @@ public class PlayState extends AbstractGameState {
     {
     	map.getTiled().render();
     	
+    	/**
+    	 * Todo lo del world
+    	 */
     	app.getBatch().begin();    	
-    	EntityManager.render(batch); 
-    	AssetsManager.getDefaultFont().draw(app.getBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), 50, 50);
+    		EntityManager.render(batch); 
     	app.getBatch().end();
     	
     	if(app.DEBUG) b2dr.render(WorldManager.world, camera.combined.cpy());
 
     	map.getRayHandler().render();
     	
-    	//System.out.println(Gdx.graphics.getFramesPerSecond());
+    	/**
+    	 * Todo lo de la interfaz
+    	 */
+    	app.getHudBatch().begin();
+    		AssetsManager.getDefaultFont().draw(app.getHudBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), 50, 50);
+    	app.getHudBatch().end();
     }
     
     public void handlePlayerIncomingData()
@@ -235,6 +242,7 @@ public class PlayState extends AbstractGameState {
         position.y = camera.position.y + (target.y - camera.position.y) * .1f;
         camera.position.set(position);
         camera.update();
+        
     }
     
     public void addEnemyToArea(int bodyIndex, int headIndex, int x, int y, UUID id, String nick, String weaponAnim, String shieldAnim)

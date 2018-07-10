@@ -23,7 +23,7 @@ public class ParticlePool {
 		effect.setPosition(x, y);
 		pool.add(effect);
 	}
-	
+
 	public void render(SpriteBatch batch, float delta) {
 		Iterator<PooledEffect> it = pool.iterator();
 	    while (it.hasNext()) {
