@@ -38,38 +38,42 @@ public class CommonAnimator {
 		sheet = texture;
 		lastState = currState;
 
-		TextureRegion[][] tmp = sheet.split( 
-								sheet.getRegionWidth() / numCols,
-								sheet.getRegionHeight() / numRows);
-		
-		TextureRegion[] walkFrames = new TextureRegion[numCols];
-		TextureRegion[] walkFrames2 = new TextureRegion[numCols];
-		TextureRegion[] walkSidewayFrames = new TextureRegion[numCols - 1];
-		TextureRegion[] walkSidewayFrames2 = new TextureRegion[numCols - 1];
-		
-		int index = 0;
-		for (int j = 0; j < numCols; j++) {
+		if(sheet != null)
+		{
+			TextureRegion[][] tmp = sheet.split( 
+					sheet.getRegionWidth() / numCols,
+					sheet.getRegionHeight() / numRows);
+
+			TextureRegion[] walkFrames = new TextureRegion[numCols];
+			TextureRegion[] walkFrames2 = new TextureRegion[numCols];
+			TextureRegion[] walkSidewayFrames = new TextureRegion[numCols - 1];
+			TextureRegion[] walkSidewayFrames2 = new TextureRegion[numCols - 1];
+			
+			int index = 0;
+			for (int j = 0; j < numCols; j++) {
 			walkFrames[index++] = tmp[0][j];
-		}		
-		downAnimation = new Animation<TextureRegion>(0.075f, walkFrames);
-		
-		index = 0;
-		for (int j = 0; j < numCols; j++) {
+			}		
+			downAnimation = new Animation<TextureRegion>(0.075f, walkFrames);
+			
+			index = 0;
+			for (int j = 0; j < numCols; j++) {
 			walkFrames2[index++] = tmp[1][j];
-		}
-		upAnimation = new Animation<TextureRegion>(0.075f, walkFrames2);
-		
-		index = 0;
-		for (int j = 0; j < numCols - 1; j++) {
+			}
+			upAnimation = new Animation<TextureRegion>(0.075f, walkFrames2);
+			
+			index = 0;
+			for (int j = 0; j < numCols - 1; j++) {
 			walkSidewayFrames[index++] = tmp[3][j];
-		}
-		rightAnimation = new Animation<TextureRegion>(0.075f, walkSidewayFrames);
-		
-		index = 0;
-		for (int j = 0; j < numCols - 1; j++) {
+			}
+			rightAnimation = new Animation<TextureRegion>(0.075f, walkSidewayFrames);
+			
+			index = 0;
+			for (int j = 0; j < numCols - 1; j++) {
 			walkSidewayFrames2[index++] = tmp[2][j];
+			}
+			leftAnimation = new Animation<TextureRegion>(0.075f, walkSidewayFrames2);
 		}
-		leftAnimation = new Animation<TextureRegion>(0.075f, walkSidewayFrames2);
+		
 	}
 	
 	/**

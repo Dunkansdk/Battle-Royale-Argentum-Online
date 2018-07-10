@@ -45,11 +45,13 @@ public class EntityManager {
 		particles = new ParticlePool();
 	}
 	
-	public static void setPlayer(Player p) {
+	public static void setPlayer(Player p) 
+	{
 		player = p;
 	}
 	
-	public static void addEnemy(UUID id, Enemy enemy) {
+	public static void addEnemy(UUID id, Enemy enemy) 
+	{
 		enemies.put(id, enemy);
 	}
 	
@@ -70,15 +72,15 @@ public class EntityManager {
 	    });
 
 		// los items se dibujan abajo de todo
-		for (Map.Entry<UUID, Item> entry : items.entrySet()) {
+		for (Map.Entry<UUID, Item> entry : items.entrySet())
 			entry.getValue().render(batch);
-		}
-		for (Entity entity : entityValues) {
+		
+		for (Entity entity : entityValues)
 			entity.render(batch);
-		}
-		for(Entity entity : worldUnsorted) {
+		
+		for(Entity entity : worldUnsorted) // esto se usa?
 			entity.render(batch);
-		}
+		
 		particles.render(batch, Gdx.graphics.getDeltaTime());
 	}
 	

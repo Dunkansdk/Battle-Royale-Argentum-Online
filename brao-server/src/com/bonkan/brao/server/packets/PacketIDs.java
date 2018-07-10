@@ -25,5 +25,7 @@ public class PacketIDs {
 	public static final int PACKET_PLAYER_REQUEST_FULL_BODY = 14;
 	public static final int PACKET_PLAYER_SEND_FULL_BODY = 15;
 	public static final int PACKET_USER_ENTERED_PLAYER_AREA = 16;
+	public static final int PACKET_PLAYER_REQUEST_UNEQUIP_ITEM = 17;
+	public static final int PACKET_PLAYER_CONFIRM_UNEQUIP_ITEM = 18;
 	
 }

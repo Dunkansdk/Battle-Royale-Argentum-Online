@@ -7,6 +7,7 @@ import com.badlogic.gdx.assets.loaders.ParticleEffectLoader;
 import com.badlogic.gdx.assets.loaders.ParticleEffectLoader.ParticleEffectParameter;
 import com.badlogic.gdx.assets.loaders.SkinLoader.SkinParameter;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -37,6 +38,9 @@ public class AssetsManager {
 		am.load("weapons.atlas", TextureAtlas.class);
 		am.load("shields.atlas", TextureAtlas.class);
 		am.load("particles.atlas", TextureAtlas.class);
+		
+		// TEXTURAS AUXILIARES
+		am.load("slot.png", Texture.class);
 		
 		// FUENTES
 		FileHandleResolver resolver = new InternalFileHandleResolver();
@@ -115,6 +119,11 @@ public class AssetsManager {
 	public static TextureAtlas getParticlesAtlas()
 	{
 		return am.get("particles.atlas");
+	}
+	
+	public static Texture getTexture(String texture)
+	{
+		return am.get(texture);
 	}
 	
 	public static BitmapFont getDefaultFont()

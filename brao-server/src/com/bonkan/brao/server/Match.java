@@ -1,6 +1,7 @@
 package com.bonkan.brao.server;
 
 import java.util.HashMap;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
@@ -84,19 +85,37 @@ public class Match {
 		}
 	}
 	
-	public HashMap<UUID, MatchUser> getUsers()
+	// chequea si el tile está ocupado (por un item)
+	public boolean busyTile(int x, int y)
 	{
-		return users;
+		for (Map.Entry<UUID, Item> entry : mapItems.entrySet())
+		{
+			Rectangle r = new Rectangle(entry.getValue().getPos().getX(), entry.getValue().getPos().getY(), CommonUtils.ITEM_SIZE, CommonUtils.ITEM_SIZE);
+			if(r.contains(x, y)) return true;
+		}
+		
+		return false;
 	}
 	
-	public MatchUser getUserByID(UUID id)
+	public void throwItem(int x, int y, int index, int rarity)
 	{
-		return users.get(id);
-	}
-	
-	public UUID getID()
-	{
-		return id;
+		ArrayList<String> args = new ArrayList<String>();
+		UUID itemID = UUID.randomUUID();
+
+		args.add(itemID.toString()); // id del item (se la volvemos a asignar total ya lo tiró)
+		args.add(String.valueOf(rarity)); // rareza del item
+		args.add(String.valueOf(x)); // posicion X del item
+		args.add(String.valueOf(y)); // posicion Y del item
+		args.add(JSONManager.getItemName(index)); // nombre del item (en este caso el item 1)
+		args.add(JSONManager.getItemAtlasName(index)); // nombre en el atlas del cliente del item (en este caso del item 1)
+		args.add(JSONManager.getItemAnimAtlasName(index)); // nombre en el atlas del cliente de la animación del item (en este caso del item 1)
+		args.add(String.valueOf(JSONManager.getItemType(index))); // tipo del item
+		
+		// agregamos el item al mapa de items
+		mapItems.put(itemID, new Item(itemID, x, y, index, rarity));
+		
+		// mandamos los items a todos los users
+		sendDataToAll(new Packet(PacketIDs.PACKET_ITEM_THROWN, null, args));
 	}
 	
 	public boolean itemExists(UUID id)
@@ -108,6 +127,14 @@ public class Match {
 	{
 		if(mapItems.get(id) != null)
 			return mapItems.get(id).getIndex();
+		
+		return -1;
+	}
+	
+	public int getItemRarity(UUID id)
+	{
+		if(mapItems.get(id) != null)
+			return mapItems.get(id).getRarity();
 		
 		return -1;
 	}
@@ -129,21 +156,37 @@ public class Match {
 		
 		ArrayList<String> args = new ArrayList<String>();
 		UUID itemID = UUID.randomUUID();
-		int rarity = ThreadLocalRandom.current().nextInt(1, 4);
+		int index = ThreadLocalRandom.current().nextInt(0, 2);
+		int rarity = ThreadLocalRandom.current().nextInt(1, 5);
 		
 		args.add(itemID.toString()); // id del item
 		args.add(String.valueOf(rarity)); // rareza del item
 		args.add(String.valueOf(chestPos.getX())); // posicion X del item
 		args.add(String.valueOf(chestPos.getY() - 48)); // posicion Y del item
-		args.add(JSONManager.getItemName(0)); // nombre del item (en este caso el item 1)
-		args.add(JSONManager.getItemAtlasName(0)); // nombre en el atlas del cliente del item (en este caso del item 1)
-		args.add(JSONManager.getItemAnimAtlasName(0)); // nombre en el atlas del cliente de la animación del item (en este caso del item 1)
-		args.add(String.valueOf(JSONManager.getItemType(0))); // tipo del item
+		args.add(JSONManager.getItemName(index)); // nombre del item (en este caso el item 1)
+		args.add(JSONManager.getItemAtlasName(index)); // nombre en el atlas del cliente del item (en este caso del item 1)
+		args.add(JSONManager.getItemAnimAtlasName(index)); // nombre en el atlas del cliente de la animación del item (en este caso del item 1)
+		args.add(String.valueOf(JSONManager.getItemType(index))); // tipo del item
 		
 		// agregamos el item al mapa de items
-		mapItems.put(itemID, new Item(itemID, chestPos.getX(), chestPos.getY() - 48, 0));
+		mapItems.put(itemID, new Item(itemID, chestPos.getX(), chestPos.getY() - 48, index, rarity));
 		
 		// mandamos los items a todos los users
 		sendDataToAll(new Packet(PacketIDs.PACKET_ITEM_THROWN, null, args));
+	}
+	
+	public HashMap<UUID, MatchUser> getUsers()
+	{
+		return users;
+	}
+	
+	public MatchUser getUserByID(UUID id)
+	{
+		return users.get(id);
+	}
+	
+	public UUID getID()
+	{
+		return id;
 	}
 }

@@ -69,4 +69,9 @@ public class Item extends Entity {
 		return name;
 	}
 
+	// para los ItemSlots
+	public TextureRegion getTexture()
+	{
+		return texture;
+	}
 }

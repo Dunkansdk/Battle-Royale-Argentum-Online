@@ -3,6 +3,7 @@ package com.bonkan.brao.engine.entity.entities;
 import java.util.UUID;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -40,6 +41,8 @@ public abstract class Human extends Entity {
 	protected int headIndex;
 	
 	protected Body body;
+	
+	private GlyphLayout glyphLayout; // para dibujar los nombres centrados
 
 	public Human(int x, int y, int bodyIndex, int headIndex, UUID id, String userName, World world) {
 		super(x, y);
@@ -56,6 +59,7 @@ public abstract class Human extends Entity {
 		this.shieldAnimator = new CommonAnimator(6, 4);
 		this.body = BodyFactory.createPlayerBox(world, x, y, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
 		this.nameFont = AssetsManager.getDefaultFont();
+		this.glyphLayout = new GlyphLayout();
 	}
 
 	@Override
@@ -64,7 +68,9 @@ public abstract class Human extends Entity {
 		weaponAnimator.render(batch, location.x - Constants.BODY_WIDTH / 2, location.y - Constants.BODY_HEIGHT / 2, state);
 		shieldAnimator.render(batch, location.x - Constants.BODY_WIDTH / 2, location.y - Constants.BODY_HEIGHT / 2, state);
 		headAnimator.render(batch, location.x - 8, location.y + Constants.BODY_HEIGHT / 2 - 3, state);
-		nameFont.draw(batch, userName, location.x - (userName.length() / 2 * 14) / 2, location.y - Constants.BODY_HEIGHT / 2);
+		
+		glyphLayout.setText(nameFont, userName);
+		nameFont.draw(batch, userName, location.x - glyphLayout.width / 2, location.y - Constants.BODY_HEIGHT / 2);
 	}
 	
 	@Override
@@ -80,19 +86,17 @@ public abstract class Human extends Entity {
 
 	public void setWeapon(String weaponID)
 	{
-		if(weaponID != null) // puede ser null si llega un paquete de alguien que no tiene arma equipada
-			weaponAnimator.setTexture(AssetsManager.getWeapon(weaponID), lastValidState);
+		weaponAnimator.setTexture(AssetsManager.getWeapon(weaponID), lastValidState);
 	}
 	
 	public void setShield(String shieldID)
 	{
-		if(shieldID != null) // puede ser null si llega un paquete de alguien que no tiene escudo equipado
-			shieldAnimator.setTexture(AssetsManager.getShield(shieldID), lastValidState);
+		shieldAnimator.setTexture(AssetsManager.getShield(shieldID), lastValidState);
 	}
 	
 	public void setState(PlayerState state) 
 	{
-		if(this.state == PlayerState.NONE)
+		if(this.state != PlayerState.NONE)
 			lastValidState = this.state;
 		
 		this.state = state;

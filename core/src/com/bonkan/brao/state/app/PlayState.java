@@ -1,10 +1,12 @@
 package com.bonkan.brao.state.app;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.UUID;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -18,6 +20,7 @@ import com.bonkan.brao.engine.entity.entities.particle.ParticleType;
 import com.bonkan.brao.engine.input.InputController;
 import com.bonkan.brao.engine.map.MapManager;
 import com.bonkan.brao.engine.map.WorldManager;
+import com.bonkan.brao.engine.ui.ItemSlot;
 import com.bonkan.brao.engine.utils.AssetsManager;
 import com.bonkan.brao.engine.utils.CommonUtils;
 import com.bonkan.brao.engine.utils.Constants;
@@ -35,8 +38,10 @@ public class PlayState extends AbstractGameState {
     private Box2DDebugRenderer b2dr;
     private MapManager map;
     private InputController inputController;
+    private ItemSlot[] inventory;
     
-    public PlayState(GameStateManager gameState) {
+    @SuppressWarnings("static-access")
+	public PlayState(GameStateManager gameState) {
         super(gameState);
         WorldManager.init();
         EntityManager.init(app);
@@ -51,6 +56,13 @@ public class PlayState extends AbstractGameState {
         EntityManager.addParticle(ParticleType.TEST2, 10, 10, true); 
         EntityManager.addParticle(ParticleType.TEST2, 300, 200, false); 
         EntityManager.addParticle(ParticleType.TEST1, 150, 150, false); 
+        
+        inventory = new ItemSlot[3]; // casco, escudo, arma
+        
+        // el offset de separacion siempre es 15 pixeles
+        inventory[ItemSlot.INVENTORY_SHIELD_SLOT] = new ItemSlot(app.V_WIDTH / 2 - Constants.ITEM_SIZE, 50); // en el diome
+        inventory[ItemSlot.INVENTORY_WEAPON_SLOT] = new ItemSlot(app.V_WIDTH / 2 - Constants.ITEM_SIZE - 64 - 15, 50); // primero
+        inventory[ItemSlot.INVENTORY_HELMET_SLOT] = new ItemSlot(app.V_WIDTH / 2 - Constants.ITEM_SIZE + 64 + 15, 50); // ultimo
     }
 
     @Override
@@ -60,6 +72,22 @@ public class PlayState extends AbstractGameState {
     	
     	map.getTiled().setView(camera);
     	inputController.update(delta, EntityManager.getPlayer());
+    	
+    	if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) // no lo pongo en el inputController porque es un quilombo (no tengo acceso al inventory ni al app)
+    	{
+    		@SuppressWarnings("static-access")
+    		Point p = new Point(Gdx.input.getX(), app.V_HEIGHT - Gdx.input.getY()); // gdx.input usa otro sist de coordenadas -.- (0,0) arriba izq
+        	for(int i = 0; i < inventory.length; i++)
+        	{
+        		ItemSlot is = inventory[i];
+        		if(is.getRect().contains(p) && !is.isEmpty())
+        		{
+        			ArrayList<String> args = new ArrayList<String>();
+        			args.add(String.valueOf(i));
+        			app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_UNEQUIP_ITEM, EntityManager.getPlayer().getID().toString(), args));
+        		}
+        	}
+    	}
     	
     	//TODO: ESTO HAY QUE VOLARLO!
     	lerpToTarget(camera, EntityManager.getPlayer().getPos());
@@ -93,6 +121,8 @@ public class PlayState extends AbstractGameState {
     	 */
     	app.getHudBatch().begin();
     		AssetsManager.getDefaultFont().draw(app.getHudBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), 50, 50);
+    		for(ItemSlot is : inventory)
+    			is.render(app.getHudBatch());
     	app.getHudBatch().end();
     }
     
@@ -172,10 +202,14 @@ public class PlayState extends AbstractGameState {
 	    				{
 	    					case Constants.ITEM_TYPE_WEAPON:
 		    					EntityManager.getPlayer().setWeapon(i.getAnimTexture());
+		    					
+		    					inventory[ItemSlot.INVENTORY_WEAPON_SLOT].setItem(i);
 		    					break;
 	    				
 	    					case Constants.ITEM_TYPE_SHIELD:
 		    					EntityManager.getPlayer().setShield(i.getAnimTexture());
+		    					
+		    					inventory[ItemSlot.INVENTORY_SHIELD_SLOT].setItem(i);
 		    					break;
 	    				}
 	    				
@@ -222,6 +256,26 @@ public class PlayState extends AbstractGameState {
 	    					app.getClient().sendTCP(new Packet(PacketIDs.PACKET_USER_ENTERED_PLAYER_AREA, EntityManager.getPlayer().getID().toString(), args));
 	    				}
 
+	    				break;
+	    				
+	    			case PacketIDs.PACKET_PLAYER_CONFIRM_UNEQUIP_ITEM:
+	    				int slot = Integer.parseInt((String) p.getData());
+	    				inventory[slot].unequip();
+	    				
+	    				switch(slot)
+	    				{
+		    				case ItemSlot.INVENTORY_HELMET_SLOT:
+		    					
+		    					break;
+		    					
+		    				case ItemSlot.INVENTORY_SHIELD_SLOT:
+		    					EntityManager.getPlayer().setShield(null);
+		    					break;
+		    					
+		    				case ItemSlot.INVENTORY_WEAPON_SLOT:
+		    					EntityManager.getPlayer().setWeapon(null);
+		    					break;
+	    				}
 	    				break;
     			}
     			
@@ -279,7 +333,6 @@ public class PlayState extends AbstractGameState {
     		{
     			// lo borramos
     			EntityManager.removeEnemy(enemyID);
-    			System.out.println("LO BORRE DE TU AREA PA");
     		}
     	}
     }

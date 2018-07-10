@@ -10,8 +10,19 @@ public class CommonUtils {
 	public static final int VIEWPORT_WIDTH = 1280;
 	public static final int VIEWPORT_HEIGHT = 720;
 	
+	public static final int BODY_WIDTH = 25;
+	public static final int BODY_HEIGHT = 40;
+	
+	public static final int ITEM_SIZE = 32;
+	
+	// tipos de items
 	public static final int ITEM_TYPE_SHIELD = 0;
 	public static final int ITEM_TYPE_WEAPON = 1;
+	
+	// slots de items
+	public static final int INVENTORY_WEAPON_SLOT = 0;
+	public static final int INVENTORY_SHIELD_SLOT = 1;
+	public static final int INVENTORY_HELMET_SLOT = 2;
 	
 	/**
 	 * <p>Chequea si dos usuarios (sus posiciones) están en la misma área de visión.</p>

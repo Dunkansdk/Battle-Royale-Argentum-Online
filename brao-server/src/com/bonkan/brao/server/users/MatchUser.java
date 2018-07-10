@@ -16,8 +16,13 @@ public class MatchUser extends LobbyUser {
 	private Position pos; // posicion en el mapa (del Body de box2d)
 	private UUID matchID;
 	private PlayerState state;
+	
 	private int equippedWeapon;
 	private int equippedShield;
+	
+	// guardo estos aca para evitar problemas
+	private int equippedWeaponRarity;
+	private int equippedShieldRarity; 
 	
 	public MatchUser(String nickName, UUID id, int defaultBody, Connection conn, int hp, int mana, Position pos, UUID matchID) {
 		super(nickName, id, defaultBody, conn);
@@ -53,14 +58,16 @@ public class MatchUser extends LobbyUser {
 			ServerInterface.addMessage("EL PLAYER " + this.getNickName() + " SE MOVIO A " + this.getPos().getX() + ", " + this.getPos().getY());
 	}
 
-	public void setEquippedWeapon(int weapon)
+	public void setEquippedWeapon(int weapon, int rarity)
 	{
 		equippedWeapon = weapon;
+		equippedWeaponRarity = rarity;
 	}
 	
-	public void setEquippedShield(int shield)
+	public void setEquippedShield(int shield, int rarity)
 	{
 		equippedShield = shield;
+		equippedShieldRarity = rarity;
 	}
 	
 	public void setPosition(int x, int y)
@@ -106,5 +113,15 @@ public class MatchUser extends LobbyUser {
 	public int getEquippedShield()
 	{
 		return equippedShield;
+	}
+	
+	public int getEquippedWeaponRarity()
+	{
+		return equippedWeaponRarity;
+	}
+	
+	public int getEquippedShieldRarity()
+	{
+		return equippedShieldRarity;
 	}
 }
