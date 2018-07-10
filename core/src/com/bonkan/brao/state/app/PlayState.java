@@ -1,8 +1,10 @@
 package com.bonkan.brao.state.app;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.UUID;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -17,6 +19,7 @@ import com.bonkan.brao.engine.input.InputController;
 import com.bonkan.brao.engine.map.MapManager;
 import com.bonkan.brao.engine.map.WorldManager;
 import com.bonkan.brao.engine.utils.AssetsManager;
+import com.bonkan.brao.engine.utils.CommonUtils;
 import com.bonkan.brao.engine.utils.Constants;
 import com.bonkan.brao.networking.LoggedUser;
 import com.bonkan.brao.networking.Packet;
@@ -36,18 +39,18 @@ public class PlayState extends AbstractGameState {
     public PlayState(GameStateManager gameState) {
         super(gameState);
         WorldManager.init();
-        EntityManager.init();
+        EntityManager.init(app);
         map = new MapManager(WorldManager.world);
         b2dr = new Box2DDebugRenderer();
         inputController = new InputController(app.getClient(), map.createBlocks());
 
         LoggedUser aux = app.getLoggedUser();
    
-        EntityManager.addPlayer(aux.getLoggedID(), new Player(aux.getX(), aux.getY(), aux.getLoggedDefaultBody(), 1, aux.getHP(), aux.getMana(), aux.getLoggedID(), aux.getLoggedUserName(), WorldManager.world));
+        EntityManager.setPlayer(new Player(aux.getX(), aux.getY(), aux.getLoggedDefaultBody(), 1, aux.getHP(), aux.getMana(), aux.getLoggedID(), aux.getLoggedUserName(), WorldManager.world));
         
         EntityManager.addParticle(ParticleType.TEST2, 10, 10, true); 
-        //EntityManager.addParticle(ParticleType.TEST2, 300, 200, false); 
-       // EntityManager.addParticle(ParticleType.TEST1, 150, 150, false); 
+        EntityManager.addParticle(ParticleType.TEST2, 300, 200, false); 
+        EntityManager.addParticle(ParticleType.TEST1, 150, 150, false); 
     }
 
     @Override
@@ -75,12 +78,15 @@ public class PlayState extends AbstractGameState {
     	map.getTiled().render();
     	
     	app.getBatch().begin();    	
-    	EntityManager.render(batch);    	
+    	EntityManager.render(batch); 
+    	AssetsManager.getDefaultFont().draw(app.getBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), 50, 50);
     	app.getBatch().end();
     	
     	if(app.DEBUG) b2dr.render(WorldManager.world, camera.combined.cpy());
 
     	map.getRayHandler().render();
+    	
+    	//System.out.println(Gdx.graphics.getFramesPerSecond());
     }
     
     public void handlePlayerIncomingData()
@@ -106,48 +112,32 @@ public class PlayState extends AbstractGameState {
     			{
 	    			case PacketIDs.PACKET_USER_CHANGED_STATE:
     					id = UUID.fromString((String) p.getData());
-    					bodyIndex = Integer.parseInt(p.getArgs().get(0)); 
-    					headIndex = Integer.parseInt(p.getArgs().get(1)); 
-    					x = Integer.parseInt(p.getArgs().get(2)); 
-    					y = Integer.parseInt(p.getArgs().get(3)); 
-    					nick = p.getArgs().get(4);
-    					state = PlayerState.valueOf(p.getArgs().get(5));
-    					
+    					state = PlayerState.valueOf(p.getArgs().get(0));
+
     					if(!isEnemyInArea(id))
     					{
-    						addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
+    						ArrayList<String> args = new ArrayList<String>();
+    						args.add(id.toString());
+    						app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_FULL_BODY, EntityManager.getPlayer().getID().toString(), args));
+    					} else
     						setEnemyState(id, state);
-    					} else {
-    						setEnemyState(id, state);
-    					}
-
-	    				break;
-	    				
-	    			case PacketIDs.PACKET_USER_ENTERED_AREA:
-    					id = UUID.fromString((String) p.getData());
-    					bodyIndex = Integer.parseInt(p.getArgs().get(0)); 
-    					headIndex = Integer.parseInt(p.getArgs().get(1)); 
-    					x = Integer.parseInt(p.getArgs().get(2)); 
-    					y = Integer.parseInt(p.getArgs().get(3)); 
-    					nick = p.getArgs().get(4);
-    	
-    					addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
-	    				
+    					
 	    				break;
 	    				
 	    			case PacketIDs.PACKET_USER_MOVED:
-    					id = UUID.fromString((String) p.getData());
-    					bodyIndex = Integer.parseInt(p.getArgs().get(0)); 
-    					headIndex = Integer.parseInt(p.getArgs().get(1)); 
-    					x = Integer.parseInt(p.getArgs().get(2)); 
-    					y = Integer.parseInt(p.getArgs().get(3)); 
-    					nick = p.getArgs().get(4);
+	    				id = UUID.fromString((String) p.getData());
+    					x = Integer.parseInt(p.getArgs().get(0)); 
+    					y = Integer.parseInt(p.getArgs().get(1)); 
 
     					if(!isEnemyInArea(id))
-    						addEnemyToArea(bodyIndex, headIndex, x, y, id, nick);
-    					else
+    					{
+    						ArrayList<String> args = new ArrayList<String>();
+    						args.add(id.toString());
+    						app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_FULL_BODY, EntityManager.getPlayer().getID().toString(), args));
+    					} else
     						setEnemyPos(id, x, y);
 	    				
+    					checkEnemyInArea(id); // chequeamos si no se fue del area
 	    				break;
 	    				
 	    			case PacketIDs.PACKET_CHEST_OPENED:
@@ -187,6 +177,45 @@ public class PlayState extends AbstractGameState {
 	    			case PacketIDs.PACKET_REMOVE_ITEM_FROM_FLOOR:
 	    				EntityManager.deleteItem(UUID.fromString((String) p.getData()));
 	    				break;
+	    				
+	    			case PacketIDs.PACKET_USER_IN_AREA_EQUIPPED_ITEM:
+	    				id = UUID.fromString((String) p.getData());
+	    				String shieldID = p.getArgs().get(0);
+	    				String weaponID = p.getArgs().get(1);
+	    				
+	    				if(!isEnemyInArea(id))
+	    				{
+	    					ArrayList<String> args = new ArrayList<String>();
+    						args.add(id.toString());
+    						app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_FULL_BODY, EntityManager.getPlayer().getID().toString(), args));
+	    				} else {
+	    					EntityManager.getEnemy(id).setShield(shieldID);
+	    					EntityManager.getEnemy(id).setWeapon(weaponID);
+	    				}
+	    					
+	    				break;
+	    				
+	    			case PacketIDs.PACKET_PLAYER_SEND_FULL_BODY:
+	    				id = UUID.fromString((String) p.getData());
+    					bodyIndex = Integer.parseInt(p.getArgs().get(0)); 
+    					headIndex = Integer.parseInt(p.getArgs().get(1)); 
+    					x = Integer.parseInt(p.getArgs().get(2)); 
+    					y = Integer.parseInt(p.getArgs().get(3)); 
+    					nick = p.getArgs().get(4);
+    					state = PlayerState.valueOf(p.getArgs().get(5));
+    					String shieldAnim = p.getArgs().get(6);
+    					String weaponAnim = p.getArgs().get(7);
+
+	    				if(!isEnemyInArea(id))
+	    				{
+	    					addEnemyToArea(bodyIndex, headIndex, x, y, id, nick, weaponAnim, shieldAnim);
+	    				
+	    					ArrayList<String> args = new ArrayList<String>();
+    						args.add(id.toString());
+	    					app.getClient().sendTCP(new Packet(PacketIDs.PACKET_USER_ENTERED_PLAYER_AREA, EntityManager.getPlayer().getID().toString(), args));
+	    				}
+
+	    				break;
     			}
     			
     			it.remove();
@@ -208,9 +237,9 @@ public class PlayState extends AbstractGameState {
         camera.update();
     }
     
-    public void addEnemyToArea(int bodyIndex, int headIndex, int x, int y, UUID id, String nick)
+    public void addEnemyToArea(int bodyIndex, int headIndex, int x, int y, UUID id, String nick, String weaponAnim, String shieldAnim)
     {
-    	EntityManager.addEnemy(id, new Enemy(x, y, bodyIndex, headIndex, id, nick, WorldManager.world));
+    	EntityManager.addEnemy(id, new Enemy(x, y, bodyIndex, headIndex, id, nick, WorldManager.world, weaponAnim, shieldAnim));
     }
     
     public void setEnemyState(UUID enemyID, PlayerState newState)
@@ -228,6 +257,19 @@ public class PlayState extends AbstractGameState {
     public boolean isEnemyInArea(UUID enemyID)
     {
     	return (EntityManager.getEnemy(enemyID) != null);
+    }
+    
+    public void checkEnemyInArea(UUID enemyID)
+    {
+    	if(EntityManager.getEnemy(enemyID) != null)
+    	{
+    		if(!CommonUtils.areInViewport(app, EntityManager.getPlayer().getPos(), EntityManager.getEnemy(enemyID).getPos()))
+    		{
+    			// lo borramos
+    			EntityManager.removeEnemy(enemyID);
+    			System.out.println("LO BORRE DE TU AREA PA");
+    		}
+    	}
     }
 
     @Override

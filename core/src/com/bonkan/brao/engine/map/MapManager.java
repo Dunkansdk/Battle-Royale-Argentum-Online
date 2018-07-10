@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -33,7 +34,7 @@ import box2dLight.RayHandler;
  */
 public class MapManager {
 	
-    private OrthogonalTiledMapRenderer tiled;
+    private BatchTiledMapRenderer tiled;
     private RayHandler rays;
     private TiledMap map;
 	
@@ -199,11 +200,13 @@ public class MapManager {
 		return map;
 	}
 	
-	public OrthogonalTiledMapRenderer getTiled() {
+	public BatchTiledMapRenderer getTiled() 
+	{
 		return tiled;
 	}
 	
-	public RayHandler getRayHandler() {
+	public RayHandler getRayHandler() 
+	{
 		return rays;
 	}
 

@@ -41,13 +41,18 @@ public class Game extends ApplicationAdapter {
 	private Client client;
 
 	private LoggedUser loggedUser; // cuando loguea un user
+	private boolean serverOffline;
 	
 	@Override
 	public void create () {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 
+		// instanciamos el cliente de KRYO
+		client = new Client(); // el consturctor de client puede recibir un buffersize, si hay errores probablemente sean por paquetes muy grandes, hay que tocar aca
+		
 		loggedUser = null;
+		serverOffline = false;
 		
 		AssetsManager.init();
 		AssetsManager.loadAssets();
@@ -56,10 +61,6 @@ public class Game extends ApplicationAdapter {
 		camera.setToOrtho(false, width / SCALE, height / SCALE);
 		batch = new SpriteBatch();
 		gameState = new GameStateManager(this);
-		
-		// instanciamos el cliente y tratamos de conectar
-		// esto también se hace en otro thread
-		client = new Client(); // el constrctor de client puede recibir un buffersize, si hay errores probablemente sean por paquetes muy grandes, hay que tocar aca
 		
 		// inicializa el nuevo thread
 		new Thread(client).start(); // hay que hacerlo asi xq de la otra forma se finaliza -.-
@@ -72,16 +73,10 @@ public class Game extends ApplicationAdapter {
 	    kryo.register(UUID.class);
 
 	    try {
-			Thread.sleep(100);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
-	    
-	    try {
 	    	// 5000 es la cant. maxima de milisegundos que se bloquea el thread tratando de conectar
-			client.connect(5000, "127.0.0.1", 7666, 7667); //190.191.191.51
+	    	client.connect(5000, "127.0.0.1", 7666, 7667); //190.191.191.51
 
-		    client.addListener(new Listener() {
+	    	client.addListener(new Listener() {
 		        public void received (Connection connection, Object object) {
 		        	if (object instanceof Packet) {
 		        		handleData((Packet) object, connection);
@@ -90,11 +85,7 @@ public class Game extends ApplicationAdapter {
 		    });
 		    
 		} catch (IOException e) {
-
-			AbstractGameState ags = gameState.getCurrentState();
-			
-			if(ags instanceof LoginState)
-				((LoginState) ags).setErrorLabelText("Server offline.");
+			serverOffline = true;
 		}
 	}
 
@@ -169,6 +160,11 @@ public class Game extends ApplicationAdapter {
 	public boolean isLogged() 
 	{
 		return loggedUser != null;
+	}
+	
+	public boolean serverOffline()
+	{
+		return serverOffline;
 	}
 	
 	public LoggedUser getLoggedUser()
