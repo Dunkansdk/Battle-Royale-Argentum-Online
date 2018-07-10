@@ -7,8 +7,10 @@ import com.bonkan.brao.engine.entity.entities.Human;
 
 public class Enemy extends Human {
 
-	public Enemy(int x, int y, int bodyIndex, int headIndex, UUID id, String userName, World world) {
+	public Enemy(int x, int y, int bodyIndex, int headIndex, UUID id, String userName, World world, String weaponAnim, String shieldAnim) {
 		super(x, y, bodyIndex, headIndex, id, userName, world);
+		setShield(shieldAnim);
+		setWeapon(weaponAnim);
 	}
 	
 }

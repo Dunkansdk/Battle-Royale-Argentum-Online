@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bonkan.brao.Game;
 import com.bonkan.brao.engine.entity.entities.Chest;
 import com.bonkan.brao.engine.entity.entities.Item;
 import com.bonkan.brao.engine.entity.entities.Particle;
@@ -17,6 +18,7 @@ import com.bonkan.brao.engine.entity.entities.Particle.ParticleType;
 import com.bonkan.brao.engine.entity.entities.WorldObject;
 import com.bonkan.brao.engine.entity.entities.human.Enemy;
 import com.bonkan.brao.engine.entity.entities.human.Player;
+import com.bonkan.brao.engine.utils.CommonUtils;
 import com.bonkan.brao.engine.utils.Constants;
 
 /**
@@ -24,35 +26,38 @@ import com.bonkan.brao.engine.utils.Constants;
  */
 public class EntityManager {
 	
-	private static HashMap<UUID, Entity> entities;
+	private static Player player;
+	private static HashMap<UUID, Enemy> enemies;
 	private static ArrayList<Entity> worldSorted;
 	private static ArrayList<Entity> worldUnsorted;
 	private static ArrayList<Chest> chests;
 	private static HashMap<UUID, Item> items;
+	private static Game app;
 	
-	public static void init() {
-		entities = new HashMap<UUID, Entity>();
+	public static void init(Game app) {
+		enemies = new HashMap<UUID, Enemy>();
 		worldSorted = new ArrayList<Entity>();
 		worldUnsorted = new ArrayList<Entity>();
 		chests = new ArrayList<Chest>();
 		items = new HashMap<UUID, Item>();
 	}
 	
-	public static void addPlayer(UUID id, Player player) {
-		entities.put(id, player);
+	public static void setPlayer(Player p) {
+		player = p;
 	}
 	
 	public static void addEnemy(UUID id, Enemy enemy) {
-		entities.put(id, enemy);
+		enemies.put(id, enemy);
 	}
 	
 	/**
 	 * <p>Compara si la una entidad esta abajo de la otra (y >) y la dibuja por encima</p>
 	 */
 	public static void render(SpriteBatch batch) {
-		List<Entity> entityValues = new ArrayList<Entity>(entities.values());
+		List<Entity> entityValues = new ArrayList<Entity>(enemies.values());
 		entityValues.addAll(worldSorted);
 		entityValues.addAll(chests);
+		entityValues.add(player);
 		
 		Collections.sort(entityValues, new Comparator<Entity>() {
 			@Override
@@ -68,42 +73,32 @@ public class EntityManager {
 		for (Entity entity : entityValues) {
 			entity.render(batch);
 		}
-		/*for(Entity entity : worldUnsorted) {
+		for(Entity entity : worldUnsorted) {
 			entity.render(batch);
-		}*/
+		}
 	}
 	
 	public static void update(float delta) {
-		for (Map.Entry<UUID, Entity> entry : entities.entrySet()) {
-			entry.getValue().update(delta);
+		Iterator<Map.Entry<UUID, Enemy>> it = enemies.entrySet().iterator();
+		while(it.hasNext())
+		{
+			Map.Entry<UUID, Enemy> pair = (Map.Entry<UUID, Enemy>) it.next();
+			if(!CommonUtils.areInViewport(app, pair.getValue().getPos(), player.getPos()))
+				it.remove();
 		}
 	}
 	
 	public static void removeEnemy(UUID id) {
-		Iterator<Map.Entry<UUID, Entity>> it = entities.entrySet().iterator();
-	    while (it.hasNext()) {
-	    	if(it.next().getKey().compareTo(id) == 0) {
-	    		it.remove();
-	    		break;
-	    	}
-	    } 
+		if(enemies.get(id) != null)
+			enemies.remove(id);
 	}
 
 	public static Enemy getEnemy(UUID id) {
-		for (Map.Entry<UUID, Entity> entry : entities.entrySet()) {
-			if(entry.getValue() instanceof Enemy)
-				if(entry.getKey().compareTo(id) == 0)
-					return (Enemy) entry.getValue();
-		}
-		return null;
+		return enemies.get(id);
 	}
 	
 	public static Player getPlayer() {
-		for (Map.Entry<UUID, Entity> entry : entities.entrySet()) {
-			if(entry.getValue() instanceof Player)
-				return (Player) entry.getValue();
-		}
-		return null;
+		return player;
 	}
 	
 	public static Chest getChestByID(int id)
@@ -147,11 +142,6 @@ public class EntityManager {
 	{
 		if(items.get(id) != null)
 			items.remove(id);
-	}
-	
-	public static HashMap<UUID, Entity> getAllEntities()
-	{
-		return entities;
 	}
 	
 	public static ArrayList<Chest> getChests()

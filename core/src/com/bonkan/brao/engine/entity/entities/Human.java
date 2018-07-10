@@ -80,12 +80,14 @@ public abstract class Human extends Entity {
 
 	public void setWeapon(String weaponID)
 	{
-		weaponAnimator.setTexture(AssetsManager.getWeapon(weaponID), lastValidState);
+		if(weaponID != null) // puede ser null si llega un paquete de alguien que no tiene arma equipada
+			weaponAnimator.setTexture(AssetsManager.getWeapon(weaponID), lastValidState);
 	}
 	
 	public void setShield(String shieldID)
 	{
-		shieldAnimator.setTexture(AssetsManager.getShield(shieldID), lastValidState);
+		if(shieldID != null) // puede ser null si llega un paquete de alguien que no tiene escudo equipado
+			shieldAnimator.setTexture(AssetsManager.getShield(shieldID), lastValidState);
 	}
 	
 	public void setState(PlayerState state) 

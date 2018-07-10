@@ -43,7 +43,7 @@ public class Protocol {
 	{
 		// auxiliares
 		UUID id;
-		MatchUser mu;
+		MatchUser mu, mu2;
 		ArrayList<String> args = new ArrayList<String>();
 		
 		switch(p.getID())
@@ -87,8 +87,11 @@ public class Protocol {
 						args.add(String.valueOf(mu.getPos().getX())); // x
 						args.add(String.valueOf(mu.getPos().getY())); // y
 						args.add(String.valueOf(mu.getNickName())); // nick
+						args.add(String.valueOf(mu.getState())); // state
+						args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedShield())); // escudo
+						args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedWeapon())); // arma
 						
-						currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_ENTERED_AREA, u.getID().toString(), args), u.getID());
+						currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_PLAYER_SEND_FULL_BODY, u.getID().toString(), args), u.getID());
 						
 					} else {
 						conn.sendTCP(new Packet(PacketIDs.PACKET_LOGIN_FAILED, "", null));
@@ -121,12 +124,8 @@ public class Protocol {
 				mu.setPosition(Integer.parseInt(p.getArgs().get(0)), Integer.parseInt(p.getArgs().get(1)));
 
 				args.clear();
-				args.add(String.valueOf(mu.getDefaultBody())); // body
-				args.add("1"); // head
-				args.add(String.valueOf(mu.getPos().getX())); // x
-				args.add(String.valueOf(mu.getPos().getY())); // y
-				args.add(String.valueOf(mu.getNickName())); // nick
-				args.add(String.valueOf(mu.getState())); // state
+				args.add(String.valueOf(mu.getPos().getX()));
+				args.add(String.valueOf(mu.getPos().getY()));
 
 				currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_MOVED, id.toString(), args), id);
 				break;
@@ -176,6 +175,47 @@ public class Protocol {
 					currentMatch.sendDataToAll(new Packet(PacketIDs.PACKET_REMOVE_ITEM_FROM_FLOOR, itemID.toString(), null));
 				}
 				
+				break;
+				
+			case PacketIDs.PACKET_PLAYER_REQUEST_FULL_BODY:
+				
+				id = UUID.fromString((String) p.getData());
+				UUID requestedID = UUID.fromString(p.getArgs().get(0));
+				mu = currentMatch.getUserByID(requestedID);
+				
+				args.clear();
+				args.add(String.valueOf(mu.getDefaultBody())); // body
+				args.add("1"); // head
+				args.add(String.valueOf(mu.getPos().getX())); // x
+				args.add(String.valueOf(mu.getPos().getY())); // y
+				args.add(String.valueOf(mu.getNickName())); // nick
+				args.add(String.valueOf(mu.getState())); // state
+				args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedShield()));
+				args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedWeapon()));
+				
+				mu2 = currentMatch.getUserByID(id);
+				mu2.sendData(new Packet(PacketIDs.PACKET_PLAYER_SEND_FULL_BODY, requestedID.toString(), args));
+				break;
+				
+			case PacketIDs.PACKET_USER_ENTERED_PLAYER_AREA:
+				
+				id = UUID.fromString((String) p.getData()); // id del player
+				UUID userID = UUID.fromString(p.getArgs().get(0)); // id del user que entró a su área
+				
+				// le mandamos al user el body del player del area a la que entró
+				mu = currentMatch.getUserByID(id);
+				args.clear();
+				args.add(String.valueOf(mu.getDefaultBody())); // body
+				args.add("1"); // head
+				args.add(String.valueOf(mu.getPos().getX())); // x
+				args.add(String.valueOf(mu.getPos().getY())); // y
+				args.add(String.valueOf(mu.getNickName())); // nick
+				args.add(String.valueOf(mu.getState())); // state
+				args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedShield()));
+				args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedWeapon()));
+
+				mu2 = currentMatch.getUserByID(userID);
+				mu2.sendData(new Packet(PacketIDs.PACKET_PLAYER_SEND_FULL_BODY, id.toString(), args));
 				break;
 		}
 	}
