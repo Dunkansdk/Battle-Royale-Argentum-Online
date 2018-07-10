@@ -7,6 +7,7 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 
 dependencies {
 	compile files('libs/kryonet-2.21-all.jar')
+	compile files('libs/json-20180130.jar')
 }
 
 eclipse.project {
