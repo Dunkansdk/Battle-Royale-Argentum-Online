@@ -11,6 +11,9 @@ public class ParticlePool {
 	private ParticleCache cache;
 	private ArrayList<PooledEffect> pool;
 	
+	/**
+	 * <p>Controla los efectos que existen en el screen</p>
+	 */
 	public ParticlePool() {
 		pool = new ArrayList<PooledEffect>();
 		cache = new ParticleCache();
@@ -18,12 +21,23 @@ public class ParticlePool {
 		cache.create(ParticleType.TEST2);
 	}
 	
+	/**
+	 * <p>Crea un nuevo {@link com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect}</p>
+	 * @param particle {@link com.bonkan.brao.engine.entity.entities.particle.ParticleType}
+	 * @param x
+	 * @param y
+	 */
 	public void create(ParticleType particle, int x, int y) {
 		PooledEffect effect = cache.getPooledEffect(particle);
 		effect.setPosition(x, y);
 		pool.add(effect);
 	}
 
+	/**
+	 * <p>Renderiza, que va a hacer.</p>
+	 * @param batch
+	 * @param delta
+	 */
 	public void render(SpriteBatch batch, float delta) {
 		Iterator<PooledEffect> it = pool.iterator();
 	    while (it.hasNext()) {

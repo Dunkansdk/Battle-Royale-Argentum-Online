@@ -267,6 +267,10 @@ public class PlayState extends AbstractGameState {
     	return (EntityManager.getEnemy(enemyID) != null);
     }
     
+    /**
+     * <p>Checkea si un enemigo esta en tu area de vision</p>
+     * @param enemyID
+     */
     public void checkEnemyInArea(UUID enemyID)
     {
     	if(EntityManager.getEnemy(enemyID) != null)
