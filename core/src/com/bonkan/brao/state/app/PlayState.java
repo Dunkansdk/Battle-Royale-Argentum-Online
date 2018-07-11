@@ -48,8 +48,7 @@ public class PlayState extends AbstractGameState {
     private Texture hpBar;
     private Texture manaBar;
     private Texture barOutline;
-    
-    @SuppressWarnings("static-access")
+
 	public PlayState(GameStateManager gameState) {
         super(gameState);
         
@@ -69,13 +68,15 @@ public class PlayState extends AbstractGameState {
         //hinchapelotas EntityManager.addParticle(ParticleType.TEST2, 300, 200, false); 
         EntityManager.addParticle(ParticleType.TEST1, 150, 150, false); 
         
-        inventory = new ItemSlot[3]; // casco, escudo, arma
+        inventory = new ItemSlot[5]; // casco, escudo, arma
         
         // el offset de separacion siempre es 15 pixeles
-        inventory[ItemSlot.INVENTORY_SHIELD_SLOT] = new ItemSlot(app.V_WIDTH / 2 - Constants.ITEM_SIZE, 70); // en el diome
-        inventory[ItemSlot.INVENTORY_WEAPON_SLOT] = new ItemSlot(app.V_WIDTH / 2 - Constants.ITEM_SIZE - 64 - 15, 70); // primero
-        inventory[ItemSlot.INVENTORY_HELMET_SLOT] = new ItemSlot(app.V_WIDTH / 2 - Constants.ITEM_SIZE + 64 + 15, 70); // ultimo
-    
+        inventory[ItemSlot.INVENTORY_SHIELD_SLOT] = new ItemSlot(59 + Constants.ITEM_SIZE * 2 * 0 + 15 * 0, 8, false, false);
+        inventory[ItemSlot.INVENTORY_WEAPON_SLOT] = new ItemSlot(59 + Constants.ITEM_SIZE * 2 * 1 + 15 * 1, 8, false, false);
+        inventory[ItemSlot.INVENTORY_HELMET_SLOT] = new ItemSlot(59 + Constants.ITEM_SIZE * 2 * 2 + 15 * 2, 8, false, false);
+        inventory[ItemSlot.INVENTORY_RED_POTION_SLOT] = new ItemSlot(59 + Constants.ITEM_SIZE * 2 * 3 + 15 * 3, 8, true, false);
+        inventory[ItemSlot.INVENTORY_BLUE_POTION_SLOT] = new ItemSlot(59 + Constants.ITEM_SIZE * 2 * 4 + 15 * 4, 8, false, true);
+        
         hpBar = AssetsManager.getTexture("hpBar.png");
         manaBar = AssetsManager.getTexture("manaBar.png");
         barOutline = AssetsManager.getTexture("barOutline.png");
@@ -137,21 +138,21 @@ public class PlayState extends AbstractGameState {
     	 */
     	app.getHudBatch().begin();
     		// FPS
-    		AssetsManager.getDefaultFont().draw(app.getHudBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), 50, 50);
+    		AssetsManager.getDefaultFont().draw(app.getHudBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), 20, Gdx.graphics.getHeight() - 20);
     		
     		// HP
     		String hpText = EntityManager.getPlayer().getHealth() + " / " + EntityManager.getPlayer().getMaxHealth();
-    		app.getHudBatch().draw(barOutline, Gdx.graphics.getWidth() / 2 - barOutline.getWidth() / 2, 35);
-    		app.getHudBatch().draw(hpBar, Gdx.graphics.getWidth() / 2 - hpBar.getWidth() / 2, 36, hpBar.getWidth() * EntityManager.getPlayer().getHealth() / EntityManager.getPlayer().getMaxHealth(), hpBar.getHeight());
+    		app.getHudBatch().draw(barOutline, Gdx.graphics.getWidth() / 2 - barOutline.getWidth() / 2, 42);
+    		app.getHudBatch().draw(hpBar, Gdx.graphics.getWidth() / 2 - hpBar.getWidth() / 2, 43, hpBar.getWidth() * EntityManager.getPlayer().getHealth() / EntityManager.getPlayer().getMaxHealth(), hpBar.getHeight());
     		glyphLayout.setText(AssetsManager.getDefaultFont(), hpText);
-    		AssetsManager.getDefaultFont().draw(app.getHudBatch(), hpText, Gdx.graphics.getWidth() / 2 - glyphLayout.width / 2, 36 + glyphLayout.height + 5);
+    		AssetsManager.getDefaultFont().draw(app.getHudBatch(), hpText, Gdx.graphics.getWidth() / 2 - glyphLayout.width / 2, 42 + glyphLayout.height + 5);
     		
     		// MANA
     		String manaText = EntityManager.getPlayer().getMana() + " / " + EntityManager.getPlayer().getMaxMana();
-    		app.getHudBatch().draw(barOutline, Gdx.graphics.getWidth() / 2 - barOutline.getWidth() / 2, 8);
-    		app.getHudBatch().draw(manaBar, Gdx.graphics.getWidth() / 2 - hpBar.getWidth() / 2, 9, manaBar.getWidth() * EntityManager.getPlayer().getMana() / EntityManager.getPlayer().getMaxMana(), manaBar.getHeight());
+    		app.getHudBatch().draw(barOutline, Gdx.graphics.getWidth() / 2 - barOutline.getWidth() / 2, 15);
+    		app.getHudBatch().draw(manaBar, Gdx.graphics.getWidth() / 2 - hpBar.getWidth() / 2, 16, manaBar.getWidth() * EntityManager.getPlayer().getMana() / EntityManager.getPlayer().getMaxMana(), manaBar.getHeight());
     		glyphLayout.setText(AssetsManager.getDefaultFont(), manaText);
-    		AssetsManager.getDefaultFont().draw(app.getHudBatch(), manaText, Gdx.graphics.getWidth() / 2 - glyphLayout.width / 2, 9 + glyphLayout.height + 5);
+    		AssetsManager.getDefaultFont().draw(app.getHudBatch(), manaText, Gdx.graphics.getWidth() / 2 - glyphLayout.width / 2, 16 + glyphLayout.height + 5);
     		
     		// INVENTARIO
     		for(ItemSlot is : inventory)

@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.bonkan.brao.engine.entity.EntityManager;
 import com.bonkan.brao.engine.entity.entities.Chest;
@@ -49,7 +48,7 @@ public class InputController {
     	ArrayList<String> args = new ArrayList<String>();
     	
     	// solamente cambiamos el state cuando no hay bloqueo para no marear al server
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
+        if(Gdx.input.isKeyPressed(KeyBindings.KEY_MOVE_DOWN))
         {
         	if(player.getState() != PlayerState.MOVE_DOWN)
 				changedState = true;
@@ -57,7 +56,7 @@ public class InputController {
     		player.setLastValidState(player.getState());
 			player.setState(PlayerState.MOVE_DOWN);
         	
-        	if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+        	if(Gdx.input.isKeyPressed(KeyBindings.KEY_MOVE_RIGHT))
         	{
         		if(player.getState() != PlayerState.MOVE_RIGHT_DOWN)
 					changedState = true;
@@ -72,7 +71,7 @@ public class InputController {
         		else if (!blockedDirs[DIR_RIGHT]) 
         			player.setLocation((int) player.getPos().x + 2, (int) player.getPos().y);
         		
-        	} else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        	} else if (Gdx.input.isKeyPressed(KeyBindings.KEY_MOVE_LEFT)) {
         		if(player.getState() != PlayerState.MOVE_LEFT_DOWN)
     				changedState = true;
     			
@@ -90,7 +89,7 @@ public class InputController {
     			player.setLocation((int) player.getPos().x, (int) player.getPos().y - 2);
 
         	}
-        } else if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        } else if(Gdx.input.isKeyPressed(KeyBindings.KEY_MOVE_UP)) {
         	
         	if(player.getState() != PlayerState.MOVE_UP)
 				changedState = true;
@@ -98,7 +97,7 @@ public class InputController {
     		player.setLastValidState(player.getState());
 			player.setState(PlayerState.MOVE_UP);
         	
-        	if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+        	if(Gdx.input.isKeyPressed(KeyBindings.KEY_MOVE_RIGHT))
         	{
         		if(player.getState() != PlayerState.MOVE_RIGHT_UP)
     				changedState = true;
@@ -113,7 +112,7 @@ public class InputController {
         		else if (!blockedDirs[DIR_RIGHT])
         			player.setLocation((int) player.getPos().x + 2, (int) player.getPos().y);
  
-        	} else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        	} else if (Gdx.input.isKeyPressed(KeyBindings.KEY_MOVE_LEFT)) {
         		if(player.getState() != PlayerState.MOVE_LEFT_UP)
     				changedState = true;
     			
@@ -132,7 +131,7 @@ public class InputController {
     			player.setLocation((int) player.getPos().x, (int) player.getPos().y + 2);
         			
         	}	
-    	} else if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+    	} else if(Gdx.input.isKeyPressed(KeyBindings.KEY_MOVE_LEFT)) {
     		if(player.getState() != PlayerState.MOVE_LEFT)
 				changedState = true;
     		
@@ -142,7 +141,7 @@ public class InputController {
         	if(!blockedDirs[DIR_LEFT])
         		player.setLocation((int) player.getPos().x - 2, (int) player.getPos().y);
 
-    	} else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+    	} else if(Gdx.input.isKeyPressed(KeyBindings.KEY_MOVE_RIGHT)) {
     		if(player.getState() != PlayerState.MOVE_RIGHT)
 				changedState = true;
     		
@@ -154,10 +153,10 @@ public class InputController {
         		
     	}
 
-        if(	!Gdx.input.isKeyPressed(Input.Keys.DOWN) 	&& 
-        	!Gdx.input.isKeyPressed(Input.Keys.UP) 		&& 
-        	!Gdx.input.isKeyPressed(Input.Keys.LEFT) 	&& 
-        	!Gdx.input.isKeyPressed(Input.Keys.RIGHT)) 
+        if(	!Gdx.input.isKeyPressed(KeyBindings.KEY_MOVE_DOWN) 	&& 
+        	!Gdx.input.isKeyPressed(KeyBindings.KEY_MOVE_UP) 		&& 
+        	!Gdx.input.isKeyPressed(KeyBindings.KEY_MOVE_LEFT) 	&& 
+        	!Gdx.input.isKeyPressed(KeyBindings.KEY_MOVE_RIGHT)) 
         {
         	if(player.getState() != PlayerState.NONE)
         	{
@@ -168,7 +167,7 @@ public class InputController {
         	player.setState(PlayerState.NONE);
         }
         
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
+        if(Gdx.input.isKeyJustPressed(KeyBindings.KEY_ACTION))
         {
         	// chequeamos cofres
         	int chestID = checkChestPosition(player);

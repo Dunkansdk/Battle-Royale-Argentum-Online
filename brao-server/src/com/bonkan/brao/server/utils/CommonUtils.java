@@ -24,6 +24,8 @@ public class CommonUtils {
 	public static final int INVENTORY_WEAPON_SLOT = 0;
 	public static final int INVENTORY_SHIELD_SLOT = 1;
 	public static final int INVENTORY_HELMET_SLOT = 2;
+	public static final int INVENTORY_RED_POTION_SLOT = 3;
+	public static final int INVENTORY_BLUE_POTION_SLOT = 4;
 	
 	/**
 	 * <p>Chequea si dos usuarios (sus posiciones) están en la misma área de visión.</p>
