@@ -6,7 +6,8 @@
 			"anim_atlas_name" : "shield1",
 			"min_def" : 5,
 			"max_def" : 10,
-			"item_type" : 0
+			"item_type" : 0,
+			"desc" : "DEF: 5 / 10"
 		},
 		{
 			"name" : "Espada de Plata",
@@ -14,7 +15,8 @@
 			"anim_atlas_name" : "weapon1",
 			"min_atk" : 20,
 			"max_atk" : 25,
-			"item_type" : 1
+			"item_type" : 1,
+			"desc" : "ATK: 20 / 25"
 		},
 	] 
 }

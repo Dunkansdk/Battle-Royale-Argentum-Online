@@ -110,6 +110,7 @@ public class Match {
 		args.add(JSONManager.getItemAtlasName(index)); // nombre en el atlas del cliente del item (en este caso del item 1)
 		args.add(JSONManager.getItemAnimAtlasName(index)); // nombre en el atlas del cliente de la animación del item (en este caso del item 1)
 		args.add(String.valueOf(JSONManager.getItemType(index))); // tipo del item
+		args.add(JSONManager.getItemDesc(index)); // descripcion del item
 		
 		// agregamos el item al mapa de items
 		mapItems.put(itemID, new Item(itemID, x, y, index, rarity));
@@ -167,6 +168,7 @@ public class Match {
 		args.add(JSONManager.getItemAtlasName(index)); // nombre en el atlas del cliente del item (en este caso del item 1)
 		args.add(JSONManager.getItemAnimAtlasName(index)); // nombre en el atlas del cliente de la animación del item (en este caso del item 1)
 		args.add(String.valueOf(JSONManager.getItemType(index))); // tipo del item
+		args.add(JSONManager.getItemDesc(index)); // descripcion del item
 		
 		// agregamos el item al mapa de items
 		mapItems.put(itemID, new Item(itemID, chestPos.getX(), chestPos.getY() - 48, index, rarity));

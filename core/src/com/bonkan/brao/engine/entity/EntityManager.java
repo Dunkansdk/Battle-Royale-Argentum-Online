@@ -10,7 +10,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.bonkan.brao.Game;
 import com.bonkan.brao.engine.entity.entities.Chest;
 import com.bonkan.brao.engine.entity.entities.Item;
@@ -86,7 +88,8 @@ public class EntityManager {
 		batch.end();
 	}
 	
-	public static void update(float delta) {
+	public static void update(OrthographicCamera camera, float delta) 
+	{
 		Iterator<Map.Entry<UUID, Enemy>> it = enemies.entrySet().iterator();
 		while(it.hasNext())
 		{
@@ -94,6 +97,12 @@ public class EntityManager {
 			if(!CommonUtils.areInViewport(app, pair.getValue().getPos(), player.getPos()))
 				it.remove();
 		}
+		
+		Vector3 mouseCoords = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+		
+		// también actualizo los items xq tienen el check del mouseHover
+		for(Map.Entry<UUID, Item> entry : items.entrySet())
+			entry.getValue().update(delta, (int) mouseCoords.x, (int) mouseCoords.y);
 	}
 	
 	public static void removeEnemy(UUID id) {

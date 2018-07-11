@@ -68,4 +68,18 @@ public class JSONManager {
 		
 		return -1;
 	}
+	
+	public static String getItemDesc(int id)
+	{
+		if(id < 0 || id > itemsJSON.length()) return null;
+		
+		if(itemsJSON.getJSONObject(id) != null)
+		{
+			JSONObject aux = itemsJSON.getJSONObject(id);
+			
+			return (String) aux.get("desc");
+		}
+		
+		return null;
+	}
 }

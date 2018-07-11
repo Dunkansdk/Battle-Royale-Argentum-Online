@@ -1,9 +1,10 @@
 package com.bonkan.brao.engine.entity.entities;
 
+import java.awt.Rectangle;
 import java.util.UUID;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -11,6 +12,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.bonkan.brao.engine.entity.Entity;
+import com.bonkan.brao.engine.ui.ItemTooltip;
+import com.bonkan.brao.engine.utils.Constants;
 
 /**
  * <p>Clase que maneja los items como ENTIDADES (es decir, los que están tirados en el piso
@@ -28,22 +31,25 @@ public class Item extends Entity {
 	private UUID itemID;
 	private int rarity;
 	private String name;
+	private String desc;
 	private int type;
 	
 	private ShaderProgram outline;
-
-	public Item(int x, int y, int rarity, String name, TextureRegion texture, String animTexture, int type, UUID itemID) {
+	
+	public Item(int x, int y, int rarity, String name, String desc, TextureRegion texture, String animTexture, int type, UUID itemID) {
 		super(x, y);
 		this.itemID = itemID;
 		this.rarity = rarity;
 		this.texture = texture;
 		this.name = name;
+		this.desc = desc;
 		this.type = type;
 		this.animTexture = animTexture;
 		loadShader();
 	}
 	
-	public void loadShader() {
+	public void loadShader() 
+	{
 		String vertexShader;
 		String fragmentShader;
 		vertexShader = Gdx.files.internal("GlowVertex.glsl").readString();
@@ -53,8 +59,38 @@ public class Item extends Entity {
 	}
 
 	@Override
-	public void update(float delta) {
-		
+	public void update(float delta) {}
+	
+	public void update(float delta, int mouseX, int mouseY) 
+	{
+		Rectangle rect = new Rectangle((int) location.x, (int) location.y, Constants.ITEM_SIZE, Constants.ITEM_SIZE);
+	
+		if(rect.contains(mouseX, mouseY)) 
+		{
+			ItemTooltip.setPosition(mouseX, mouseY);
+			ItemTooltip.setTitle(name + " +" + rarity);
+			ItemTooltip.setDesc(desc);
+			ItemTooltip.setVisible(true);
+			switch(rarity)
+			{
+				case RARITY_COMMON:
+					ItemTooltip.setColor(Color.WHITE);
+					break;
+					
+				case RARITY_RARE:
+					ItemTooltip.setColor(Constants.RARE_ITEM_GLOW_COLOR);
+					break;
+					
+				case RARITY_EPIC:
+					ItemTooltip.setColor(Constants.EPIC_ITEM_GLOW_COLOR);
+					break;
+					
+				case RARITY_LEGENDARY:
+					ItemTooltip.setColor(Constants.LEGENDARY_ITEM_GLOW_COLOR);
+					break;
+			}
+			
+		}
 	}
 
 	@Override
@@ -110,4 +146,5 @@ public class Item extends Entity {
 	{
 		return texture;
 	}
+	
 }

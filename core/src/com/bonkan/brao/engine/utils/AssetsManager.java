@@ -39,8 +39,12 @@ public class AssetsManager {
 		am.load("shields.atlas", TextureAtlas.class);
 		am.load("particles.atlas", TextureAtlas.class);
 		
-		// TEXTURAS AUXILIARES
+		// TEXTURAS AUXILIARES (podria hacer un atlas para esto tambien pero alta fiaca)
 		am.load("slot.png", Texture.class);
+		am.load("tooltip.png", Texture.class);
+		am.load("hpBar.png", Texture.class);
+		am.load("manaBar.png", Texture.class);
+		am.load("barOutline.png", Texture.class);
 		
 		// FUENTES
 		FileHandleResolver resolver = new InternalFileHandleResolver();

@@ -8,6 +8,8 @@ import java.util.UUID;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -21,6 +23,7 @@ import com.bonkan.brao.engine.input.InputController;
 import com.bonkan.brao.engine.map.MapManager;
 import com.bonkan.brao.engine.map.WorldManager;
 import com.bonkan.brao.engine.ui.ItemSlot;
+import com.bonkan.brao.engine.ui.ItemTooltip;
 import com.bonkan.brao.engine.utils.AssetsManager;
 import com.bonkan.brao.engine.utils.CommonUtils;
 import com.bonkan.brao.engine.utils.Constants;
@@ -38,13 +41,22 @@ public class PlayState extends AbstractGameState {
     private Box2DDebugRenderer b2dr;
     private MapManager map;
     private InputController inputController;
+    
+    // GUI
     private ItemSlot[] inventory;
+    private GlyphLayout glyphLayout;
+    private Texture hpBar;
+    private Texture manaBar;
+    private Texture barOutline;
     
     @SuppressWarnings("static-access")
 	public PlayState(GameStateManager gameState) {
         super(gameState);
+        
         WorldManager.init();
         EntityManager.init(app);
+        ItemTooltip.init();
+        
         map = new MapManager(WorldManager.world);
         b2dr = new Box2DDebugRenderer();
         inputController = new InputController(app.getClient(), map.createBlocks());
@@ -60,9 +72,15 @@ public class PlayState extends AbstractGameState {
         inventory = new ItemSlot[3]; // casco, escudo, arma
         
         // el offset de separacion siempre es 15 pixeles
-        inventory[ItemSlot.INVENTORY_SHIELD_SLOT] = new ItemSlot(app.V_WIDTH / 2 - Constants.ITEM_SIZE, 50); // en el diome
-        inventory[ItemSlot.INVENTORY_WEAPON_SLOT] = new ItemSlot(app.V_WIDTH / 2 - Constants.ITEM_SIZE - 64 - 15, 50); // primero
-        inventory[ItemSlot.INVENTORY_HELMET_SLOT] = new ItemSlot(app.V_WIDTH / 2 - Constants.ITEM_SIZE + 64 + 15, 50); // ultimo
+        inventory[ItemSlot.INVENTORY_SHIELD_SLOT] = new ItemSlot(app.V_WIDTH / 2 - Constants.ITEM_SIZE, 70); // en el diome
+        inventory[ItemSlot.INVENTORY_WEAPON_SLOT] = new ItemSlot(app.V_WIDTH / 2 - Constants.ITEM_SIZE - 64 - 15, 70); // primero
+        inventory[ItemSlot.INVENTORY_HELMET_SLOT] = new ItemSlot(app.V_WIDTH / 2 - Constants.ITEM_SIZE + 64 + 15, 70); // ultimo
+    
+        hpBar = AssetsManager.getTexture("hpBar.png");
+        manaBar = AssetsManager.getTexture("manaBar.png");
+        barOutline = AssetsManager.getTexture("barOutline.png");
+        
+        glyphLayout = new GlyphLayout();
     }
 
     @Override
@@ -94,7 +112,7 @@ public class PlayState extends AbstractGameState {
     	
     	// Limitamos para que no consuma tanto recursos
     	WorldManager.doPhysicsStep(delta);    	
-    	EntityManager.update(delta);
+    	EntityManager.update(camera, delta);
 
     	map.getRayHandler().setCombinedMatrix(camera);
     	map.getRayHandler().update();
@@ -109,6 +127,7 @@ public class PlayState extends AbstractGameState {
     	 * Todo lo del world
     	 */
     	EntityManager.render(batch); 
+    	ItemTooltip.render(batch);
     	
     	if(app.DEBUG) b2dr.render(WorldManager.world, camera.combined.cpy());
     	map.getRayHandler().render();
@@ -117,7 +136,24 @@ public class PlayState extends AbstractGameState {
     	 * Todo lo de la interfaz
     	 */
     	app.getHudBatch().begin();
+    		// FPS
     		AssetsManager.getDefaultFont().draw(app.getHudBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), 50, 50);
+    		
+    		// HP
+    		String hpText = EntityManager.getPlayer().getHealth() + " / " + EntityManager.getPlayer().getMaxHealth();
+    		app.getHudBatch().draw(barOutline, Gdx.graphics.getWidth() / 2 - barOutline.getWidth() / 2, 35);
+    		app.getHudBatch().draw(hpBar, Gdx.graphics.getWidth() / 2 - hpBar.getWidth() / 2, 36, hpBar.getWidth() * EntityManager.getPlayer().getHealth() / EntityManager.getPlayer().getMaxHealth(), hpBar.getHeight());
+    		glyphLayout.setText(AssetsManager.getDefaultFont(), hpText);
+    		AssetsManager.getDefaultFont().draw(app.getHudBatch(), hpText, Gdx.graphics.getWidth() / 2 - glyphLayout.width / 2, 36 + glyphLayout.height + 5);
+    		
+    		// MANA
+    		String manaText = EntityManager.getPlayer().getMana() + " / " + EntityManager.getPlayer().getMaxMana();
+    		app.getHudBatch().draw(barOutline, Gdx.graphics.getWidth() / 2 - barOutline.getWidth() / 2, 8);
+    		app.getHudBatch().draw(manaBar, Gdx.graphics.getWidth() / 2 - hpBar.getWidth() / 2, 9, manaBar.getWidth() * EntityManager.getPlayer().getMana() / EntityManager.getPlayer().getMaxMana(), manaBar.getHeight());
+    		glyphLayout.setText(AssetsManager.getDefaultFont(), manaText);
+    		AssetsManager.getDefaultFont().draw(app.getHudBatch(), manaText, Gdx.graphics.getWidth() / 2 - glyphLayout.width / 2, 9 + glyphLayout.height + 5);
+    		
+    		// INVENTARIO
     		for(ItemSlot is : inventory)
     			is.render(app.getHudBatch());
     	app.getHudBatch().end();
@@ -187,8 +223,9 @@ public class PlayState extends AbstractGameState {
 	    				nick = p.getArgs().get(4);
 	    				String animTexture = p.getArgs().get(6);
 	    				int type = Integer.parseInt(p.getArgs().get(7));
+	    				String desc = p.getArgs().get(8);
 
-	    				EntityManager.addItem(new Item(x, y, rarity, nick, AssetsManager.getItem(p.getArgs().get(5)), animTexture, type, id));
+	    				EntityManager.addItem(new Item(x, y, rarity, nick, desc, AssetsManager.getItem(p.getArgs().get(5)), animTexture, type, id));
 	    				break;
 	    				
 	    			case PacketIDs.PACKET_PLAYER_CONFIRM_GET_ITEM:
