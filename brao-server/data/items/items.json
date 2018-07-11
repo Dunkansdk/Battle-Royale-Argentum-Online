@@ -18,5 +18,14 @@
 			"item_type" : 1,
 			"desc" : "ATK: 20 / 25"
 		},
+		{
+			"name" : "Casco de Hierro",
+			"atlas_name" : "cascohierro",
+			"anim_atlas_name" : "helmet1",
+			"min_def" : 5,
+			"max_def" : 15,
+			"item_type" : 2,
+			"desc" : "DEF: 5 / 15"
+		},
 	] 
 }

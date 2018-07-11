@@ -90,6 +90,7 @@ public class Protocol {
 						args.add(String.valueOf(mu.getState())); // state
 						args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedShield())); // escudo
 						args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedWeapon())); // arma
+						args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedHelmet())); // casco
 						
 						currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_PLAYER_SEND_FULL_BODY, u.getID().toString(), args), u.getID());
 						
@@ -170,10 +171,19 @@ public class Protocol {
 						case CommonUtils.ITEM_TYPE_WEAPON:
 							
 							// si tiene otro lo tiramos
-							if(mu.getEquippedWeapon() > -1) // si tiene escudo
+							if(mu.getEquippedWeapon() > -1) // si tiene arma
 								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedWeapon(), rarity);
 							
 							mu.setEquippedWeapon(itemIndex, rarity);
+							break;
+							
+						case CommonUtils.ITEM_TYPE_HELMET:
+							
+							// si tiene otro lo tiramos
+							if(mu.getEquippedHelmet() > -1) // si tiene casco
+								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedHelmet(), rarity);
+							
+							mu.setEquippedHelmet(itemIndex, rarity);
 							break;
 					}
 					
@@ -182,6 +192,7 @@ public class Protocol {
 					args.clear();
 					args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedShield()));
 					args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedWeapon()));
+					args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedHelmet()));
 					currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_IN_AREA_EQUIPPED_ITEM, id.toString(), args), id);
 					currentMatch.sendDataToAll(new Packet(PacketIDs.PACKET_REMOVE_ITEM_FROM_FLOOR, itemID.toString(), null));
 				}
@@ -224,6 +235,7 @@ public class Protocol {
 				args.add(String.valueOf(mu.getState())); // state
 				args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedShield()));
 				args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedWeapon()));
+				args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedHelmet()));
 
 				mu2 = currentMatch.getUserByID(userID);
 				mu2.sendData(new Packet(PacketIDs.PACKET_PLAYER_SEND_FULL_BODY, id.toString(), args));
@@ -236,9 +248,6 @@ public class Protocol {
 				
 				switch(slot)
 				{
-					case CommonUtils.INVENTORY_HELMET_SLOT:
-						break;
-				
 					case CommonUtils.INVENTORY_SHIELD_SLOT:
 						if(mu.getEquippedShield() > -1) // si tiene escudo
 						{
@@ -247,6 +256,7 @@ public class Protocol {
 								args.clear();
 								args.add(null);
 								args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedWeapon()));
+								args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedHelmet()));
 								currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_IN_AREA_EQUIPPED_ITEM, id.toString(), args), id);
 								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedShield(), mu.getEquippedShieldRarity());
 								
@@ -265,11 +275,31 @@ public class Protocol {
 								args.clear();
 								args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedShield()));
 								args.add(null);
+								args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedHelmet()));
 								currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_IN_AREA_EQUIPPED_ITEM, id.toString(), args), id);
 								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedWeapon(), mu.getEquippedWeaponRarity());
 								
 								// confirmamos
 								mu.setEquippedWeapon(-1, 0);
+								mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_CONFIRM_UNEQUIP_ITEM, String.valueOf(slot), null));
+							}
+						}
+						break;
+						
+					case CommonUtils.INVENTORY_HELMET_SLOT:
+						if(mu.getEquippedHelmet() > -1) // si tiene escudo
+						{
+							if(!currentMatch.busyTile(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2)) // si el tile está libre
+							{
+								args.clear();
+								args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedShield()));
+								args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedWeapon()));
+								args.add(null);
+								currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_IN_AREA_EQUIPPED_ITEM, id.toString(), args), id);
+								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedHelmet(), mu.getEquippedHelmetRarity());
+								
+								// confirmamos
+								mu.setEquippedHelmet(-1, 0);
 								mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_CONFIRM_UNEQUIP_ITEM, String.valueOf(slot), null));
 							}
 						}

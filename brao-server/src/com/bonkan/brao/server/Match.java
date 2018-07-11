@@ -157,7 +157,7 @@ public class Match {
 		
 		ArrayList<String> args = new ArrayList<String>();
 		UUID itemID = UUID.randomUUID();
-		int index = ThreadLocalRandom.current().nextInt(0, 2);
+		int index = ThreadLocalRandom.current().nextInt(0, 3);
 		int rarity = ThreadLocalRandom.current().nextInt(1, 5);
 		
 		args.add(itemID.toString()); // id del item

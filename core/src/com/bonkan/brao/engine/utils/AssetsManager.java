@@ -37,6 +37,7 @@ public class AssetsManager {
 		am.load("world.atlas", TextureAtlas.class);
 		am.load("weapons.atlas", TextureAtlas.class);
 		am.load("shields.atlas", TextureAtlas.class);
+		am.load("helmets.atlas", TextureAtlas.class);
 		am.load("particles.atlas", TextureAtlas.class);
 		
 		// TEXTURAS AUXILIARES (podria hacer un atlas para esto tambien pero alta fiaca)
@@ -108,6 +109,11 @@ public class AssetsManager {
 	public static TextureRegion getShield(String id)
 	{
 		return ((TextureAtlas) am.get("shields.atlas")).findRegion(id);
+	}
+	
+	public static TextureRegion getHelmet(String id)
+	{
+		return ((TextureAtlas) am.get("helmets.atlas")).findRegion(id);
 	}
 	
 	public static TextureRegion getHead(int id)

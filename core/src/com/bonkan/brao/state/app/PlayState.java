@@ -245,6 +245,12 @@ public class PlayState extends AbstractGameState {
 		    					
 		    					inventory[ItemSlot.INVENTORY_SHIELD_SLOT].setItem(i);
 		    					break;
+		    					
+	    					case Constants.ITEM_TYPE_HELMET:
+	    						EntityManager.getPlayer().setHelmet(i.getAnimTexture());
+	    						
+	    						inventory[ItemSlot.INVENTORY_HELMET_SLOT].setItem(i);
+	    						break;
 	    				}
 	    				
 	    				break;
@@ -257,6 +263,7 @@ public class PlayState extends AbstractGameState {
 	    				id = UUID.fromString((String) p.getData());
 	    				String shieldID = p.getArgs().get(0);
 	    				String weaponID = p.getArgs().get(1);
+	    				String helmetID = p.getArgs().get(2);
 	    				
 	    				if(!isEnemyInArea(id))
 	    				{
@@ -266,6 +273,7 @@ public class PlayState extends AbstractGameState {
 	    				} else {
 	    					EntityManager.getEnemy(id).setShield(shieldID);
 	    					EntityManager.getEnemy(id).setWeapon(weaponID);
+	    					EntityManager.getEnemy(id).setHelmet(helmetID);
 	    				}
 	    					
 	    				break;
@@ -280,10 +288,11 @@ public class PlayState extends AbstractGameState {
     					state = PlayerState.valueOf(p.getArgs().get(5));
     					String shieldAnim = p.getArgs().get(6);
     					String weaponAnim = p.getArgs().get(7);
+    					String helmetAnim = p.getArgs().get(8);
 
 	    				if(!isEnemyInArea(id))
 	    				{
-	    					addEnemyToArea(bodyIndex, headIndex, x, y, id, nick, weaponAnim, shieldAnim);
+	    					addEnemyToArea(bodyIndex, headIndex, x, y, id, nick, weaponAnim, shieldAnim, helmetAnim);
 	    				
 	    					ArrayList<String> args = new ArrayList<String>();
     						args.add(id.toString());
@@ -299,7 +308,7 @@ public class PlayState extends AbstractGameState {
 	    				switch(slot)
 	    				{
 		    				case ItemSlot.INVENTORY_HELMET_SLOT:
-		    					
+		    					EntityManager.getPlayer().setHelmet(null);
 		    					break;
 		    					
 		    				case ItemSlot.INVENTORY_SHIELD_SLOT:
@@ -333,9 +342,9 @@ public class PlayState extends AbstractGameState {
         
     }
     
-    public void addEnemyToArea(int bodyIndex, int headIndex, int x, int y, UUID id, String nick, String weaponAnim, String shieldAnim)
+    public void addEnemyToArea(int bodyIndex, int headIndex, int x, int y, UUID id, String nick, String weaponAnim, String shieldAnim, String helmetAnim)
     {
-    	EntityManager.addEnemy(id, new Enemy(x, y, bodyIndex, headIndex, id, nick, WorldManager.world, weaponAnim, shieldAnim));
+    	EntityManager.addEnemy(id, new Enemy(x, y, bodyIndex, headIndex, id, nick, WorldManager.world, weaponAnim, shieldAnim, helmetAnim));
     }
     
     public void setEnemyState(UUID enemyID, PlayerState newState)

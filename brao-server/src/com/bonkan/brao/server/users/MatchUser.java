@@ -19,10 +19,12 @@ public class MatchUser extends LobbyUser {
 	
 	private int equippedWeapon;
 	private int equippedShield;
+	private int equippedHelmet;
 	
 	// guardo estos aca para evitar problemas
 	private int equippedWeaponRarity;
 	private int equippedShieldRarity; 
+	private int equippedHelmetRarity;
 	
 	public MatchUser(String nickName, UUID id, int defaultBody, Connection conn, int hp, int mana, Position pos, UUID matchID) {
 		super(nickName, id, defaultBody, conn);
@@ -33,6 +35,7 @@ public class MatchUser extends LobbyUser {
 		this.state = PlayerState.NONE;
 		this.equippedShield = -1;
 		this.equippedWeapon = -1;
+		this.equippedHelmet = -1;
 	}
 	
 	public void update()
@@ -68,6 +71,12 @@ public class MatchUser extends LobbyUser {
 	{
 		equippedShield = shield;
 		equippedShieldRarity = rarity;
+	}
+	
+	public void setEquippedHelmet(int helmet, int rarity)
+	{
+		equippedHelmet = helmet;
+		equippedHelmetRarity = rarity;
 	}
 	
 	public void setPosition(int x, int y)
@@ -115,6 +124,11 @@ public class MatchUser extends LobbyUser {
 		return equippedShield;
 	}
 	
+	public int getEquippedHelmet()
+	{
+		return equippedHelmet;
+	}
+	
 	public int getEquippedWeaponRarity()
 	{
 		return equippedWeaponRarity;
@@ -123,5 +137,10 @@ public class MatchUser extends LobbyUser {
 	public int getEquippedShieldRarity()
 	{
 		return equippedShieldRarity;
+	}
+	
+	public int getEquippedHelmetRarity()
+	{
+		return equippedHelmetRarity;
 	}
 }

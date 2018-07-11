@@ -1,47 +1,26 @@
 
 items.png
-size: 512,64
+size: 128,32
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-MD
+cascohierro
   rotate: false
-  xy: 94, 10
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-dosfi
-  rotate: false
-  xy: 52, 10
+  xy: 0, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 escutortu
   rotate: false
-  xy: 220, 10
+  xy: 64, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 espadaplata
   rotate: false
-  xy: 178, 10
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-hachaorca
-  rotate: false
-  xy: 10, 10
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-otraespada
-  rotate: false
-  xy: 136, 10
+  xy: 32, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

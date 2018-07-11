@@ -36,6 +36,7 @@ public abstract class Human extends Entity {
 	protected HeadAnimator headAnimator;
 	protected CommonAnimator weaponAnimator;
 	protected CommonAnimator shieldAnimator;
+	protected HeadAnimator helmetAnimator;
 	
 	protected int bodyIndex;
 	protected int headIndex;
@@ -57,6 +58,7 @@ public abstract class Human extends Entity {
 		this.bodyAnimator.setTexture(AssetsManager.getBody(bodyIndex), state);
 		this.weaponAnimator = new CommonAnimator(6, 4);
 		this.shieldAnimator = new CommonAnimator(6, 4);
+		this.helmetAnimator = new HeadAnimator(null);
 		this.body = BodyFactory.createPlayerBox(world, x, y, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
 		this.nameFont = AssetsManager.getDefaultFont();
 		this.glyphLayout = new GlyphLayout();
@@ -68,6 +70,7 @@ public abstract class Human extends Entity {
 		weaponAnimator.render(batch, location.x - Constants.BODY_WIDTH / 2, location.y - Constants.BODY_HEIGHT / 2, state);
 		shieldAnimator.render(batch, location.x - Constants.BODY_WIDTH / 2, location.y - Constants.BODY_HEIGHT / 2, state);
 		headAnimator.render(batch, location.x - 8, location.y + Constants.BODY_HEIGHT / 2 - 3, state);
+		helmetAnimator.render(batch, location.x - 12, location.y + Constants.BODY_HEIGHT / 2 - 3, state);
 		
 		glyphLayout.setText(nameFont, userName);
 		nameFont.draw(batch, userName, location.x - glyphLayout.width / 2, location.y - Constants.BODY_HEIGHT / 2);
@@ -92,6 +95,11 @@ public abstract class Human extends Entity {
 	public void setShield(String shieldID)
 	{
 		shieldAnimator.setTexture(AssetsManager.getShield(shieldID), lastValidState);
+	}
+	
+	public void setHelmet(String helmetID)
+	{
+		helmetAnimator.setTexture(AssetsManager.getHelmet(helmetID), lastValidState);
 	}
 	
 	public void setState(PlayerState state) 

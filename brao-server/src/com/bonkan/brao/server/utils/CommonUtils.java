@@ -18,6 +18,7 @@ public class CommonUtils {
 	// tipos de items
 	public static final int ITEM_TYPE_SHIELD = 0;
 	public static final int ITEM_TYPE_WEAPON = 1;
+	public static final int ITEM_TYPE_HELMET = 2;
 	
 	// slots de items
 	public static final int INVENTORY_WEAPON_SLOT = 0;
