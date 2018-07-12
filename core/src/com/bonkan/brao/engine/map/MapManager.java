@@ -53,7 +53,7 @@ public class MapManager {
 		this.rays.setBlur(true);           // enabled or disable blur
 		this.rays.setBlurNum(2);           // set number of gaussian blur passes
 		this.rays.setShadows(true);        // enable or disable shadow
-		this.rays.setCulling(false);        // enable or disable culling
+		this.rays.setCulling(false);       // enable or disable culling
 
 		load(world,  0); // ESTAMOS CARGANDO POR DEFECTO!
 	}
@@ -131,9 +131,17 @@ public class MapManager {
 				new ConeLight(rays, 120, (Color)object.getProperties().get("color"), (Integer)object.getProperties().get("size"), 
 										 (Float)object.getProperties().get("x"), 	 (Float)object.getProperties().get("y"), 
 										 270, (Integer)object.getProperties().get("amplitude")).setXray(true);
+				
+				
 			}
 		}
 	}
+	
+	/**
+	 * 
+	 */
+	
+	
 	
 	/**
 	 * <p>Función que pasa todos los objetos del mapa (que en el createCollision() se cargan

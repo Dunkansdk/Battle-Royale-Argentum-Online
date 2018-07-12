@@ -98,6 +98,8 @@ public class EntityManager {
 				it.remove();
 		}
 		
+		player.update(delta);
+		
 		Vector3 mouseCoords = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 		
 		// también actualizo los items xq tienen el check del mouseHover
@@ -153,8 +155,10 @@ public class EntityManager {
 	
 	public static void deleteItem(UUID id)
 	{
-		if(items.get(id) != null)
+		if(items.get(id) != null) {
+			items.get(id).disposeEffect();
 			items.remove(id);
+		}
 	}
 	
 	public static ArrayList<Chest> getChests()

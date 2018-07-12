@@ -70,9 +70,9 @@ public class PlayState extends AbstractGameState {
    
         EntityManager.setPlayer(new Player(aux.getX(), aux.getY(), aux.getLoggedDefaultBody(), 1, aux.getHP(), aux.getMana(), aux.getLoggedID(), aux.getLoggedUserName(), WorldManager.world));
         
-        EntityManager.addParticle(ParticleType.TEST2, 10, 10, true); 
+        EntityManager.addParticle(ParticleType.TEST2, 10, 500, true); 
         //hinchapelotas EntityManager.addParticle(ParticleType.TEST2, 300, 200, false); 
-        EntityManager.addParticle(ParticleType.TEST1, 150, 150, false); 
+        EntityManager.addParticle(ParticleType.TEST1, 600, 40, false); 
         
         inventory = new ItemSlot[5]; // casco, escudo, arma, potas rojas, potas azules
         spellsInventory = new SpellSlot[4]; // 4 hechizos
@@ -313,7 +313,7 @@ public class PlayState extends AbstractGameState {
 	    				amount = Integer.parseInt(p.getArgs().get(9));
 	    				index = Integer.parseInt(p.getArgs().get(10));
 	    				
-	    				EntityManager.addItem(new Item(x, y, rarity, amount, nick, desc, AssetsManager.getItem(p.getArgs().get(5)), animTexture, type, id, index));
+	    				EntityManager.addItem(new Item(x, y, rarity, amount, nick, desc, AssetsManager.getItem(p.getArgs().get(5)), animTexture, type, id, index, map.getRayHandler()));
 	    				break;
 	    				
 	    			case PacketIDs.PACKET_PLAYER_CONFIRM_GET_ITEM:

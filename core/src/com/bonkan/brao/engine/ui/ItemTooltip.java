@@ -94,13 +94,13 @@ public class ItemTooltip {
 				Color batchColor = batch.getColor();
 				
 				// aplicamos el alpha
-				batch.setColor(batchColor.r, batchColor.g, batchColor.b, alphaValue/255f);
+				batch.setColor(batchColor.r, batchColor.g, batchColor.b, alphaValue / 255f);
 				
 				// dibujamos el tooltip
 				batch.draw(texture, position.x, position.y);
 				
 				// aplicamos el alpha a la fuente
-				fontColor.set(fontColor.r, fontColor.g, fontColor.b, alphaValue/255f);
+				fontColor.set(fontColor.r, fontColor.g, fontColor.b, alphaValue / 255f);
 				font.setColor(fontColor);
 				
 				// mostramos el texto
@@ -110,7 +110,8 @@ public class ItemTooltip {
 				AssetsManager.getDefaultFont().draw(batch, desc, position.x + texture.getWidth() / 2 - glyphLayout.width / 2, position.y + texture.getHeight() / 2 + glyphLayout.height / 2 - 12);
 				
 				// reseteamos el alpha y el color de la fuente para los otros draws (los del PlayState)
-				font.setColor(255/255f, 255/255f, 255/255f, 255/255f);
+				font.setColor(255 / 255f, 255 / 255f, 255 / 255f, 255 / 255f);
+				
 			batch.end();
 			
 			// reseteamos el color del batch para los otros draws

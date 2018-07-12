@@ -3,17 +3,15 @@ package com.bonkan.brao.engine.entity.entities;
 import java.awt.Rectangle;
 import java.util.UUID;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.bonkan.brao.engine.entity.Entity;
 import com.bonkan.brao.engine.ui.ItemTooltip;
 import com.bonkan.brao.engine.utils.Constants;
+
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 
 /**
  * <p>Clase que maneja los items como ENTIDADES (es decir, los que están tirados en el piso
@@ -35,10 +33,9 @@ public class Item extends Entity {
 	private int type;
 	private int amount;
 	private int itemIndex;
-	
-	private ShaderProgram outline;
-	
-	public Item(int x, int y, int rarity, int amount, String name, String desc, TextureRegion texture, String animTexture, int type, UUID itemID, int itemIndex) {
+	private PointLight rarityEffect;
+
+	public Item(int x, int y, int rarity, int amount, String name, String desc, TextureRegion texture, String animTexture, int type, UUID itemID, int itemIndex, RayHandler rays) {
 		super(x, y);
 		this.itemID = itemID;
 		this.rarity = rarity;
@@ -49,17 +46,27 @@ public class Item extends Entity {
 		this.type = type;
 		this.animTexture = animTexture;
 		this.itemIndex = itemIndex;
-		loadShader();
+		
+		if(rarity != 1) {
+			rarityEffect = new PointLight(rays, 300, getColor(rarity), 80, location.x + texture.getRegionWidth() / 2, location.y + texture.getRegionHeight() / 2);
+			rarityEffect.setXray(true);
+			rarityEffect.setSoft(false);
+		}
 	}
 	
-	public void loadShader() 
-	{
-		String vertexShader;
-		String fragmentShader;
-		vertexShader = Gdx.files.internal("GlowVertex.glsl").readString();
-		fragmentShader = Gdx.files.internal("GlowFragment.glsl").readString();
-		outline = new ShaderProgram(vertexShader, fragmentShader);
-		if (!outline.isCompiled()) throw new GdxRuntimeException("Couldn't compile shader: " + outline.getLog());
+	private Color getColor(int rarity) {
+		switch(rarity) {
+		case 2:
+			return Constants.RARE_ITEM_GLOW_COLOR;
+			
+		case 3:
+			return Constants.EPIC_ITEM_GLOW_COLOR;
+			
+		case 4: 
+			return Constants.LEGENDARY_ITEM_GLOW_COLOR;
+			
+		}
+		return null;
 	}
 
 	@Override
@@ -100,20 +107,6 @@ public class Item extends Entity {
 
 	@Override
 	public void render(SpriteBatch batch) {
-		// Seteamos el shader
-		outline.begin();
-		outline.setUniformf("u_viewportInverse", new Vector2(1f / (texture.getRegionWidth() + 5), 1f / (texture.getRegionHeight() + 5)));
-		outline.setUniformf("u_offset", 0.4f);
-		outline.setUniformf("u_step", Math.min(1f, texture.getRegionWidth() / 70f));
-		outline.setUniformf("u_color", new Vector3(0, 0, 255));
-		outline.end();
-		
-		// Dibujamos el glow
-		batch.setShader(outline);
-		batch.begin();
-		batch.draw(texture, location.x - 2, location.y);
-		batch.end();
-		
 		// Dibujamos el item
 		batch.setShader(null);
 		batch.begin();
@@ -160,6 +153,12 @@ public class Item extends Entity {
 	public TextureRegion getTexture()
 	{
 		return texture;
+	}
+	
+	public void disposeEffect() {
+		if(rarity != 1) {
+			rarityEffect.remove();
+		}
 	}
 	
 }
