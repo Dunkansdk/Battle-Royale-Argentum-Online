@@ -6,7 +6,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.bonkan.brao.engine.entity.EntityManager;
 import com.bonkan.brao.engine.entity.entities.Item;
+import com.bonkan.brao.engine.input.KeyBindings;
 import com.bonkan.brao.engine.utils.AssetsManager;
 import com.bonkan.brao.engine.utils.Constants;
 
@@ -58,15 +60,19 @@ public class ItemSlot {
 			batch.draw(item.getTexture(), pos.x + Constants.ITEM_SIZE / 2, pos.y + Constants.ITEM_SIZE / 2);
 	
 		// si es pota, dibujamos la hotkey
-		if(isRedPot)
+		if(isRedPot && !isEmpty)
 		{
-			glyphLayout.setText(AssetsManager.getDefaultFont(), "Q");
-			AssetsManager.getDefaultFont().draw(batch, "Q", pos.x + 5, pos.y + 5 + glyphLayout.height);
+			glyphLayout.setText(AssetsManager.getDefaultFont(), KeyBindings.getKeyText(KeyBindings.KEY_RED_POTION));
+			AssetsManager.getDefaultFont().draw(batch, KeyBindings.getKeyText(KeyBindings.KEY_RED_POTION), pos.x + 5, pos.y + 5 + glyphLayout.height);
+			glyphLayout.setText(AssetsManager.getDefaultFont(), String.valueOf(EntityManager.getPlayer().getRedPotionsAmount()));
+			AssetsManager.getDefaultFont().draw(batch, String.valueOf(EntityManager.getPlayer().getRedPotionsAmount()), pos.x + 60 - glyphLayout.width, pos.y + 60);
 		}
-		else if(isBluePot)
+		else if(isBluePot && !isEmpty)
 		{
-			glyphLayout.setText(AssetsManager.getDefaultFont(), "R");
-			AssetsManager.getDefaultFont().draw(batch, "R", pos.x + 5, pos.y + 5 + glyphLayout.height);
+			glyphLayout.setText(AssetsManager.getDefaultFont(), KeyBindings.getKeyText(KeyBindings.KEY_BLUE_POTION));
+			AssetsManager.getDefaultFont().draw(batch, KeyBindings.getKeyText(KeyBindings.KEY_BLUE_POTION), pos.x + 5, pos.y + 5 + glyphLayout.height);
+			glyphLayout.setText(AssetsManager.getDefaultFont(), String.valueOf(EntityManager.getPlayer().getBluePotionsAmount()));
+			AssetsManager.getDefaultFont().draw(batch, String.valueOf(EntityManager.getPlayer().getBluePotionsAmount()), pos.x + 60 - glyphLayout.width, pos.y + 60);
 		}
 	}
 	

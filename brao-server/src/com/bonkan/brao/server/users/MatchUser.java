@@ -26,6 +26,9 @@ public class MatchUser extends LobbyUser {
 	private int equippedShieldRarity; 
 	private int equippedHelmetRarity;
 	
+	private int redPotionsAmount;
+	private int bluePotionsAmount;
+	
 	public MatchUser(String nickName, UUID id, int defaultBody, Connection conn, int hp, int mana, Position pos, UUID matchID) {
 		super(nickName, id, defaultBody, conn);
 		this.hp = hp;
@@ -36,6 +39,8 @@ public class MatchUser extends LobbyUser {
 		this.equippedShield = -1;
 		this.equippedWeapon = -1;
 		this.equippedHelmet = -1;
+		this.redPotionsAmount = 0;
+		this.bluePotionsAmount = 0;
 	}
 	
 	public void update()
@@ -87,6 +92,22 @@ public class MatchUser extends LobbyUser {
 	public void setState(String st)
 	{
 		state = PlayerState.valueOf(st);
+	}
+	
+	public void addRedPotions(int amount)
+	{
+		redPotionsAmount += amount;
+		
+		if(redPotionsAmount < 0)
+			redPotionsAmount = 0;
+	}
+	
+	public void addBluePotions(int amount)
+	{
+		bluePotionsAmount += amount;
+		
+		if(bluePotionsAmount < 0)
+			bluePotionsAmount = 0;
 	}
 	
 	public int getHP() 
@@ -142,5 +163,15 @@ public class MatchUser extends LobbyUser {
 	public int getEquippedHelmetRarity()
 	{
 		return equippedHelmetRarity;
+	}
+	
+	public int getRedPotionsAmount()
+	{
+		return redPotionsAmount;
+	}
+	
+	public int getBluePotionsAmount()
+	{
+		return bluePotionsAmount;
 	}
 }

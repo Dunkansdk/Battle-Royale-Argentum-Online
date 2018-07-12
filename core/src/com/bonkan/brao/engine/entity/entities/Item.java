@@ -33,13 +33,15 @@ public class Item extends Entity {
 	private String name;
 	private String desc;
 	private int type;
+	private int amount;
 	
 	private ShaderProgram outline;
 	
-	public Item(int x, int y, int rarity, String name, String desc, TextureRegion texture, String animTexture, int type, UUID itemID) {
+	public Item(int x, int y, int rarity, int amount, String name, String desc, TextureRegion texture, String animTexture, int type, UUID itemID) {
 		super(x, y);
 		this.itemID = itemID;
 		this.rarity = rarity;
+		this.amount = amount;
 		this.texture = texture;
 		this.name = name;
 		this.desc = desc;
@@ -119,6 +121,11 @@ public class Item extends Entity {
 	public String getAnimTexture()
 	{
 		return animTexture;
+	}
+	
+	public int getAmount()
+	{
+		return amount;
 	}
 	
 	public int getType()

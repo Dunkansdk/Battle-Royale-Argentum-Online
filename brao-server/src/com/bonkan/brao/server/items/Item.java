@@ -13,13 +13,20 @@ public class Item {
 	private UUID id;
 	private int index; // indice del item en el JSON
 	private int rarity;
+	private int amount; // solo es distinto de 1 si son potas
 	
-	public Item(UUID id, int x, int y, int index, int rarity)
+	public Item(UUID id, int x, int y, int index, int rarity, int amount)
 	{
 		this.id = id;
 		this.pos = new Position(x, y);
 		this.index = index;
 		this.rarity = rarity;
+		this.amount = amount;
+	}
+	
+	public int getAmount()
+	{
+		return amount;
 	}
 	
 	public int getRarity()

@@ -24,6 +24,7 @@ import com.bonkan.brao.engine.map.MapManager;
 import com.bonkan.brao.engine.map.WorldManager;
 import com.bonkan.brao.engine.ui.ItemSlot;
 import com.bonkan.brao.engine.ui.ItemTooltip;
+import com.bonkan.brao.engine.ui.ThrowWindow;
 import com.bonkan.brao.engine.utils.AssetsManager;
 import com.bonkan.brao.engine.utils.CommonUtils;
 import com.bonkan.brao.engine.utils.Constants;
@@ -48,6 +49,9 @@ public class PlayState extends AbstractGameState {
     private Texture hpBar;
     private Texture manaBar;
     private Texture barOutline;
+    
+    // para tirar las potas
+    private ThrowWindow potionsWindow;
 
 	public PlayState(GameStateManager gameState) {
         super(gameState);
@@ -82,6 +86,8 @@ public class PlayState extends AbstractGameState {
         barOutline = AssetsManager.getTexture("barOutline.png");
         
         glyphLayout = new GlyphLayout();
+        
+        potionsWindow = new ThrowWindow();
     }
 
     @Override
@@ -99,14 +105,65 @@ public class PlayState extends AbstractGameState {
         	for(int i = 0; i < inventory.length; i++)
         	{
         		ItemSlot is = inventory[i];
+
         		if(is.getRect().contains(p) && !is.isEmpty())
         		{
-        			ArrayList<String> args = new ArrayList<String>();
-        			args.add(String.valueOf(i));
-        			app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_UNEQUIP_ITEM, EntityManager.getPlayer().getID().toString(), args));
+
+        			if(i == ItemSlot.INVENTORY_RED_POTION_SLOT || i == ItemSlot.INVENTORY_BLUE_POTION_SLOT)
+        			{
+        				potionsWindow.setVisible(true);
+        				potionsWindow.setPotionIndex(i);
+        			} else {
+        				ArrayList<String> args = new ArrayList<String>();
+            			args.add(String.valueOf(i));
+            			args.add("1");
+            			app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_UNEQUIP_ITEM, EntityManager.getPlayer().getID().toString(), args));
+        			}
         		}
         	}
     	}
+    	
+    	if(potionsWindow.getVisible())
+    	{
+    		Gdx.input.setInputProcessor(potionsWindow);
+    		
+    		if(potionsWindow.getReady())
+    		{
+    			potionsWindow.setVisible(false);
+
+    			int amount = potionsWindow.getAmount();
+    			
+    			if(amount > 0)
+    			{
+    				switch(potionsWindow.getPotionIndex())
+        			{
+    	    			case Constants.RED_POTION_INDEX:
+    	    				if(EntityManager.getPlayer().getRedPotionsAmount() >= amount)
+    	    				{
+    	    					ArrayList<String> args = new ArrayList<String>();
+    	            			args.add(String.valueOf(potionsWindow.getPotionIndex()));
+    	            			args.add(String.valueOf(amount));
+    	            			app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_UNEQUIP_ITEM, EntityManager.getPlayer().getID().toString(), args));
+    	    				}
+    	    				break;
+        			
+    	    			case Constants.BLUE_POTION_INDEX:
+    	    				if(EntityManager.getPlayer().getBluePotionsAmount() >= amount)
+    	    				{
+    	    					ArrayList<String> args = new ArrayList<String>();
+    	            			args.add(String.valueOf(potionsWindow.getPotionIndex()));
+    	            			args.add(String.valueOf(amount));
+    	            			app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_UNEQUIP_ITEM, EntityManager.getPlayer().getID().toString(), args));
+    	    				}
+    	    				break;
+        			}
+    			}
+
+    			potionsWindow.reset();
+    		}
+    	}
+    	else
+    		Gdx.input.setInputProcessor(null);
     	
     	//TODO: ESTO HAY QUE VOLARLO!
     	lerpToTarget(camera, EntityManager.getPlayer().getPos());
@@ -158,6 +215,9 @@ public class PlayState extends AbstractGameState {
     		for(ItemSlot is : inventory)
     			is.render(app.getHudBatch());
     	app.getHudBatch().end();
+    
+    	if(potionsWindow.getVisible())
+    		potionsWindow.draw();
     }
     
     public void handlePlayerIncomingData()
@@ -175,7 +235,7 @@ public class PlayState extends AbstractGameState {
     		
     			// variables comunes
     			UUID id;
-    			int bodyIndex, headIndex, x, y;
+    			int bodyIndex, headIndex, x, y, amount;
     			String nick;
     			PlayerState state;
     			
@@ -225,12 +285,12 @@ public class PlayState extends AbstractGameState {
 	    				String animTexture = p.getArgs().get(6);
 	    				int type = Integer.parseInt(p.getArgs().get(7));
 	    				String desc = p.getArgs().get(8);
-
-	    				EntityManager.addItem(new Item(x, y, rarity, nick, desc, AssetsManager.getItem(p.getArgs().get(5)), animTexture, type, id));
+	    				amount = Integer.parseInt(p.getArgs().get(9));
+	    				
+	    				EntityManager.addItem(new Item(x, y, rarity, amount, nick, desc, AssetsManager.getItem(p.getArgs().get(5)), animTexture, type, id));
 	    				break;
 	    				
 	    			case PacketIDs.PACKET_PLAYER_CONFIRM_GET_ITEM:
-	    				
 	    				Item i = EntityManager.getItem(UUID.fromString((String) p.getData()));
 	    				
 	    				switch(i.getType())
@@ -251,6 +311,18 @@ public class PlayState extends AbstractGameState {
 	    						EntityManager.getPlayer().setHelmet(i.getAnimTexture());
 	    						
 	    						inventory[ItemSlot.INVENTORY_HELMET_SLOT].setItem(i);
+	    						break;
+	    						
+	    					case Constants.ITEM_TYPE_RED_POTION:
+	    						EntityManager.getPlayer().addRedPotions(i.getAmount());
+	    						
+	    						inventory[ItemSlot.INVENTORY_RED_POTION_SLOT].setItem(i);
+	    						break;
+	    						
+	    					case Constants.ITEM_TYPE_BLUE_POTION:
+	    						EntityManager.getPlayer().addBluePotions(i.getAmount());
+	    						
+	    						inventory[ItemSlot.INVENTORY_BLUE_POTION_SLOT].setItem(i);
 	    						break;
 	    				}
 	    				
@@ -321,6 +393,29 @@ public class PlayState extends AbstractGameState {
 		    					break;
 	    				}
 	    				break;
+	    				
+	    			case PacketIDs.PACKET_PLAYER_REMOVE_POTION:
+	    				int index = Integer.parseInt(p.getArgs().get(0));
+	    				amount = Integer.parseInt(p.getArgs().get(1));
+	    				
+	    				switch(index)
+	    				{
+	    					case Constants.RED_POTION_INDEX:
+	    						EntityManager.getPlayer().addRedPotions(-amount);
+	    						
+	    						if(EntityManager.getPlayer().getRedPotionsAmount() <= 0)
+	    							inventory[ItemSlot.INVENTORY_RED_POTION_SLOT].unequip();
+	    						break;
+	    						
+	    					case Constants.BLUE_POTION_INDEX:
+	    						EntityManager.getPlayer().addBluePotions(-amount);
+	    						
+	    						if(EntityManager.getPlayer().getBluePotionsAmount() <= 0)
+	    							inventory[ItemSlot.INVENTORY_BLUE_POTION_SLOT].unequip();
+	    						break;
+	    				}
+	    				
+	    				break;
     			}
     			
     			it.remove();
@@ -385,5 +480,6 @@ public class PlayState extends AbstractGameState {
     public void dispose() {
         map.dispose();
         b2dr.dispose();
+        potionsWindow.dispose();
     }
 }

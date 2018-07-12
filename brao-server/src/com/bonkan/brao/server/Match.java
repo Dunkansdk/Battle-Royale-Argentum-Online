@@ -97,7 +97,7 @@ public class Match {
 		return false;
 	}
 	
-	public void throwItem(int x, int y, int index, int rarity)
+	public void throwItem(int x, int y, int index, int rarity, int amount)
 	{
 		ArrayList<String> args = new ArrayList<String>();
 		UUID itemID = UUID.randomUUID();
@@ -111,9 +111,10 @@ public class Match {
 		args.add(JSONManager.getItemAnimAtlasName(index)); // nombre en el atlas del cliente de la animación del item (en este caso del item 1)
 		args.add(String.valueOf(JSONManager.getItemType(index))); // tipo del item
 		args.add(JSONManager.getItemDesc(index)); // descripcion del item
+		args.add(String.valueOf(amount));
 		
 		// agregamos el item al mapa de items
-		mapItems.put(itemID, new Item(itemID, x, y, index, rarity));
+		mapItems.put(itemID, new Item(itemID, x, y, index, rarity, amount));
 		
 		// mandamos los items a todos los users
 		sendDataToAll(new Packet(PacketIDs.PACKET_ITEM_THROWN, null, args));
@@ -157,8 +158,15 @@ public class Match {
 		
 		ArrayList<String> args = new ArrayList<String>();
 		UUID itemID = UUID.randomUUID();
-		int index = ThreadLocalRandom.current().nextInt(0, 3);
+		int index = ThreadLocalRandom.current().nextInt(3, 5);
 		int rarity = ThreadLocalRandom.current().nextInt(1, 5);
+		int amount = 1;
+		
+		if(index == CommonUtils.RED_POTION_INDEX || index == CommonUtils.BLUE_POTION_INDEX) // potas
+		{
+			amount = 50;
+			rarity = 1;
+		}
 		
 		args.add(itemID.toString()); // id del item
 		args.add(String.valueOf(rarity)); // rareza del item
@@ -169,9 +177,10 @@ public class Match {
 		args.add(JSONManager.getItemAnimAtlasName(index)); // nombre en el atlas del cliente de la animación del item (en este caso del item 1)
 		args.add(String.valueOf(JSONManager.getItemType(index))); // tipo del item
 		args.add(JSONManager.getItemDesc(index)); // descripcion del item
+		args.add(String.valueOf(amount));
 		
 		// agregamos el item al mapa de items
-		mapItems.put(itemID, new Item(itemID, chestPos.getX(), chestPos.getY() - 48, index, rarity));
+		mapItems.put(itemID, new Item(itemID, chestPos.getX(), chestPos.getY() - 48, index, rarity, amount));
 		
 		// mandamos los items a todos los users
 		sendDataToAll(new Packet(PacketIDs.PACKET_ITEM_THROWN, null, args));

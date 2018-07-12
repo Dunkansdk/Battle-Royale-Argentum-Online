@@ -27,5 +27,21 @@
 			"item_type" : 2,
 			"desc" : "DEF: 5 / 15"
 		},
+		{
+			"name" : "Poción Roja",
+			"atlas_name" : "potaroja",
+			"anim_atlas_name" : "",
+			"healing" : 20,
+			"item_type" : 3,
+			"desc" : "HP +20"
+		},
+		{
+			"name" : "Poción Azul",
+			"atlas_name" : "potaazul",
+			"anim_atlas_name" : "",
+			"healing" : 100,
+			"item_type" : 4,
+			"desc" : "Mana +100"
+		},
 	] 
 }

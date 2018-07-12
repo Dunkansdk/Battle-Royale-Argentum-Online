@@ -186,6 +186,7 @@ public class InputController {
         	{
         		args.clear();
         		args.add(itemID.toString());
+        		args.add(String.valueOf(EntityManager.getItem(itemID).getAmount()));
         		client.sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_GET_ITEM, player.getID().toString(), args));
         	}
         }
@@ -239,7 +240,7 @@ public class InputController {
     private UUID checkItemPosition(Player player)
     {
     	HashMap<UUID, Item> items = EntityManager.getAllItems();
-    	Rectangle playerRect = new Rectangle((int) player.getPos().x - Constants.BODY_WIDTH / 2, (int) player.getPos().y - Constants.BODY_HEIGHT / 2, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
+    	Rectangle playerRect = new Rectangle((int) player.getPos().x - Constants.BODY_WIDTH / 2, (int) player.getPos().y, Constants.BODY_WIDTH, Constants.BODY_HEIGHT / 2); // uso solamente la mitad inferior del body para chequear por items
     	for (Map.Entry<UUID, Item> entry : items.entrySet()) 
     	{
 			Rectangle itemRect = new Rectangle((int) entry.getValue().getPos().x, (int) entry.getValue().getPos().y, Constants.ITEM_SIZE, Constants.ITEM_SIZE);

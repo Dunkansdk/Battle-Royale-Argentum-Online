@@ -45,7 +45,6 @@ public class LoginState extends AbstractGameState {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        //skin = new Skin();
         skin = AssetsManager.getDefaultSkin();
         
         username = new TextField("", skin);

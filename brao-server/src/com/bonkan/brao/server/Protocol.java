@@ -149,6 +149,7 @@ public class Protocol {
 				id = UUID.fromString((String) p.getData());
 				mu = currentMatch.getUserByID(id);
 				itemID = UUID.fromString(p.getArgs().get(0));
+				int amount = Integer.parseInt(p.getArgs().get(1));
 				
 				if(currentMatch.itemExists(itemID))
 				{
@@ -163,7 +164,7 @@ public class Protocol {
 							
 							// si tiene otro lo tiramos
 							if(mu.getEquippedShield() > -1) // si tiene escudo
-								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedShield(), rarity);
+								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedShield(), rarity, amount);
 							
 							mu.setEquippedShield(itemIndex, rarity);
 							break;
@@ -172,7 +173,7 @@ public class Protocol {
 							
 							// si tiene otro lo tiramos
 							if(mu.getEquippedWeapon() > -1) // si tiene arma
-								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedWeapon(), rarity);
+								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedWeapon(), rarity, amount);
 							
 							mu.setEquippedWeapon(itemIndex, rarity);
 							break;
@@ -181,9 +182,17 @@ public class Protocol {
 							
 							// si tiene otro lo tiramos
 							if(mu.getEquippedHelmet() > -1) // si tiene casco
-								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedHelmet(), rarity);
+								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedHelmet(), rarity, amount);
 							
 							mu.setEquippedHelmet(itemIndex, rarity);
+							break;
+							
+						case CommonUtils.ITEM_TYPE_RED_POTION:
+							mu.addRedPotions(amount);
+							break;
+							
+						case CommonUtils.ITEM_TYPE_BLUE_POTION:
+							mu.addBluePotions(amount);
 							break;
 					}
 					
@@ -245,7 +254,8 @@ public class Protocol {
 				id = UUID.fromString((String) p.getData());
 				mu = currentMatch.getUserByID(id);
 				int slot = Integer.parseInt(p.getArgs().get(0));
-				
+				int cant = Integer.parseInt(p.getArgs().get(1)); // para las potas
+
 				switch(slot)
 				{
 					case CommonUtils.INVENTORY_SHIELD_SLOT:
@@ -258,7 +268,7 @@ public class Protocol {
 								args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedWeapon()));
 								args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedHelmet()));
 								currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_IN_AREA_EQUIPPED_ITEM, id.toString(), args), id);
-								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedShield(), mu.getEquippedShieldRarity());
+								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedShield(), mu.getEquippedShieldRarity(), cant);
 								
 								// confirmamos
 								mu.setEquippedShield(-1, 0);
@@ -277,7 +287,7 @@ public class Protocol {
 								args.add(null);
 								args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedHelmet()));
 								currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_IN_AREA_EQUIPPED_ITEM, id.toString(), args), id);
-								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedWeapon(), mu.getEquippedWeaponRarity());
+								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedWeapon(), mu.getEquippedWeaponRarity(), cant);
 								
 								// confirmamos
 								mu.setEquippedWeapon(-1, 0);
@@ -296,13 +306,67 @@ public class Protocol {
 								args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedWeapon()));
 								args.add(null);
 								currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_IN_AREA_EQUIPPED_ITEM, id.toString(), args), id);
-								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedHelmet(), mu.getEquippedHelmetRarity());
+								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedHelmet(), mu.getEquippedHelmetRarity(), cant);
 								
 								// confirmamos
 								mu.setEquippedHelmet(-1, 0);
 								mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_CONFIRM_UNEQUIP_ITEM, String.valueOf(slot), null));
 							}
 						}
+						break;
+						
+					case CommonUtils.INVENTORY_RED_POTION_SLOT:
+						
+						if(!currentMatch.busyTile(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2)) // si el tile está libre
+						{
+							if(mu.getRedPotionsAmount() > cant)
+							{
+								mu.addRedPotions(-cant);
+								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, CommonUtils.RED_POTION_INDEX, 1, cant);
+	
+								args.clear();
+								args.add(String.valueOf(CommonUtils.RED_POTION_INDEX));
+								args.add(String.valueOf(cant));
+								mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_REMOVE_POTION, null, args));
+							} else {
+								cant = mu.getRedPotionsAmount();
+								mu.addRedPotions(-cant);
+								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, CommonUtils.RED_POTION_INDEX, 1, cant);
+								
+								args.clear();
+								args.add(String.valueOf(CommonUtils.RED_POTION_INDEX));
+								args.add(String.valueOf(cant));
+								mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_REMOVE_POTION, null, args));
+							}
+						}
+						
+						break;
+						
+					case CommonUtils.INVENTORY_BLUE_POTION_SLOT:
+						
+						if(!currentMatch.busyTile(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2)) // si el tile está libre
+						{
+							if(mu.getBluePotionsAmount() > cant)
+							{
+								mu.addBluePotions(-cant);
+								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, CommonUtils.BLUE_POTION_INDEX, 1, cant);
+								
+								args.clear();
+								args.add(String.valueOf(CommonUtils.BLUE_POTION_INDEX));
+								args.add(String.valueOf(cant));
+								mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_REMOVE_POTION, null, args));
+							} else {
+								cant = mu.getBluePotionsAmount();
+								mu.addBluePotions(-cant);
+								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, CommonUtils.BLUE_POTION_INDEX, 1, cant);
+								
+								args.clear();
+								args.add(String.valueOf(CommonUtils.BLUE_POTION_INDEX));
+								args.add(String.valueOf(cant));
+								mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_REMOVE_POTION, null, args));
+							}
+						}
+						
 						break;
 				}
 				
