@@ -14,13 +14,13 @@ import com.bonkan.brao.engine.utils.Constants;
 
 public class ItemSlot {
 
-	private Vector2 pos;
-	private Texture slotTexture;
-	private boolean isEmpty;
-	private boolean isRedPot;
-	private boolean isBluePot;
-	private Item item;
-	private GlyphLayout glyphLayout; // para las potas
+	protected Vector2 pos;
+	protected Texture slotTexture;
+	protected boolean isEmpty;
+	protected boolean isRedPot;
+	protected boolean isBluePot;
+	protected Item item;
+	protected GlyphLayout glyphLayout; // para las potas
 	
 	// slots
 	public static final int INVENTORY_WEAPON_SLOT = 0;
@@ -28,7 +28,7 @@ public class ItemSlot {
 	public static final int INVENTORY_HELMET_SLOT = 2;
 	public static final int INVENTORY_RED_POTION_SLOT = 3;
 	public static final int INVENTORY_BLUE_POTION_SLOT = 4;
-	
+
 	public ItemSlot(float x, float y, boolean isRedPot, boolean isBluePot)
 	{
 		this.pos = new Vector2(x, y);

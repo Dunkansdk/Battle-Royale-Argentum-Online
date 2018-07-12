@@ -6,28 +6,28 @@ filter: Nearest,Nearest
 repeat: none
 cascohierro
   rotate: false
-  xy: 32, 0
+  xy: 64, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 escutortu
   rotate: false
-  xy: 96, 0
+  xy: 128, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 espadaplata
   rotate: false
-  xy: 64, 0
+  xy: 96, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 potaazul
   rotate: false
-  xy: 128, 0
+  xy: 160, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -35,6 +35,13 @@ potaazul
 potaroja
   rotate: false
   xy: 0, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+spell
+  rotate: false
+  xy: 32, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

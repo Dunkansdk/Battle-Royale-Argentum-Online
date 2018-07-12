@@ -111,7 +111,8 @@ public class Match {
 		args.add(JSONManager.getItemAnimAtlasName(index)); // nombre en el atlas del cliente de la animación del item (en este caso del item 1)
 		args.add(String.valueOf(JSONManager.getItemType(index))); // tipo del item
 		args.add(JSONManager.getItemDesc(index)); // descripcion del item
-		args.add(String.valueOf(amount));
+		args.add(String.valueOf(amount)); // cantidad
+		args.add(String.valueOf(index)); // indice del item
 		
 		// agregamos el item al mapa de items
 		mapItems.put(itemID, new Item(itemID, x, y, index, rarity, amount));
@@ -158,7 +159,7 @@ public class Match {
 		
 		ArrayList<String> args = new ArrayList<String>();
 		UUID itemID = UUID.randomUUID();
-		int index = ThreadLocalRandom.current().nextInt(3, 5);
+		int index = ThreadLocalRandom.current().nextInt(5, 6);
 		int rarity = ThreadLocalRandom.current().nextInt(1, 5);
 		int amount = 1;
 		
@@ -177,7 +178,8 @@ public class Match {
 		args.add(JSONManager.getItemAnimAtlasName(index)); // nombre en el atlas del cliente de la animación del item (en este caso del item 1)
 		args.add(String.valueOf(JSONManager.getItemType(index))); // tipo del item
 		args.add(JSONManager.getItemDesc(index)); // descripcion del item
-		args.add(String.valueOf(amount));
+		args.add(String.valueOf(amount)); // cantidad
+		args.add(String.valueOf(index)); // indice del item
 		
 		// agregamos el item al mapa de items
 		mapItems.put(itemID, new Item(itemID, chestPos.getX(), chestPos.getY() - 48, index, rarity, amount));

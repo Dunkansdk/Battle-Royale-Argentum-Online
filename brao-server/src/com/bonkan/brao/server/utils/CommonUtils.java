@@ -21,6 +21,7 @@ public class CommonUtils {
 	public static final int ITEM_TYPE_HELMET = 2;
 	public static final int ITEM_TYPE_RED_POTION = 3;
 	public static final int ITEM_TYPE_BLUE_POTION = 4;
+	public static final int ITEM_TYPE_SPELL = 5;
 	
 	// slots de items
 	public static final int INVENTORY_WEAPON_SLOT = 0;
@@ -28,6 +29,12 @@ public class CommonUtils {
 	public static final int INVENTORY_HELMET_SLOT = 2;
 	public static final int INVENTORY_RED_POTION_SLOT = 3;
 	public static final int INVENTORY_BLUE_POTION_SLOT = 4;
+	
+	// slots de hechizos
+	public static final int SLOT_SPELL_1 = 0;
+	public static final int SLOT_SPELL_2 = 1;
+	public static final int SLOT_SPELL_3 = 2;
+	public static final int SLOT_SPELL_4 = 3;
 	
 	public static final int RED_POTION_INDEX = 3;
 	public static final int BLUE_POTION_INDEX = 4;

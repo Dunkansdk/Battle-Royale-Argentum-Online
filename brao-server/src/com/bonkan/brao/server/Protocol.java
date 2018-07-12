@@ -44,6 +44,7 @@ public class Protocol {
 		// auxiliares
 		UUID id, itemID;
 		MatchUser mu, mu2;
+		int slot;
 		ArrayList<String> args = new ArrayList<String>();
 		
 		switch(p.getID())
@@ -150,18 +151,17 @@ public class Protocol {
 				mu = currentMatch.getUserByID(id);
 				itemID = UUID.fromString(p.getArgs().get(0));
 				int amount = Integer.parseInt(p.getArgs().get(1));
+
+				boolean agarrado = true; // para hechizos, cuando tenemos todos los slots completos
 				
 				if(currentMatch.itemExists(itemID))
 				{
-					mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_CONFIRM_GET_ITEM, itemID.toString(), null));
-					
 					int itemIndex = currentMatch.getItemIndex(itemID);
 					int rarity = currentMatch.getItemRarity(itemID);
 
 					switch(JSONManager.getItemType(itemIndex))
 					{
 						case CommonUtils.ITEM_TYPE_SHIELD:
-							
 							// si tiene otro lo tiramos
 							if(mu.getEquippedShield() > -1) // si tiene escudo
 								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedShield(), rarity, amount);
@@ -170,7 +170,6 @@ public class Protocol {
 							break;
 							
 						case CommonUtils.ITEM_TYPE_WEAPON:
-							
 							// si tiene otro lo tiramos
 							if(mu.getEquippedWeapon() > -1) // si tiene arma
 								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedWeapon(), rarity, amount);
@@ -179,7 +178,6 @@ public class Protocol {
 							break;
 							
 						case CommonUtils.ITEM_TYPE_HELMET:
-							
 							// si tiene otro lo tiramos
 							if(mu.getEquippedHelmet() > -1) // si tiene casco
 								currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getEquippedHelmet(), rarity, amount);
@@ -194,16 +192,41 @@ public class Protocol {
 						case CommonUtils.ITEM_TYPE_BLUE_POTION:
 							mu.addBluePotions(amount);
 							break;
+							
+						case CommonUtils.ITEM_TYPE_SPELL:
+							// buscamos un slot vacio
+							boolean slotLibre = false;
+							int i = 0;
+							
+							while(i < 4 && !slotLibre)
+							{
+								if(mu.getSpell(i) == -1)
+								{
+									mu.setSpell(i, itemIndex);
+									slotLibre = true;
+								}
+								
+								i++;
+							}
+							
+							if(!slotLibre) // si no hay slot libre no agarramos nada
+								agarrado = false;
+							
+							break;
 					}
-					
-					currentMatch.removeItem(itemID);
-					
-					args.clear();
-					args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedShield()));
-					args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedWeapon()));
-					args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedHelmet()));
-					currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_IN_AREA_EQUIPPED_ITEM, id.toString(), args), id);
-					currentMatch.sendDataToAll(new Packet(PacketIDs.PACKET_REMOVE_ITEM_FROM_FLOOR, itemID.toString(), null));
+
+					if(agarrado)
+					{
+						mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_CONFIRM_GET_ITEM, itemID.toString(), null));
+						currentMatch.removeItem(itemID);
+						
+						args.clear();
+						args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedShield()));
+						args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedWeapon()));
+						args.add(JSONManager.getItemAnimAtlasName(mu.getEquippedHelmet()));
+						currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_IN_AREA_EQUIPPED_ITEM, id.toString(), args), id);
+						currentMatch.sendDataToAll(new Packet(PacketIDs.PACKET_REMOVE_ITEM_FROM_FLOOR, itemID.toString(), null));
+					}
 				}
 				
 				break;
@@ -253,7 +276,7 @@ public class Protocol {
 			case PacketIDs.PACKET_PLAYER_REQUEST_UNEQUIP_ITEM:
 				id = UUID.fromString((String) p.getData());
 				mu = currentMatch.getUserByID(id);
-				int slot = Integer.parseInt(p.getArgs().get(0));
+				slot = Integer.parseInt(p.getArgs().get(0));
 				int cant = Integer.parseInt(p.getArgs().get(1)); // para las potas
 
 				switch(slot)
@@ -368,6 +391,25 @@ public class Protocol {
 						}
 						
 						break;
+				}
+				break;
+		
+			case PacketIDs.PACKET_PLAYER_REQUEST_UNEQUIP_SPELL:
+				id = UUID.fromString((String) p.getData());
+				mu = currentMatch.getUserByID(id);
+				slot = Integer.parseInt(p.getArgs().get(0));
+				int rarity = Integer.parseInt(p.getArgs().get(1));
+				
+				if(mu.getSpell(slot) > -1) // si tiene un hechizo en ese slot
+				{
+					if(!currentMatch.busyTile(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2)) // si el tile está libre
+					{
+						currentMatch.throwItem(mu.getPos().getX(), mu.getPos().getY() - CommonUtils.BODY_HEIGHT / 2, mu.getSpell(slot), rarity, 1);
+						
+						// confirmamos
+						mu.setSpell(slot, -1);
+						mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_CONFIRM_UNEQUIP_SPELL, String.valueOf(slot), null));
+					}
 				}
 				
 				break;

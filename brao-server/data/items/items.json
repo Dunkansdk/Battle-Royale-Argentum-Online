@@ -43,5 +43,14 @@
 			"item_type" : 4,
 			"desc" : "Mana +100"
 		},
+		{
+			"name" : "Apocalípsis",
+			"atlas_name" : "spell",
+			"anim_atlas_name" : "",
+			"min_dmg" : 100,
+			"max_dmg" : 150,
+			"item_type" : 5,
+			"desc" : "DMG: 100 / 150"
+		},
 	] 
 }

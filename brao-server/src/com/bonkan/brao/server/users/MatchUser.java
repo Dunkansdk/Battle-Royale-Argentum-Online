@@ -3,6 +3,7 @@ package com.bonkan.brao.server.users;
 import java.util.UUID;
 
 import com.bonkan.brao.server.ui.ServerInterface;
+import com.bonkan.brao.server.utils.CommonUtils;
 import com.bonkan.brao.server.utils.Position;
 import com.esotericsoftware.kryonet.Connection;
 
@@ -29,6 +30,8 @@ public class MatchUser extends LobbyUser {
 	private int redPotionsAmount;
 	private int bluePotionsAmount;
 	
+	private int[] spellsInventory;
+	
 	public MatchUser(String nickName, UUID id, int defaultBody, Connection conn, int hp, int mana, Position pos, UUID matchID) {
 		super(nickName, id, defaultBody, conn);
 		this.hp = hp;
@@ -41,6 +44,11 @@ public class MatchUser extends LobbyUser {
 		this.equippedHelmet = -1;
 		this.redPotionsAmount = 0;
 		this.bluePotionsAmount = 0;
+		this.spellsInventory = new int[4];
+		spellsInventory[CommonUtils.SLOT_SPELL_1] = -1;
+		spellsInventory[CommonUtils.SLOT_SPELL_2] = -1;
+		spellsInventory[CommonUtils.SLOT_SPELL_3] = -1;
+		spellsInventory[CommonUtils.SLOT_SPELL_4] = -1;
 	}
 	
 	public void update()
@@ -92,6 +100,12 @@ public class MatchUser extends LobbyUser {
 	public void setState(String st)
 	{
 		state = PlayerState.valueOf(st);
+	}
+	
+	public void setSpell(int slot, int spellIndex)
+	{
+		if(slot > -1 && slot < spellsInventory.length)
+			spellsInventory[slot] = spellIndex;
 	}
 	
 	public void addRedPotions(int amount)
@@ -173,5 +187,13 @@ public class MatchUser extends LobbyUser {
 	public int getBluePotionsAmount()
 	{
 		return bluePotionsAmount;
+	}
+	
+	public int getSpell(int slot)
+	{
+		if(slot > -1 && slot < spellsInventory.length)
+			return spellsInventory[slot];
+		
+		return -1;
 	}
 }

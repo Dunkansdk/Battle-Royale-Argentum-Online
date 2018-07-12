@@ -14,6 +14,11 @@ public class KeyBindings {
 	public static final int KEY_RED_POTION = Input.Keys.Q;
 	public static final int KEY_BLUE_POTION = Input.Keys.R;
 	
+	public static final int KEY_SPELL_1 = Input.Keys.NUM_1;
+	public static final int KEY_SPELL_2 = Input.Keys.NUM_2;
+	public static final int KEY_SPELL_3 = Input.Keys.NUM_3;
+	public static final int KEY_SPELL_4 = Input.Keys.NUM_4;
+	
 	public static String getKeyText(int code)
 	{
 		switch(code)

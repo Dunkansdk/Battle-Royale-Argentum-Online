@@ -34,10 +34,11 @@ public class Item extends Entity {
 	private String desc;
 	private int type;
 	private int amount;
+	private int itemIndex;
 	
 	private ShaderProgram outline;
 	
-	public Item(int x, int y, int rarity, int amount, String name, String desc, TextureRegion texture, String animTexture, int type, UUID itemID) {
+	public Item(int x, int y, int rarity, int amount, String name, String desc, TextureRegion texture, String animTexture, int type, UUID itemID, int itemIndex) {
 		super(x, y);
 		this.itemID = itemID;
 		this.rarity = rarity;
@@ -47,6 +48,7 @@ public class Item extends Entity {
 		this.desc = desc;
 		this.type = type;
 		this.animTexture = animTexture;
+		this.itemIndex = itemIndex;
 		loadShader();
 	}
 	
@@ -72,7 +74,7 @@ public class Item extends Entity {
 			ItemTooltip.setPosition(mouseX, mouseY);
 			ItemTooltip.setTitle(name + " +" + rarity);
 			ItemTooltip.setDesc(desc);
-			ItemTooltip.setVisible(true);
+			
 			switch(rarity)
 			{
 				case RARITY_COMMON:
@@ -92,6 +94,7 @@ public class Item extends Entity {
 					break;
 			}
 			
+			ItemTooltip.setVisible(true);
 		}
 	}
 
@@ -116,6 +119,11 @@ public class Item extends Entity {
 		batch.begin();
 		batch.draw(texture, location.x, location.y);
 		batch.end();
+	}
+	
+	public int getIndex()
+	{
+		return itemIndex;
 	}
 	
 	public String getAnimTexture()

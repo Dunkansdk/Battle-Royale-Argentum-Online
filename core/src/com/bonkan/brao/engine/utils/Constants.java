@@ -18,6 +18,7 @@ public class Constants {
 	public static final int ITEM_TYPE_HELMET = 2;
 	public static final int ITEM_TYPE_RED_POTION = 3;
 	public static final int ITEM_TYPE_BLUE_POTION = 4;
+	public static final int ITEM_TYPE_SPELL = 5;
 	
 	public static final int RED_POTION_INDEX = 3;
 	public static final int BLUE_POTION_INDEX = 4;

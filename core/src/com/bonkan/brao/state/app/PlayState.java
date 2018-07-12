@@ -24,6 +24,7 @@ import com.bonkan.brao.engine.map.MapManager;
 import com.bonkan.brao.engine.map.WorldManager;
 import com.bonkan.brao.engine.ui.ItemSlot;
 import com.bonkan.brao.engine.ui.ItemTooltip;
+import com.bonkan.brao.engine.ui.SpellSlot;
 import com.bonkan.brao.engine.ui.ThrowWindow;
 import com.bonkan.brao.engine.utils.AssetsManager;
 import com.bonkan.brao.engine.utils.CommonUtils;
@@ -45,6 +46,7 @@ public class PlayState extends AbstractGameState {
     
     // GUI
     private ItemSlot[] inventory;
+    private SpellSlot[] spellsInventory;
     private GlyphLayout glyphLayout;
     private Texture hpBar;
     private Texture manaBar;
@@ -72,7 +74,8 @@ public class PlayState extends AbstractGameState {
         //hinchapelotas EntityManager.addParticle(ParticleType.TEST2, 300, 200, false); 
         EntityManager.addParticle(ParticleType.TEST1, 150, 150, false); 
         
-        inventory = new ItemSlot[5]; // casco, escudo, arma
+        inventory = new ItemSlot[5]; // casco, escudo, arma, potas rojas, potas azules
+        spellsInventory = new SpellSlot[4]; // 4 hechizos
         
         // el offset de separacion siempre es 15 pixeles
         inventory[ItemSlot.INVENTORY_SHIELD_SLOT] = new ItemSlot(59 + Constants.ITEM_SIZE * 2 * 0 + 15 * 0, 8, false, false);
@@ -80,6 +83,11 @@ public class PlayState extends AbstractGameState {
         inventory[ItemSlot.INVENTORY_HELMET_SLOT] = new ItemSlot(59 + Constants.ITEM_SIZE * 2 * 2 + 15 * 2, 8, false, false);
         inventory[ItemSlot.INVENTORY_RED_POTION_SLOT] = new ItemSlot(59 + Constants.ITEM_SIZE * 2 * 3 + 15 * 3, 8, true, false);
         inventory[ItemSlot.INVENTORY_BLUE_POTION_SLOT] = new ItemSlot(59 + Constants.ITEM_SIZE * 2 * 4 + 15 * 4, 8, false, true);
+        
+        spellsInventory[SpellSlot.SLOT_SPELL_1] = new SpellSlot(Gdx.graphics.getWidth() / 2 - 150 + Constants.ITEM_SIZE * 2 * 0 + 15 * 0, 80, SpellSlot.SLOT_SPELL_1);
+        spellsInventory[SpellSlot.SLOT_SPELL_2] = new SpellSlot(Gdx.graphics.getWidth() / 2 - 150 + Constants.ITEM_SIZE * 2 * 1 + 15 * 1, 80, SpellSlot.SLOT_SPELL_2);
+        spellsInventory[SpellSlot.SLOT_SPELL_3] = new SpellSlot(Gdx.graphics.getWidth() / 2 - 150 + Constants.ITEM_SIZE * 2 * 2 + 15 * 2, 80, SpellSlot.SLOT_SPELL_3);
+        spellsInventory[SpellSlot.SLOT_SPELL_4] = new SpellSlot(Gdx.graphics.getWidth() / 2 - 150 + Constants.ITEM_SIZE * 2 * 3 + 15 * 3, 80, SpellSlot.SLOT_SPELL_4);
         
         hpBar = AssetsManager.getTexture("hpBar.png");
         manaBar = AssetsManager.getTexture("manaBar.png");
@@ -119,6 +127,19 @@ public class PlayState extends AbstractGameState {
             			args.add("1");
             			app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_UNEQUIP_ITEM, EntityManager.getPlayer().getID().toString(), args));
         			}
+        		}
+        	}
+        	
+        	for(int i = 0; i < spellsInventory.length; i++)
+        	{
+        		SpellSlot ss = spellsInventory[i];
+
+        		if(ss.getRect().contains(p) && !ss.isEmpty())
+        		{
+        			ArrayList<String> args = new ArrayList<String>();
+        			args.add(String.valueOf(i));
+        			args.add(String.valueOf(ss.getItem().getRarity()));
+        			app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_UNEQUIP_SPELL, EntityManager.getPlayer().getID().toString(), args));
         		}
         	}
     	}
@@ -214,6 +235,10 @@ public class PlayState extends AbstractGameState {
     		// INVENTARIO
     		for(ItemSlot is : inventory)
     			is.render(app.getHudBatch());
+    		
+    		for(SpellSlot ss : spellsInventory)
+    			ss.render(app.getHudBatch());
+    		
     	app.getHudBatch().end();
     
     	if(potionsWindow.getVisible())
@@ -235,7 +260,7 @@ public class PlayState extends AbstractGameState {
     		
     			// variables comunes
     			UUID id;
-    			int bodyIndex, headIndex, x, y, amount;
+    			int bodyIndex, headIndex, x, y, amount, index, slot;
     			String nick;
     			PlayerState state;
     			
@@ -286,13 +311,14 @@ public class PlayState extends AbstractGameState {
 	    				int type = Integer.parseInt(p.getArgs().get(7));
 	    				String desc = p.getArgs().get(8);
 	    				amount = Integer.parseInt(p.getArgs().get(9));
+	    				index = Integer.parseInt(p.getArgs().get(10));
 	    				
-	    				EntityManager.addItem(new Item(x, y, rarity, amount, nick, desc, AssetsManager.getItem(p.getArgs().get(5)), animTexture, type, id));
+	    				EntityManager.addItem(new Item(x, y, rarity, amount, nick, desc, AssetsManager.getItem(p.getArgs().get(5)), animTexture, type, id, index));
 	    				break;
 	    				
 	    			case PacketIDs.PACKET_PLAYER_CONFIRM_GET_ITEM:
 	    				Item i = EntityManager.getItem(UUID.fromString((String) p.getData()));
-	    				
+
 	    				switch(i.getType())
 	    				{
 	    					case Constants.ITEM_TYPE_WEAPON:
@@ -323,6 +349,19 @@ public class PlayState extends AbstractGameState {
 	    						EntityManager.getPlayer().addBluePotions(i.getAmount());
 	    						
 	    						inventory[ItemSlot.INVENTORY_BLUE_POTION_SLOT].setItem(i);
+	    						break;
+	    						
+	    					case Constants.ITEM_TYPE_SPELL:
+	    						// buscamos un slot vacio
+	    						for(int ind = 0; ind < spellsInventory.length; ind++)
+	    						{
+	    							if(spellsInventory[ind].isEmpty())
+	    							{
+	    								spellsInventory[ind].setItem(i);
+	    								break;
+	    							}
+	    						}
+
 	    						break;
 	    				}
 	    				
@@ -375,7 +414,7 @@ public class PlayState extends AbstractGameState {
 	    				break;
 	    				
 	    			case PacketIDs.PACKET_PLAYER_CONFIRM_UNEQUIP_ITEM:
-	    				int slot = Integer.parseInt((String) p.getData());
+	    				slot = Integer.parseInt((String) p.getData());
 	    				inventory[slot].unequip();
 	    				
 	    				switch(slot)
@@ -395,7 +434,7 @@ public class PlayState extends AbstractGameState {
 	    				break;
 	    				
 	    			case PacketIDs.PACKET_PLAYER_REMOVE_POTION:
-	    				int index = Integer.parseInt(p.getArgs().get(0));
+	    				index = Integer.parseInt(p.getArgs().get(0));
 	    				amount = Integer.parseInt(p.getArgs().get(1));
 	    				
 	    				switch(index)
@@ -415,6 +454,12 @@ public class PlayState extends AbstractGameState {
 	    						break;
 	    				}
 	    				
+	    				break;
+	    				
+	    			case PacketIDs.PACKET_PLAYER_CONFIRM_UNEQUIP_SPELL:
+	    				slot = Integer.parseInt((String) p.getData());
+	    				
+	    				spellsInventory[slot].unequip();
 	    				break;
     			}
     			
