@@ -88,6 +88,11 @@ public class EntityManager {
 				entity.render(batch);
 			
 			particles.render(batch, Gdx.graphics.getDeltaTime());
+			
+			for(Spell spell : spells) {
+				spell.render(batch);
+			}
+			
 		batch.end();
 	}
 	
@@ -106,16 +111,6 @@ public class EntityManager {
 		for(Spell spell : spells) {
 			spell.update(delta);
 		}
-
-		/*Iterator<Spell> itSpell = spells.listIterator();
-        while (itSpell.hasNext()) {
-        	Spell spell = itSpell.next();
-        	spell.update(delta);
-        	if(spell.isComplete()) {
-        		System.out.println("Spell complete!");
-        		//itSpell.remove();
-        	}
-        }*/
 			
 		Vector3 mouseCoords = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 		
@@ -156,7 +151,7 @@ public class EntityManager {
 	}
 	
 	public static void createSpell(ParticleType effect) {
-		spells.add(new Spell(player.getPos().x, player.getPos().y, 0, 0, particles, effect));
+		spells.add(new Spell(player.getPos().x, player.getPos().y, 400, 400, effect));
 	}
 	
 	public static void addChest(Chest chest)

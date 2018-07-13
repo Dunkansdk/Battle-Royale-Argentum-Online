@@ -1,4 +1,4 @@
-Untitled
+Untitled2
 - Delay -
 active: false
 - Duration - 
@@ -128,7 +128,7 @@ timeline2: 0.8
 timeline3: 1.0
 - Options - 
 attached: false
-continuous: true
+continuous: false
 aligned: false
 additive: true
 behind: false

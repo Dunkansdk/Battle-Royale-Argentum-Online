@@ -9,7 +9,8 @@ import com.bonkan.brao.engine.utils.AssetsManager;
 public enum ParticleType {
 	
 	TEST1("particle.p"), 
-	TEST2("particle2.p");
+	TEST2("particle2.p"),
+	EXPLOSION("explosion.p");
 
 	private ParticleEffect effect;
 	

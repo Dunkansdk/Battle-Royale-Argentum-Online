@@ -19,6 +19,7 @@ public class ParticlePool {
 		cache = new ParticleCache();
 		cache.create(ParticleType.TEST1);
 		cache.create(ParticleType.TEST2);
+		cache.create(ParticleType.EXPLOSION);
 	}
 	
 	/**
@@ -45,13 +46,9 @@ public class ParticlePool {
 		pool.add(effect);
 		return effect;
 	}
-	
+
 	public void update(PooledEffect effect, int x, int y) {
 		effect.setPosition(x, y);
-	}
-	
-	public void remove(PooledEffect effect) {
-		effect.free();
 	}
 
 	/**

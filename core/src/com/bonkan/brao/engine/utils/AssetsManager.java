@@ -79,6 +79,7 @@ public class AssetsManager {
 		
 		// aca la particula 2 se esta cargando con el mismo atlas de la particula 1, no se si se usa o no, cualquier cosa lo cambiamos
 		am.load("particle2.p", ParticleEffect.class, particleParam);
+		am.load("explosion.p", ParticleEffect.class, particleParam);
 	}
 	
 	public static boolean update()
