@@ -25,7 +25,7 @@ public class ParticleCache {
 	 */
 	public void create(ParticleType particle) {
 		if(!pool.containsKey(particle)) {
-			pool.put(particle, new ParticleEffectPool(particle.obtain(), 0, 1));
+			pool.put(particle, new ParticleEffectPool(particle.obtain(), 1, 20));
 		}
 	}
 	

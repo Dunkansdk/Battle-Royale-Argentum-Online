@@ -106,6 +106,9 @@ public class PlayState extends AbstractGameState {
     	map.getTiled().setView(camera);
     	inputController.update(delta, EntityManager.getPlayer());
     	
+    	if(Gdx.input.isKeyJustPressed(Input.Keys.T)) EntityManager.createSpell(ParticleType.TEST2);
+    	
+    	
     	if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) // no lo pongo en el inputController porque es un quilombo (no tengo acceso al inventory ni al app)
     	{
     		@SuppressWarnings("static-access")

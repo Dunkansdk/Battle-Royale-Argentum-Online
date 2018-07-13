@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.bonkan.brao.Game;
 import com.bonkan.brao.engine.entity.entities.Chest;
 import com.bonkan.brao.engine.entity.entities.Item;
+import com.bonkan.brao.engine.entity.entities.Spell;
 import com.bonkan.brao.engine.entity.entities.WorldObject;
 import com.bonkan.brao.engine.entity.entities.human.Enemy;
 import com.bonkan.brao.engine.entity.entities.human.Player;
@@ -35,6 +36,7 @@ public class EntityManager {
 	private static ArrayList<Entity> worldUnsorted;
 	private static ArrayList<Chest> chests;
 	private static HashMap<UUID, Item> items;
+	private static ArrayList<Spell> spells;
 	private static ParticlePool particles;
 	private static Game app;
 	
@@ -45,6 +47,7 @@ public class EntityManager {
 		chests = new ArrayList<Chest>();
 		items = new HashMap<UUID, Item>();
 		particles = new ParticlePool();
+		spells = new ArrayList<Spell>();
 	}
 	
 	public static void setPlayer(Player p) 
@@ -100,6 +103,20 @@ public class EntityManager {
 		
 		player.update(delta);
 		
+		for(Spell spell : spells) {
+			spell.update(delta);
+		}
+
+		/*Iterator<Spell> itSpell = spells.listIterator();
+        while (itSpell.hasNext()) {
+        	Spell spell = itSpell.next();
+        	spell.update(delta);
+        	if(spell.isComplete()) {
+        		System.out.println("Spell complete!");
+        		//itSpell.remove();
+        	}
+        }*/
+			
 		Vector3 mouseCoords = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 		
 		// también actualizo los items xq tienen el check del mouseHover
@@ -136,6 +153,10 @@ public class EntityManager {
 	
 	public static void addParticle(ParticleType particle, int x, int y, boolean sorted) {
 		particles.create(particle, x, y);
+	}
+	
+	public static void createSpell(ParticleType effect) {
+		spells.add(new Spell(player.getPos().x, player.getPos().y, 0, 0, particles, effect));
 	}
 	
 	public static void addChest(Chest chest)

@@ -32,6 +32,27 @@ public class ParticlePool {
 		effect.setPosition(x, y);
 		pool.add(effect);
 	}
+	
+	/**
+	 * <p>Crea un nuevo {@link com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect}</p>
+	 * @param particle {@link com.bonkan.brao.engine.entity.entities.particle.ParticleType}
+	 * @param x
+	 * @param y
+	 */
+	public PooledEffect createPooled(ParticleType particle, int x, int y) {
+		PooledEffect effect = cache.getPooledEffect(particle);
+		effect.setPosition(x, y);
+		pool.add(effect);
+		return effect;
+	}
+	
+	public void update(PooledEffect effect, int x, int y) {
+		effect.setPosition(x, y);
+	}
+	
+	public void remove(PooledEffect effect) {
+		effect.free();
+	}
 
 	/**
 	 * <p>Renderiza, que va a hacer.</p>
