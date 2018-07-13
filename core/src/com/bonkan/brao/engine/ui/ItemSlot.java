@@ -37,16 +37,20 @@ public class ItemSlot {
 		this.isRedPot = isRedPot;
 		this.isBluePot = isBluePot;
 		this.glyphLayout = new GlyphLayout();
+		this.item = null;
 	}
 	
 	public void setItem(Item i)
 	{
 		this.item = i;
-		this.isEmpty = false;
+		
+		if(i != null)
+			this.isEmpty = false;
 	}
 	
 	public void unequip()
 	{
+		this.item = null;
 		this.isEmpty = true;
 	}
 	

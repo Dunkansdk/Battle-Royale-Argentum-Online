@@ -138,12 +138,6 @@ public class MapManager {
 	}
 	
 	/**
-	 * 
-	 */
-	
-	
-	
-	/**
 	 * <p>Función que pasa todos los objetos del mapa (que en el createCollision() se cargan
 	 * como bodies de box2d) a Shapes de java.awt, que son las que usamos para chequear colisiones
 	 * (con el método intersects() de la interfaz {@link java.awt.Shape Shape})</p>
