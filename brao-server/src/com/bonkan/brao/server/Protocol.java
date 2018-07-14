@@ -411,7 +411,26 @@ public class Protocol {
 						mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_CONFIRM_UNEQUIP_SPELL, String.valueOf(slot), null));
 					}
 				}
+				break;
+		
+			case PacketIDs.PACKET_PLAYER_REQUEST_SPELL_SWAP:
+				id = UUID.fromString((String) p.getData());
+				mu = currentMatch.getUserByID(id);
+				int slot1 = Integer.parseInt(p.getArgs().get(0));
+				int slot2 = Integer.parseInt(p.getArgs().get(1));
 				
+				if(mu.getSpell(slot1) != -1 || mu.getSpell(slot2) != -1) // si alguno de los slots tiene algo
+				{
+					int aux = mu.getSpell(slot1);
+					mu.setSpell(slot1, mu.getSpell(slot2));
+					mu.setSpell(slot2, aux);
+					
+					args.clear();
+					args.add(String.valueOf(slot1));
+					args.add(String.valueOf(slot2));
+					mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_CONFIRM_SPELL_SWAP, null, args));
+				}
+					
 				break;
 		}
 	}

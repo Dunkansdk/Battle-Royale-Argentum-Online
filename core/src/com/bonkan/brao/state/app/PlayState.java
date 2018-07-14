@@ -10,6 +10,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -55,6 +56,11 @@ public class PlayState extends AbstractGameState {
     // para tirar las potas
     private ThrowWindow potionsWindow;
 
+    // drag & drop de hechizos
+    private boolean dragging;
+    private int draggingSlot;
+    private TextureRegion draggingTexture;
+    
 	public PlayState(GameStateManager gameState) {
         super(gameState);
         
@@ -92,8 +98,74 @@ public class PlayState extends AbstractGameState {
         glyphLayout = new GlyphLayout();
         
         potionsWindow = new ThrowWindow();
+        
+        dragging = false;
+        draggingSlot = 0;
+        draggingTexture = null;
     }
+	
+	// para modularizar un poco
+	private void checkRightClick()
+	{
+		@SuppressWarnings("static-access")
+		Point p = new Point(Gdx.input.getX(), app.V_HEIGHT - Gdx.input.getY()); // gdx.input usa otro sist de coordenadas -.- (0,0) arriba izq
+    	for(int i = 0; i < inventory.length; i++)
+    	{
+    		ItemSlot is = inventory[i];
 
+    		if(is.getRect().contains(p) && !is.isEmpty())
+    		{
+
+    			if(i == ItemSlot.INVENTORY_RED_POTION_SLOT || i == ItemSlot.INVENTORY_BLUE_POTION_SLOT)
+    			{
+    				potionsWindow.setVisible(true);
+    				potionsWindow.setPotionIndex(i);
+    			} else {
+    				ArrayList<String> args = new ArrayList<String>();
+        			args.add(String.valueOf(i));
+        			args.add("1");
+        			app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_UNEQUIP_ITEM, EntityManager.getPlayer().getID().toString(), args));
+    			}
+    		}
+    	}
+    	
+    	for(int i = 0; i < spellsInventory.length; i++)
+    	{
+    		SpellSlot ss = spellsInventory[i];
+    		
+    		if(ss.getRect().contains(p) && !ss.isEmpty())
+    		{
+    			ArrayList<String> args = new ArrayList<String>();
+    			args.add(String.valueOf(i));
+    			args.add(String.valueOf(ss.getItem().getRarity()));
+    			app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_UNEQUIP_SPELL, EntityManager.getPlayer().getID().toString(), args));
+    		}
+    	}
+	}
+
+	// para modularizar un poco
+	public void checkLeftClick()
+	{
+		if(!dragging)
+		{
+			// vemos si quiere draggear
+			for(int i = 0; i < spellsInventory.length; i++)
+	    	{
+	    		SpellSlot ss = spellsInventory[i];
+
+	    		@SuppressWarnings("static-access")
+				Point p = new Point(Gdx.input.getX(), app.V_HEIGHT - Gdx.input.getY());
+	    		if(ss.getRect().contains(p) && !ss.isEmpty())
+	    		{
+	    			dragging = true;
+	    			draggingSlot = i;
+	    			draggingTexture = ss.getItem().getTexture();
+	    			break;
+	    		}
+	    	}
+		}
+	}
+	
     @Override
     public void update(float delta)
     {
@@ -106,42 +178,37 @@ public class PlayState extends AbstractGameState {
     	
     	
     	if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) // no lo pongo en el inputController porque es un quilombo (no tengo acceso al inventory ni al app)
-    	{
-    		@SuppressWarnings("static-access")
-    		Point p = new Point(Gdx.input.getX(), app.V_HEIGHT - Gdx.input.getY()); // gdx.input usa otro sist de coordenadas -.- (0,0) arriba izq
-        	for(int i = 0; i < inventory.length; i++)
-        	{
-        		ItemSlot is = inventory[i];
+    		checkRightClick();
+    	
+    	if(Gdx.input.isButtonPressed(Input.Buttons.LEFT))
+    		checkLeftClick();
+    	else {
+    		// cuando lo suelta
+    		if(dragging) 
+    		{
+    			dragging = false;
+    		
+    			// aca hacemos el swap
+    			for(int i = 0; i < spellsInventory.length; i++)
+    	    	{
+    	    		SpellSlot ss = spellsInventory[i];
 
-        		if(is.getRect().contains(p) && !is.isEmpty())
-        		{
-
-        			if(i == ItemSlot.INVENTORY_RED_POTION_SLOT || i == ItemSlot.INVENTORY_BLUE_POTION_SLOT)
-        			{
-        				potionsWindow.setVisible(true);
-        				potionsWindow.setPotionIndex(i);
-        			} else {
-        				ArrayList<String> args = new ArrayList<String>();
-            			args.add(String.valueOf(i));
-            			args.add("1");
-            			app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_UNEQUIP_ITEM, EntityManager.getPlayer().getID().toString(), args));
-        			}
-        		}
-        	}
-        	
-        	for(int i = 0; i < spellsInventory.length; i++)
-        	{
-        		SpellSlot ss = spellsInventory[i];
-
-        		if(ss.getRect().contains(p) && !ss.isEmpty())
-        		{
-        			ArrayList<String> args = new ArrayList<String>();
-        			args.add(String.valueOf(i));
-        			args.add(String.valueOf(ss.getItem().getRarity()));
-        			app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_UNEQUIP_SPELL, EntityManager.getPlayer().getID().toString(), args));
-        		}
-        	}
+    	    		@SuppressWarnings("static-access")
+    				Point p = new Point(Gdx.input.getX(), app.V_HEIGHT - Gdx.input.getY());
+    	    		if(ss.getRect().contains(p) && i != draggingSlot)
+    	    		{
+    	    			ArrayList<String> args = new ArrayList<String>();
+    	    			args.add(String.valueOf(i));
+    	    			args.add(String.valueOf(draggingSlot));
+    	    			app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_SPELL_SWAP, EntityManager.getPlayer().getID().toString(), args));
+    	    			break;
+    	    		}
+    	    	}
+    			
+    			draggingSlot = 0;
+    		}
     	}
+    		
     	
     	if(potionsWindow.getVisible())
     	{
@@ -196,7 +263,8 @@ public class PlayState extends AbstractGameState {
     	map.getRayHandler().update();
     }
     
-    @Override
+    @SuppressWarnings("static-access")
+	@Override
     public void render()
     {
     	map.getTiled().render();
@@ -238,10 +306,14 @@ public class PlayState extends AbstractGameState {
     		for(SpellSlot ss : spellsInventory)
     			ss.render(app.getHudBatch());
     		
+    		if(dragging)
+    			app.getHudBatch().draw(draggingTexture, Gdx.input.getX(), app.V_HEIGHT - Gdx.input.getY());
+    		
     	app.getHudBatch().end();
     
     	if(potionsWindow.getVisible())
     		potionsWindow.draw();
+	
     }
     
     public void handlePlayerIncomingData()
@@ -460,11 +532,31 @@ public class PlayState extends AbstractGameState {
 	    				
 	    				spellsInventory[slot].unequip();
 	    				break;
+	    				
+	    			case PacketIDs.PACKET_PLAYER_CONFIRM_SPELL_SWAP:
+	    				int slot1 = Integer.parseInt(p.getArgs().get(0));
+	    				int slot2 = Integer.parseInt(p.getArgs().get(1));
+	    				
+	    				swapSpells(slot1, slot2);
+	    				break;
     			}
     			
     			it.remove();
     		}
     	}
+    }
+    
+    // swapea los hechizos
+    private void swapSpells(int slot1, int slot2)
+    {
+    	Item slot1item = spellsInventory[slot1].getItem();
+    	Item slot2item = spellsInventory[slot2].getItem();
+    	
+    	spellsInventory[slot1].unequip();
+    	spellsInventory[slot1].setItem(slot2item);
+    	
+    	spellsInventory[slot2].unequip();
+    	spellsInventory[slot2].setItem(slot1item);
     }
 
     /**

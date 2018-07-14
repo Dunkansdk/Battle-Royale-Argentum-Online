@@ -30,5 +30,7 @@ public class PacketIDs {
 	public static final int PACKET_PLAYER_REMOVE_POTION = 19;
 	public static final int PACKET_PLAYER_REQUEST_UNEQUIP_SPELL = 20;
 	public static final int PACKET_PLAYER_CONFIRM_UNEQUIP_SPELL = 21;
+	public static final int PACKET_PLAYER_REQUEST_SPELL_SWAP = 22;
+	public static final int PACKET_PLAYER_CONFIRM_SPELL_SWAP = 23;
 	
 }
