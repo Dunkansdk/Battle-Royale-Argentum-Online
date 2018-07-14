@@ -136,7 +136,7 @@ public class Item extends Entity {
 	
 	public int getRarity()
 	{
-		return rarity;
+		return rarity; 
 	}
 	
 	public UUID getID()
@@ -158,6 +158,7 @@ public class Item extends Entity {
 	public void disposeEffect() {
 		if(rarity != 1) {
 			rarityEffect.remove();
+			rarityEffect = null; // Cuando volvemos a tirar el item se vuelve a instanciar la luz
 		}
 	}
 	

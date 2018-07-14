@@ -32,21 +32,19 @@ public class EntityManager {
 	
 	private static Player player;
 	private static HashMap<UUID, Enemy> enemies;
-	private static ArrayList<Entity> worldSorted;
-	private static ArrayList<Entity> worldUnsorted;
+	private static ArrayList<Entity> world;
 	private static ArrayList<Chest> chests;
 	private static HashMap<UUID, Item> items;
 	private static ArrayList<Spell> spells;
-	private static ParticlePool particles;
 	private static Game app;
+	
+	private static Vector3 mouseCoords;
 	
 	public static void init(Game app) {
 		enemies = new HashMap<UUID, Enemy>();
-		worldSorted = new ArrayList<Entity>();
-		worldUnsorted = new ArrayList<Entity>();
+		world = new ArrayList<Entity>();
 		chests = new ArrayList<Chest>();
 		items = new HashMap<UUID, Item>();
-		particles = new ParticlePool();
 		spells = new ArrayList<Spell>();
 	}
 	
@@ -65,7 +63,7 @@ public class EntityManager {
 	 */
 	public static void render(SpriteBatch batch) {
 		List<Entity> entityValues = new ArrayList<Entity>(enemies.values());
-		entityValues.addAll(worldSorted);
+		entityValues.addAll(world);
 		entityValues.addAll(chests);
 		entityValues.add(player);
 		
@@ -81,17 +79,12 @@ public class EntityManager {
 			entry.getValue().render(batch);
 		
 		batch.begin();
+		
 			for (Entity entity : entityValues)
 				entity.render(batch);
 			
-			for(Entity entity : worldUnsorted) // esto se usa? - Hay que ver
-				entity.render(batch);
-			
-			particles.render(batch, Gdx.graphics.getDeltaTime());
-			
-			for(Spell spell : spells) {
+			for(Spell spell : spells) 
 				spell.render(batch);
-			}
 			
 		batch.end();
 	}
@@ -112,7 +105,7 @@ public class EntityManager {
 			spell.update(delta);
 		}
 			
-		Vector3 mouseCoords = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+		mouseCoords = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 		
 		// también actualizo los items xq tienen el check del mouseHover
 		for(Map.Entry<UUID, Item> entry : items.entrySet())
@@ -143,15 +136,12 @@ public class EntityManager {
 	}
 	
 	public static void addWorldObject(WorldObject entity) {
-		worldSorted.add(entity);
+		world.add(entity);
 	}
-	
-	public static void addParticle(ParticleType particle, int x, int y, boolean sorted) {
-		particles.create(particle, x, y);
-	}
-	
+
+	// Aca????
 	public static void createSpell(ParticleType effect) {
-		spells.add(new Spell(player.getPos().x, player.getPos().y, 400, 400, effect));
+		spells.add(new Spell(player.getPos().x, player.getPos().y, mouseCoords.x, mouseCoords.y, effect));
 	}
 	
 	public static void addChest(Chest chest)

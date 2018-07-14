@@ -69,11 +69,7 @@ public class PlayState extends AbstractGameState {
         LoggedUser aux = app.getLoggedUser();
    
         EntityManager.setPlayer(new Player(aux.getX(), aux.getY(), aux.getLoggedDefaultBody(), 1, aux.getHP(), aux.getMana(), aux.getLoggedID(), aux.getLoggedUserName(), WorldManager.world));
-        
-        EntityManager.addParticle(ParticleType.TEST2, 10, 500, true); 
-        //hinchapelotas EntityManager.addParticle(ParticleType.TEST2, 300, 200, false); 
-        EntityManager.addParticle(ParticleType.TEST1, 600, 40, false); 
-        
+
         inventory = new ItemSlot[5]; // casco, escudo, arma, potas rojas, potas azules
         spellsInventory = new SpellSlot[4]; // 4 hechizos
         

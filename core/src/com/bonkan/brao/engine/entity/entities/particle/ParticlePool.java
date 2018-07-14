@@ -31,6 +31,7 @@ public class ParticlePool {
 	public void create(ParticleType particle, int x, int y) {
 		PooledEffect effect = cache.getPooledEffect(particle);
 		effect.setPosition(x, y);
+		effect.start();
 		pool.add(effect);
 	}
 	
@@ -43,6 +44,7 @@ public class ParticlePool {
 	public PooledEffect createPooled(ParticleType particle, int x, int y) {
 		PooledEffect effect = cache.getPooledEffect(particle);
 		effect.setPosition(x, y);
+		effect.start();
 		pool.add(effect);
 		return effect;
 	}
