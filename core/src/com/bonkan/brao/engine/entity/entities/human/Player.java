@@ -45,6 +45,16 @@ public class Player extends Human {
 			bluePotionsAmount = 0;
 	}
 	
+	public void setHP(int health)
+	{
+		this.health = health;
+	}
+	
+	public void setMana(int mana)
+	{
+		this.mana = mana;
+	}
+	
 	public int getMaxHealth()
 	{
 		return maxHealth;

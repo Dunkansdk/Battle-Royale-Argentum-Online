@@ -50,6 +50,7 @@
 			"min_dmg" : 100,
 			"max_dmg" : 150,
 			"item_type" : 5,
+			"mana_cost" : 1000,
 			"desc" : "DMG: 100 / 150"
 		},
 	] 

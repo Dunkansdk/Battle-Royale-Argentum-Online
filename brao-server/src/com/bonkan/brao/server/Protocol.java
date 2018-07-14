@@ -430,7 +430,27 @@ public class Protocol {
 					args.add(String.valueOf(slot2));
 					mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_CONFIRM_SPELL_SWAP, null, args));
 				}
+				break;
+				
+			case PacketIDs.PACKET_PLAYER_REQUEST_CAST_SPELL:
+				id = UUID.fromString((String) p.getData());
+				mu = currentMatch.getUserByID(id);
+				slot = Integer.parseInt(p.getArgs().get(0));
+				
+				if(mu.getSpell(slot) != -1 && mu.getMana() >= JSONManager.getItemManaCost(mu.getSpell(slot)))
+				{
+					// le bajamos la mana y lo casteamos
+					mu.setMana(mu.getMana() - JSONManager.getItemManaCost(mu.getSpell(slot)));
 					
+					args.clear();
+					args.add(String.valueOf(mu.getHP()));
+					args.add(String.valueOf(mu.getMana()));
+					mu.sendData(new Packet(PacketIDs.PACKET_UPDATE_PLAYER_HP_AND_MANA, null, args));
+				
+					mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_CONFIRM_CAST_SPELL, null, p.getArgs())); // lo mando con los mismos argumentos que llegaron, el SLOT no me sirve pero x, y, destX y destY si
+				
+					currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_IN_AREA_CASTED_SPELL, id.toString(), p.getArgs()), id);
+				}
 				break;
 		}
 	}

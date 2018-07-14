@@ -1,8 +1,11 @@
 package com.bonkan.brao.state.app;
 
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.UUID;
 
 import com.badlogic.gdx.Gdx;
@@ -17,6 +20,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.bonkan.brao.engine.entity.EntityManager;
 import com.bonkan.brao.engine.entity.entities.Human.PlayerState;
 import com.bonkan.brao.engine.entity.entities.Item;
+import com.bonkan.brao.engine.entity.entities.Spell;
 import com.bonkan.brao.engine.entity.entities.human.Enemy;
 import com.bonkan.brao.engine.entity.entities.human.Player;
 import com.bonkan.brao.engine.entity.entities.particle.ParticleType;
@@ -43,8 +47,8 @@ public class PlayState extends AbstractGameState {
 	
     private Box2DDebugRenderer b2dr;
     private MapManager map;
-    private InputController inputController;
-    
+    private ArrayList<Shape> mapBlocks;
+
     // GUI
     private ItemSlot[] inventory;
     private SpellSlot[] spellsInventory;
@@ -67,10 +71,9 @@ public class PlayState extends AbstractGameState {
         WorldManager.init();
         EntityManager.init(app);
         ItemTooltip.init();
-        
+
         map = new MapManager(WorldManager.world);
         b2dr = new Box2DDebugRenderer();
-        inputController = new InputController(app.getClient(), map.createBlocks());
 
         LoggedUser aux = app.getLoggedUser();
    
@@ -90,6 +93,9 @@ public class PlayState extends AbstractGameState {
         spellsInventory[SpellSlot.SLOT_SPELL_2] = new SpellSlot(Gdx.graphics.getWidth() / 2 - 150 + Constants.ITEM_SIZE * 2 * 1 + 15 * 1, 80, SpellSlot.SLOT_SPELL_2);
         spellsInventory[SpellSlot.SLOT_SPELL_3] = new SpellSlot(Gdx.graphics.getWidth() / 2 - 150 + Constants.ITEM_SIZE * 2 * 2 + 15 * 2, 80, SpellSlot.SLOT_SPELL_3);
         spellsInventory[SpellSlot.SLOT_SPELL_4] = new SpellSlot(Gdx.graphics.getWidth() / 2 - 150 + Constants.ITEM_SIZE * 2 * 3 + 15 * 3, 80, SpellSlot.SLOT_SPELL_4);
+        
+        mapBlocks = map.createBlocks();
+        InputController.init(app.getClient(), camera, spellsInventory, mapBlocks);
         
         hpBar = AssetsManager.getTexture("hpBar.png");
         manaBar = AssetsManager.getTexture("manaBar.png");
@@ -172,11 +178,8 @@ public class PlayState extends AbstractGameState {
     	handlePlayerIncomingData();
     	
     	map.getTiled().setView(camera);
-    	inputController.update(delta, EntityManager.getPlayer());
-    	
-    	if(Gdx.input.isKeyJustPressed(Input.Keys.T)) EntityManager.createSpell(ParticleType.TEST2);
-    	
-    	
+    	InputController.update(delta, EntityManager.getPlayer());
+
     	if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) // no lo pongo en el inputController porque es un quilombo (no tengo acceso al inventory ni al app)
     		checkRightClick();
     	
@@ -255,6 +258,31 @@ public class PlayState extends AbstractGameState {
     	//TODO: ESTO HAY QUE VOLARLO!
     	lerpToTarget(camera, EntityManager.getPlayer().getPos());
     	
+    	// chequeo la colision de los hechizos con terreno y players
+    	for(Spell s : EntityManager.getSpells())
+    	{
+    		if(s.getCastedBy().equals(EntityManager.getPlayer().getID())) // solamente chequeo los mios, si colisionan mando un paquete (para que esto ande bien, hay que hacer que solamente se pueda tener un spell viajando en cada momento)
+    		{
+    			// aca estoy chequeando con TODOS los bloqueos del mapa, si mas adelante hay problemas de performance, puede ser x esto
+        		for(Shape sh : mapBlocks)
+        		{
+        			if(sh.intersects(s.getRect()))
+        				s.hit();
+        		}
+        		
+        		for(Map.Entry<UUID, Enemy> entry : EntityManager.getEnemies().entrySet())
+        		{
+        			Rectangle r = new Rectangle((int) entry.getValue().getPos().x - Constants.BODY_WIDTH / 2, (int) entry.getValue().getPos().y - Constants.BODY_HEIGHT / 2, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
+        		
+        			if(r.intersects(s.getRect()))
+        			{
+        				s.hit();
+        				System.out.println("Le pegaste al enemigo con ID: " + entry.getValue().getID());
+        			}
+        		}
+    		}
+    	}
+    	
     	// Limitamos para que no consuma tanto recursos
     	WorldManager.doPhysicsStep(delta);    	
     	EntityManager.update(camera, delta);
@@ -332,6 +360,7 @@ public class PlayState extends AbstractGameState {
     			// variables comunes
     			UUID id;
     			int bodyIndex, headIndex, x, y, amount, index, slot;
+    			float px, py, dx, dy;
     			String nick;
     			PlayerState state;
     			
@@ -538,6 +567,33 @@ public class PlayState extends AbstractGameState {
 	    				int slot2 = Integer.parseInt(p.getArgs().get(1));
 	    				
 	    				swapSpells(slot1, slot2);
+	    				break;
+	    				
+	    			case PacketIDs.PACKET_UPDATE_PLAYER_HP_AND_MANA:
+	    				int hp = Integer.parseInt(p.getArgs().get(0));
+	    				int mana = Integer.parseInt(p.getArgs().get(1));
+	    				
+	    				EntityManager.getPlayer().setHP(hp);
+	    				EntityManager.getPlayer().setMana(mana);
+	    				break;
+	    				
+	    			case PacketIDs.PACKET_PLAYER_CONFIRM_CAST_SPELL:
+	    				px = Float.parseFloat(p.getArgs().get(3));
+	    				py = Float.parseFloat(p.getArgs().get(4));
+	    				dx = Float.parseFloat(p.getArgs().get(1));
+	    				dy = Float.parseFloat(p.getArgs().get(2));
+	    				
+	    				EntityManager.createSpell(ParticleType.TEST2, px, py, dx, dy, EntityManager.getPlayer().getID());
+	    				break;
+	    				
+	    			case PacketIDs.PACKET_USER_IN_AREA_CASTED_SPELL:
+	    				id = UUID.fromString((String) p.getData());
+	    				px = Float.parseFloat(p.getArgs().get(3));
+	    				py = Float.parseFloat(p.getArgs().get(4));
+	    				dx = Float.parseFloat(p.getArgs().get(1));
+	    				dy = Float.parseFloat(p.getArgs().get(2));
+	    				
+	    				EntityManager.createSpell(ParticleType.TEST2, px, py, dx, dy, id);
 	    				break;
     			}
     			

@@ -74,6 +74,18 @@ public class MatchUser extends LobbyUser {
 			ServerInterface.addMessage("EL PLAYER " + this.getNickName() + " SE MOVIO A " + this.getPos().getX() + ", " + this.getPos().getY());
 	}
 
+	public void setMana(int mana)
+	{
+		if(mana < 0) mana = 0;
+		this.mana = mana;
+	}
+
+	public void setHP(int hp)
+	{
+		if(hp < 0) hp = 0;
+		this.hp = hp;
+	}
+	
 	public void setEquippedWeapon(int weapon, int rarity)
 	{
 		equippedWeapon = weapon;

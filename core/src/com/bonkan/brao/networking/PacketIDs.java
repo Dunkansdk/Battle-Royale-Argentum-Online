@@ -32,5 +32,9 @@ public class PacketIDs {
 	public static final int PACKET_PLAYER_CONFIRM_UNEQUIP_SPELL = 21;
 	public static final int PACKET_PLAYER_REQUEST_SPELL_SWAP = 22;
 	public static final int PACKET_PLAYER_CONFIRM_SPELL_SWAP = 23;
+	public static final int PACKET_PLAYER_REQUEST_CAST_SPELL = 24;
+	public static final int PACKET_PLAYER_CONFIRM_CAST_SPELL = 25;
+	public static final int PACKET_UPDATE_PLAYER_HP_AND_MANA = 26;
+	public static final int PACKET_USER_IN_AREA_CASTED_SPELL = 27;
 
 }

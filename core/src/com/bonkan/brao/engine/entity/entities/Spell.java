@@ -1,6 +1,10 @@
 package com.bonkan.brao.engine.entity.entities;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect;
+
+import java.awt.Rectangle;
+import java.util.UUID;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -15,6 +19,8 @@ public class Spell extends Entity {
 	private boolean explosion;
 	private Vector2 target;
 	private double angle;
+	private UUID castedBy;
+	private boolean earlyCollision;
 	
 	private static final float SPEED = 4f;
 
@@ -22,33 +28,36 @@ public class Spell extends Entity {
 	 * Crea un hechizo!
 	 * @param x &emsp;<b>(float)</b> initial x
 	 * @param y &emsp;<b>(float)</b> initial y
-	 * @param dest_x &emsp;<b>(float)</b> target x
-	 * @param dest_y &emsp;<b>(float)</b> target y
+	 * @param destX &emsp;<b>(float)</b> target x
+	 * @param destY &emsp;<b>(float)</b> target y
 	 * @param effect &emsp;<b>(ParticleType)</b> {@link com.bonkan.brao.engine.entity.entities.particle.ParticleType}
 	 */
-	public Spell(float x, float y, float dest_x, float dest_y, ParticleType effect) {
+	public Spell(float x, float y, float destX, float destY, ParticleType effect, UUID castedBy) {
 		super((int)x, (int)y);
 		// Iniciamos un nuevo pool de particulas para evitar bugs
 		this.pool = new ParticlePool();
 		// Creamos la particula que va a viajar
 		this.effect = pool.createPooled(effect, (int)location.x, (int)location.y);
-		this.target = new Vector2(dest_x, dest_y);
-		this.angle = Math.atan2(dest_y - y, dest_x - x);
+		this.target = new Vector2(destX, destY);
+		this.angle = Math.atan2(destY - y, destX - x);
 		this.explosion = false;
+		this.castedBy = castedBy;
+		this.earlyCollision = false;
 	}
 
 	@Override
 	public void update(float delta) {
 		// Le damos un poco de chanwin para que el rango de collision sea mayor
-		if(!target.epsilonEquals(location, 5) && !explosion) {
+		if(!target.epsilonEquals(location, 5) && !explosion && !earlyCollision) {
 			location.x = (float) (location.x + (Math.sin(angle + 90 * Math.PI / 180)) * SPEED);
 			location.y = (float) (location.y - (Math.cos(angle + 90 * Math.PI / 180)) * SPEED);
 			pool.update(effect, (int)location.x, (int)location.y);
 		} else {
-			// Llego a destino
-			if(!explosion) pool.createPooled(ParticleType.EXPLOSION, (int)target.x, (int)target.y);
+			// Llego a destino o exploto antes
+			if(!explosion) pool.createPooled(ParticleType.EXPLOSION, (int)location.x, (int)location.y);
 			effect.free(); // Liberamos la particula viajera, dejamos la explosion
 			explosion = true;
+			earlyCollision = false;
 		}
 	}
 
@@ -62,7 +71,16 @@ public class Spell extends Entity {
 	 * @return
 	 */
 	public void hit() {
-		this.explosion = true;
+		this.earlyCollision = true;
 	}
 
+	public Rectangle getRect()
+	{
+		return new Rectangle((int) location.x, (int) location.y - 10, 10, 10);
+	}
+	
+	public UUID getCastedBy()
+	{
+		return castedBy;
+	}
 }

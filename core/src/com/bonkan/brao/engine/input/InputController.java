@@ -8,12 +8,15 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.bonkan.brao.engine.entity.EntityManager;
 import com.bonkan.brao.engine.entity.entities.Chest;
 import com.bonkan.brao.engine.entity.entities.Item;
 import com.bonkan.brao.engine.entity.entities.Human.PlayerState;
 import com.bonkan.brao.engine.entity.entities.human.Player;
+import com.bonkan.brao.engine.ui.SpellSlot;
 import com.bonkan.brao.engine.utils.Constants;
 import com.bonkan.brao.networking.Packet;
 import com.bonkan.brao.networking.PacketIDs;
@@ -21,17 +24,21 @@ import com.esotericsoftware.kryonet.Client;
 
 public class InputController {
 	
-	private ArrayList<Shape> mapBlocks;
+	private static ArrayList<Shape> mapBlocks;
     
     private static final int DIR_DOWN = 0;
     private static final int DIR_UP = 1;
     private static final int DIR_LEFT = 2;
     private static final int DIR_RIGHT = 3;
 	
-	private Client client;
+	private static Client client;
+	private static OrthographicCamera camera;
+	private static SpellSlot[] spellsInventory;
 	
-	public InputController(Client client, ArrayList<Shape> blocks) {
-		this.client = client;
+	public static void init(Client c, OrthographicCamera cam, SpellSlot[] spells, ArrayList<Shape> blocks) {
+		client = c;
+		camera = cam;
+		spellsInventory = spells;
 		mapBlocks = blocks;
 	}
 	
@@ -40,7 +47,7 @@ public class InputController {
      * TODO: inputs customizables y cargados desde un JSON</p>
      * @param delta		&emsp;<b>float</b> el deltaTime (Gdx)
      */
-    public void update(float delta, Player player) {
+    public static void update(float delta, Player player) {
         
     	boolean[] blockedDirs = blockedDirections(player);
     	boolean changedState = false;
@@ -191,6 +198,52 @@ public class InputController {
         	}
         }
         
+        Vector3 mouseCoords = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));;
+        
+        if(Gdx.input.isKeyJustPressed(KeyBindings.KEY_SPELL_1) && !spellsInventory[SpellSlot.SLOT_SPELL_1].isEmpty())
+        {
+        	args.clear();
+        	args.add(String.valueOf(SpellSlot.SLOT_SPELL_1));
+        	args.add(String.valueOf(mouseCoords.x));
+        	args.add(String.valueOf(mouseCoords.y));
+        	args.add(String.valueOf(EntityManager.getPlayer().getPos().x));
+        	args.add(String.valueOf(EntityManager.getPlayer().getPos().y));
+        	client.sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_CAST_SPELL, EntityManager.getPlayer().getID().toString(), args));
+        }
+        
+        if(Gdx.input.isKeyJustPressed(KeyBindings.KEY_SPELL_2) && !spellsInventory[SpellSlot.SLOT_SPELL_2].isEmpty())
+        {
+        	args.clear();
+        	args.add(String.valueOf(SpellSlot.SLOT_SPELL_2));
+        	args.add(String.valueOf(mouseCoords.x));
+        	args.add(String.valueOf(mouseCoords.y));
+        	args.add(String.valueOf(EntityManager.getPlayer().getPos().x));
+        	args.add(String.valueOf(EntityManager.getPlayer().getPos().y));
+        	client.sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_CAST_SPELL, EntityManager.getPlayer().getID().toString(), args));
+        }
+        
+        if(Gdx.input.isKeyJustPressed(KeyBindings.KEY_SPELL_3) && !spellsInventory[SpellSlot.SLOT_SPELL_3].isEmpty())
+        {
+        	args.clear();
+        	args.add(String.valueOf(SpellSlot.SLOT_SPELL_3));
+        	args.add(String.valueOf(mouseCoords.x));
+        	args.add(String.valueOf(mouseCoords.y));
+        	args.add(String.valueOf(EntityManager.getPlayer().getPos().x));
+        	args.add(String.valueOf(EntityManager.getPlayer().getPos().y));
+        	client.sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_CAST_SPELL, EntityManager.getPlayer().getID().toString(), args));
+        }
+        
+        if(Gdx.input.isKeyJustPressed(KeyBindings.KEY_SPELL_4) && !spellsInventory[SpellSlot.SLOT_SPELL_4].isEmpty())
+        {
+        	args.clear();
+        	args.add(String.valueOf(SpellSlot.SLOT_SPELL_4));
+        	args.add(String.valueOf(mouseCoords.x));
+        	args.add(String.valueOf(mouseCoords.y));
+        	args.add(String.valueOf(EntityManager.getPlayer().getPos().x));
+        	args.add(String.valueOf(EntityManager.getPlayer().getPos().y));
+        	client.sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_CAST_SPELL, EntityManager.getPlayer().getID().toString(), args));
+        }
+        
         // como esto es posible que se mande en cada frame, lo mandamos via UDP
         if(oldPos.x != player.getPos().x || oldPos.y != player.getPos().y)
         {
@@ -210,7 +263,7 @@ public class InputController {
     /**
      * <p>Devuelve un array booleano con las direcciones bloqueadas.</p>
      */
-    private boolean[] blockedDirections(Player player)
+    private static boolean[] blockedDirections(Player player)
     {
     	boolean[] ret = new boolean[8];
     	
@@ -237,7 +290,7 @@ public class InputController {
     	return ret;
     }
     
-    private UUID checkItemPosition(Player player)
+    private static UUID checkItemPosition(Player player)
     {
     	HashMap<UUID, Item> items = EntityManager.getAllItems();
     	Rectangle playerRect = new Rectangle((int) player.getPos().x - Constants.BODY_WIDTH / 2, (int) player.getPos().y, Constants.BODY_WIDTH, Constants.BODY_HEIGHT / 2); // uso solamente la mitad inferior del body para chequear por items
@@ -250,7 +303,7 @@ public class InputController {
     	return null;
     }
     
-    private int checkChestPosition(Player player)
+    private static int checkChestPosition(Player player)
     {
     	int realX = (int) player.getPos().x - Constants.BODY_WIDTH / 2;
     	int realY = (int) player.getPos().y - Constants.BODY_HEIGHT / 2;

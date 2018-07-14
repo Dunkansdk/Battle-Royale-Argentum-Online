@@ -69,6 +69,20 @@ public class JSONManager {
 		return -1;
 	}
 	
+	public static int getItemManaCost(int id)
+	{
+		if(id < 0 || id > itemsJSON.length()) return -1;
+		
+		if(itemsJSON.getJSONObject(id) != null)
+		{
+			JSONObject aux = itemsJSON.getJSONObject(id);
+			
+			return (Integer) aux.get("mana_cost");
+		}
+		
+		return -1;
+	}
+	
 	public static String getItemDesc(int id)
 	{
 		if(id < 0 || id > itemsJSON.length()) return null;

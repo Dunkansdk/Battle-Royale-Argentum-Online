@@ -20,7 +20,6 @@ import com.bonkan.brao.engine.entity.entities.Spell;
 import com.bonkan.brao.engine.entity.entities.WorldObject;
 import com.bonkan.brao.engine.entity.entities.human.Enemy;
 import com.bonkan.brao.engine.entity.entities.human.Player;
-import com.bonkan.brao.engine.entity.entities.particle.ParticlePool;
 import com.bonkan.brao.engine.entity.entities.particle.ParticleType;
 import com.bonkan.brao.engine.utils.CommonUtils;
 import com.bonkan.brao.engine.utils.Constants;
@@ -139,9 +138,9 @@ public class EntityManager {
 		world.add(entity);
 	}
 
-	// Aca????
-	public static void createSpell(ParticleType effect) {
-		spells.add(new Spell(player.getPos().x, player.getPos().y, mouseCoords.x, mouseCoords.y, effect));
+	public static void createSpell(ParticleType effect, float x, float y, float destX, float destY, UUID castedBy) 
+	{
+		spells.add(new Spell(x, y, destX, destY, effect, castedBy));
 	}
 	
 	public static void addChest(Chest chest)
@@ -175,6 +174,16 @@ public class EntityManager {
 	public static HashMap<UUID, Item> getAllItems()
 	{
 		return items;
+	}
+	
+	public static ArrayList<Spell> getSpells()
+	{
+		return spells;
+	}
+	
+	public static HashMap<UUID, Enemy> getEnemies()
+	{
+		return enemies;
 	}
 
 }
