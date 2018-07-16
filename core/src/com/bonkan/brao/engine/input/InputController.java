@@ -35,11 +35,19 @@ public class InputController {
 	private static OrthographicCamera camera;
 	private static SpellSlot[] spellsInventory;
 	
+	// intervalos
+	private static final int RED_POT_INTERVAL = 700;
+	private static final int BLUE_POT_INTERVAL = 400;
+	private static long lastRedPot;
+	private static long lastBluePot;
+	
 	public static void init(Client c, OrthographicCamera cam, SpellSlot[] spells, ArrayList<Shape> blocks) {
 		client = c;
 		camera = cam;
 		spellsInventory = spells;
 		mapBlocks = blocks;
+		lastRedPot = System.currentTimeMillis();
+		lastBluePot = System.currentTimeMillis();
 	}
 	
 	/**
@@ -47,8 +55,8 @@ public class InputController {
      * TODO: inputs customizables y cargados desde un JSON</p>
      * @param delta		&emsp;<b>float</b> el deltaTime (Gdx)
      */
-    public static void update(float delta, Player player) {
-        
+    public static void update(float delta, Player player) 
+    {
     	boolean[] blockedDirs = blockedDirections(player);
     	boolean changedState = false;
     	Vector2 oldPos = new Vector2(player.getPos().x, player.getPos().y);
@@ -200,7 +208,7 @@ public class InputController {
         
         Vector3 mouseCoords = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));;
         
-        if(Gdx.input.isKeyJustPressed(KeyBindings.KEY_SPELL_1) && !spellsInventory[SpellSlot.SLOT_SPELL_1].isEmpty())
+        if(Gdx.input.isKeyJustPressed(KeyBindings.KEY_SPELL_1) && !spellsInventory[SpellSlot.SLOT_SPELL_1].isEmpty() && !EntityManager.getPlayer().hasSpellCasted())
         {
         	args.clear();
         	args.add(String.valueOf(SpellSlot.SLOT_SPELL_1));
@@ -211,7 +219,7 @@ public class InputController {
         	client.sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_CAST_SPELL, EntityManager.getPlayer().getID().toString(), args));
         }
         
-        if(Gdx.input.isKeyJustPressed(KeyBindings.KEY_SPELL_2) && !spellsInventory[SpellSlot.SLOT_SPELL_2].isEmpty())
+        if(Gdx.input.isKeyJustPressed(KeyBindings.KEY_SPELL_2) && !spellsInventory[SpellSlot.SLOT_SPELL_2].isEmpty() && !EntityManager.getPlayer().hasSpellCasted())
         {
         	args.clear();
         	args.add(String.valueOf(SpellSlot.SLOT_SPELL_2));
@@ -222,7 +230,7 @@ public class InputController {
         	client.sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_CAST_SPELL, EntityManager.getPlayer().getID().toString(), args));
         }
         
-        if(Gdx.input.isKeyJustPressed(KeyBindings.KEY_SPELL_3) && !spellsInventory[SpellSlot.SLOT_SPELL_3].isEmpty())
+        if(Gdx.input.isKeyJustPressed(KeyBindings.KEY_SPELL_3) && !spellsInventory[SpellSlot.SLOT_SPELL_3].isEmpty() && !EntityManager.getPlayer().hasSpellCasted())
         {
         	args.clear();
         	args.add(String.valueOf(SpellSlot.SLOT_SPELL_3));
@@ -233,7 +241,7 @@ public class InputController {
         	client.sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_CAST_SPELL, EntityManager.getPlayer().getID().toString(), args));
         }
         
-        if(Gdx.input.isKeyJustPressed(KeyBindings.KEY_SPELL_4) && !spellsInventory[SpellSlot.SLOT_SPELL_4].isEmpty())
+        if(Gdx.input.isKeyJustPressed(KeyBindings.KEY_SPELL_4) && !spellsInventory[SpellSlot.SLOT_SPELL_4].isEmpty() && !EntityManager.getPlayer().hasSpellCasted())
         {
         	args.clear();
         	args.add(String.valueOf(SpellSlot.SLOT_SPELL_4));
@@ -242,6 +250,24 @@ public class InputController {
         	args.add(String.valueOf(EntityManager.getPlayer().getPos().x));
         	args.add(String.valueOf(EntityManager.getPlayer().getPos().y));
         	client.sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_CAST_SPELL, EntityManager.getPlayer().getID().toString(), args));
+        }
+        
+        if(Gdx.input.isKeyJustPressed(KeyBindings.KEY_RED_POTION) && EntityManager.getPlayer().getRedPotionsAmount() > 0 && redPotInterval() && EntityManager.getPlayer().getHealth() != EntityManager.getPlayer().getMaxHealth())
+        {
+        	args.clear();
+        	args.add(String.valueOf(Constants.RED_POTION_INDEX));
+        	client.sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_USE_POTION, EntityManager.getPlayer().getID().toString(), args));
+        
+        	resetLastRedPotion();
+        }
+        
+        if(Gdx.input.isKeyJustPressed(KeyBindings.KEY_BLUE_POTION) && EntityManager.getPlayer().getBluePotionsAmount() > 0 && bluePotInterval() && EntityManager.getPlayer().getMana() != EntityManager.getPlayer().getMaxMana())
+        {
+        	args.clear();
+        	args.add(String.valueOf(Constants.BLUE_POTION_INDEX));
+        	client.sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_USE_POTION, EntityManager.getPlayer().getID().toString(), args));
+        	
+        	resetLastBluePotion();
         }
         
         // como esto es posible que se mande en cada frame, lo mandamos via UDP
@@ -258,6 +284,34 @@ public class InputController {
         	args.add(String.valueOf(player.getState()));
         	client.sendTCP(new Packet(PacketIDs.PACKET_PLAYER_CHANGED_STATE, player.getID().toString(), args));
         }
+    }
+    
+    /**
+     * <p>Intervalo de potas rojas.</p>
+     * <p>Es público porque también se chequea desde el PlayState cuando se usa una pota clickeando el item.</p>
+     */
+    public static boolean redPotInterval()
+    {
+    	return (lastRedPot + RED_POT_INTERVAL < System.currentTimeMillis());
+    }
+    
+    /**
+     * <p>Intervalo de potas azules.</p>
+     * <p>Es público porque también se chequea desde el PlayState cuando se usa una pota clickeando el item.</p>
+     */
+    public static boolean bluePotInterval()
+    {
+    	return (lastBluePot + BLUE_POT_INTERVAL < System.currentTimeMillis());
+    }
+    
+    public static void resetLastRedPotion()
+    {
+    	lastRedPot = System.currentTimeMillis();
+    }
+    
+    public static void resetLastBluePotion()
+    {
+    	lastBluePot = System.currentTimeMillis();
     }
     
     /**

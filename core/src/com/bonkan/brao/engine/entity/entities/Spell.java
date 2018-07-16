@@ -9,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.bonkan.brao.engine.entity.Entity;
+import com.bonkan.brao.engine.entity.EntityManager;
 import com.bonkan.brao.engine.entity.entities.particle.ParticlePool;
 import com.bonkan.brao.engine.entity.entities.particle.ParticleType;
 
@@ -46,7 +47,8 @@ public class Spell extends Entity {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update(float delta) 
+	{
 		// Le damos un poco de chanwin para que el rango de collision sea mayor
 		if(!target.epsilonEquals(location, 5) && !explosion && !earlyCollision) {
 			location.x = (float) (location.x + (Math.sin(angle + 90 * Math.PI / 180)) * SPEED);
@@ -57,20 +59,27 @@ public class Spell extends Entity {
 			if(!explosion) pool.createPooled(ParticleType.EXPLOSION, (int)location.x, (int)location.y);
 			effect.free(); // Liberamos la particula viajera, dejamos la explosion
 			explosion = true;
+			if(!earlyCollision) // lo hago solamente en casos donde no es earlycollision, porque los casos de earlycollision ya estan contemplados en el update() del PlayState
+			{
+				if(castedBy.equals(EntityManager.getPlayer().getID()))
+					EntityManager.getPlayer().setSpellCasted(false);
+			}
 			earlyCollision = false;
 		}
 	}
 
 	@Override
-	public void render(SpriteBatch batch) {
+	public void render(SpriteBatch batch) 
+	{
 		pool.render(batch, Gdx.graphics.getDeltaTime());
 	}
 	
 	/**
-	 * Collisiona con algun player?! Hacela explotar
+	 * Collisiona con algun player (o terreno)?! Hacela explotar
 	 * @return
 	 */
-	public void hit() {
+	public void hit() 
+	{
 		this.earlyCollision = true;
 	}
 

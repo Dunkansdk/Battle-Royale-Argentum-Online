@@ -452,6 +452,38 @@ public class Protocol {
 					currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_IN_AREA_CASTED_SPELL, id.toString(), p.getArgs()), id);
 				}
 				break;
+				
+			case PacketIDs.PACKET_PLAYER_REQUEST_USE_POTION:
+				id = UUID.fromString((String) p.getData());
+				mu = currentMatch.getUserByID(id);
+				int pot = Integer.parseInt(p.getArgs().get(0));
+				
+				switch(pot)
+				{
+					case CommonUtils.RED_POTION_INDEX:
+						if(mu.getRedPotionsAmount() > 0)
+						{
+							mu.setHP(mu.getHP() + 20);
+							if(mu.getHP() > mu.getMaxHP()) mu.setHP(mu.getMaxHP());
+							mu.addRedPotions(-1);
+							
+							mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_CONFIRM_USE_POTION, null, p.getArgs()));
+						}
+						break;
+				
+					case CommonUtils.BLUE_POTION_INDEX:
+						if(mu.getBluePotionsAmount() > 0)
+						{
+							mu.setMana(mu.getMana() + 100);
+							if(mu.getMana() > mu.getMaxMana()) mu.setMana(mu.getMaxMana());
+							
+							mu.addBluePotions(-1);
+							
+							mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_CONFIRM_USE_POTION, null, p.getArgs()));
+						}
+						break;
+				}
+				break;
 		}
 	}
 }

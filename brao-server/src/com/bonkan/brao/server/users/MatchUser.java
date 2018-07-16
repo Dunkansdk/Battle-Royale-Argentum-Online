@@ -12,8 +12,8 @@ import com.esotericsoftware.kryonet.Connection;
  */
 public class MatchUser extends LobbyUser {
 
-	private int hp;
-	private int mana;
+	private int hp, maxHP;
+	private int mana, maxMana;
 	private Position pos; // posicion en el mapa (del Body de box2d)
 	private UUID matchID;
 	private PlayerState state;
@@ -35,7 +35,9 @@ public class MatchUser extends LobbyUser {
 	public MatchUser(String nickName, UUID id, int defaultBody, Connection conn, int hp, int mana, Position pos, UUID matchID) {
 		super(nickName, id, defaultBody, conn);
 		this.hp = hp;
+		this.maxHP = hp;
 		this.mana = mana;
+		this.maxMana = mana;
 		this.pos = pos;
 		this.matchID = matchID;
 		this.state = PlayerState.NONE;
@@ -140,10 +142,20 @@ public class MatchUser extends LobbyUser {
 	{
 		return hp;
 	}
+	
+	public int getMaxHP()
+	{
+		return maxHP;
+	}
 
 	public int getMana() 
 	{
 		return mana;
+	}
+	
+	public int getMaxMana()
+	{
+		return maxMana;
 	}
 
 	public Position getPos() 

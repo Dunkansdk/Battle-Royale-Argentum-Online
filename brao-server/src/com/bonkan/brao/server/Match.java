@@ -159,7 +159,7 @@ public class Match {
 		
 		ArrayList<String> args = new ArrayList<String>();
 		UUID itemID = UUID.randomUUID();
-		int index = ThreadLocalRandom.current().nextInt(5, 6);
+		int index = ThreadLocalRandom.current().nextInt(3, 6);
 		int rarity = ThreadLocalRandom.current().nextInt(1, 5);
 		int amount = 1;
 		

@@ -17,6 +17,8 @@ public class Player extends Human {
 	
 	private int redPotionsAmount;
 	private int bluePotionsAmount;
+	
+	private boolean hasSpellCasted;
 
 	public Player(int x, int y, int bodyIndex, int headIndex, int health, int mana, UUID id, String userName, World world) {
 		super(x, y, bodyIndex, headIndex, id, userName, world);		
@@ -26,6 +28,7 @@ public class Player extends Human {
 		this.maxMana = mana;
 		this.redPotionsAmount = 0;
 		this.bluePotionsAmount = 0;
+		this.hasSpellCasted = false;
 		lastValidState = PlayerState.MOVE_DOWN;
 	}
 	
@@ -43,6 +46,11 @@ public class Player extends Human {
 		
 		if(bluePotionsAmount < 0)
 			bluePotionsAmount = 0;
+	}
+	
+	public void setSpellCasted(boolean val)
+	{
+		hasSpellCasted = val;
 	}
 	
 	public void setHP(int health)
@@ -83,5 +91,10 @@ public class Player extends Human {
 	public int getBluePotionsAmount()
 	{
 		return bluePotionsAmount;
+	}
+	
+	public boolean hasSpellCasted()
+	{
+		return hasSpellCasted;
 	}
 }

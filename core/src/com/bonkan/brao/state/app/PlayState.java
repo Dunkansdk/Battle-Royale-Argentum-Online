@@ -170,6 +170,35 @@ public class PlayState extends AbstractGameState {
 	    		}
 	    	}
 		}
+		
+		@SuppressWarnings("static-access")
+		Point p = new Point(Gdx.input.getX(), app.V_HEIGHT - Gdx.input.getY()); // gdx.input usa otro sist de coordenadas -.- (0,0) arriba izq
+    	for(int i = 0; i < inventory.length; i++)
+    	{
+    		ItemSlot is = inventory[i];
+
+    		if(is.getRect().contains(p) && !is.isEmpty())
+    		{
+    			ArrayList<String> args = new ArrayList<String>();
+    			
+    			if(i == ItemSlot.INVENTORY_RED_POTION_SLOT)
+    			{
+    				if(EntityManager.getPlayer().getRedPotionsAmount() > 0 && InputController.redPotInterval() && EntityManager.getPlayer().getHealth() != EntityManager.getPlayer().getMaxHealth())
+    				{
+    					args.add(String.valueOf(Constants.RED_POTION_INDEX));
+    					app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_USE_POTION, EntityManager.getPlayer().getID().toString(), args));
+    					InputController.resetLastRedPotion();
+    				}
+    			} else {
+    				if(EntityManager.getPlayer().getBluePotionsAmount() > 0 && InputController.bluePotInterval() && EntityManager.getPlayer().getMana() != EntityManager.getPlayer().getMaxMana())
+    				{	
+    					args.add(String.valueOf(Constants.BLUE_POTION_INDEX));
+    					app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_REQUEST_USE_POTION, EntityManager.getPlayer().getID().toString(), args));
+    					InputController.resetLastBluePotion();
+    				}
+    			}
+    		}
+    	}
 	}
 	
     @Override
@@ -267,7 +296,10 @@ public class PlayState extends AbstractGameState {
         		for(Shape sh : mapBlocks)
         		{
         			if(sh.intersects(s.getRect()))
+        			{
         				s.hit();
+        				EntityManager.getPlayer().setSpellCasted(false);
+        			}
         		}
         		
         		for(Map.Entry<UUID, Enemy> entry : EntityManager.getEnemies().entrySet())
@@ -277,6 +309,7 @@ public class PlayState extends AbstractGameState {
         			if(r.intersects(s.getRect()))
         			{
         				s.hit();
+        				EntityManager.getPlayer().setSpellCasted(false);
         				System.out.println("Le pegaste al enemigo con ID: " + entry.getValue().getID());
         			}
         		}
@@ -578,6 +611,8 @@ public class PlayState extends AbstractGameState {
 	    				break;
 	    				
 	    			case PacketIDs.PACKET_PLAYER_CONFIRM_CAST_SPELL:
+	    				EntityManager.getPlayer().setSpellCasted(true);
+	    				
 	    				px = Float.parseFloat(p.getArgs().get(3));
 	    				py = Float.parseFloat(p.getArgs().get(4));
 	    				dx = Float.parseFloat(p.getArgs().get(1));
@@ -594,6 +629,27 @@ public class PlayState extends AbstractGameState {
 	    				dy = Float.parseFloat(p.getArgs().get(2));
 	    				
 	    				EntityManager.createSpell(ParticleType.TEST2, px, py, dx, dy, id);
+	    				break;
+	    				
+	    			case PacketIDs.PACKET_PLAYER_CONFIRM_USE_POTION:
+	    				index = Integer.parseInt(p.getArgs().get(0));
+	    				
+	    				switch(index)
+	    				{
+		    				case Constants.RED_POTION_INDEX:
+		    					EntityManager.getPlayer().addRedPotions(-1);
+		    					EntityManager.getPlayer().setHP(EntityManager.getPlayer().getHealth() + 20);
+		    					if(EntityManager.getPlayer().getHealth() > EntityManager.getPlayer().getMaxHealth())
+		    						EntityManager.getPlayer().setHP(EntityManager.getPlayer().getMaxHealth());
+		    					break;
+		    					
+		    				case Constants.BLUE_POTION_INDEX:
+		    					EntityManager.getPlayer().addBluePotions(-1);
+		    					EntityManager.getPlayer().setMana(EntityManager.getPlayer().getMana() + 100);
+		    					if(EntityManager.getPlayer().getMana() > EntityManager.getPlayer().getMaxMana())
+		    						EntityManager.getPlayer().setMana(EntityManager.getPlayer().getMaxMana());
+		    					break;
+	    				}
 	    				break;
     			}
     			

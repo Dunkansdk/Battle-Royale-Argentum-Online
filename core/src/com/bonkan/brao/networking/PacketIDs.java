@@ -36,5 +36,7 @@ public class PacketIDs {
 	public static final int PACKET_PLAYER_CONFIRM_CAST_SPELL = 25;
 	public static final int PACKET_UPDATE_PLAYER_HP_AND_MANA = 26;
 	public static final int PACKET_USER_IN_AREA_CASTED_SPELL = 27;
+	public static final int PACKET_PLAYER_REQUEST_USE_POTION = 28;
+	public static final int PACKET_PLAYER_CONFIRM_USE_POTION = 29;
 
 }
