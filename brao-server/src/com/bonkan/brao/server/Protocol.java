@@ -42,7 +42,7 @@ public class Protocol {
 	public static void handleData(Connection conn, Packet p)
 	{
 		// auxiliares
-		UUID id, itemID;
+		UUID id, itemID, id2;
 		MatchUser mu, mu2;
 		int slot;
 		ArrayList<String> args = new ArrayList<String>();
@@ -493,7 +493,7 @@ public class Protocol {
 				mu = currentMatch.getUserByID(id);
 				//int index = Integer.parseInt(p.getArgs().get(1)); // indice del hechizo
 				
-				UUID id2 = UUID.fromString(p.getArgs().get(0));
+				id2 = UUID.fromString(p.getArgs().get(0));
 				mu2 = currentMatch.getUserByID(id2);
 				
 				if(mu != null && mu2 != null) // corroboramos que el cliente no tenga ids truchas
@@ -511,6 +511,16 @@ public class Protocol {
 					mu2.sendData(new Packet(PacketIDs.PACKET_RECEIVE_DAMAGE, null, args));
 					currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_IN_AREA_RECEIVED_DAMAGE, id2.toString(), args), id2);
 				}
+				break;
+				
+			case PacketIDs.PACKET_EXPLODE_USER_SPELL:
+				id = UUID.fromString((String) p.getData());
+				mu = currentMatch.getUserByID(id);
+				
+				id2 = UUID.fromString(p.getArgs().get(0));
+				mu2 = currentMatch.getUserByID(id2);
+				
+				mu2.sendData(new Packet(PacketIDs.PACKET_CONFIRM_EXPLODE_USER_SPELL, id.toString(), null));
 				break;
 		}
 	}

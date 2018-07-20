@@ -63,6 +63,7 @@ public class Spell extends Entity {
 			pool.remove(effect);
 			if(!explosion) pool.createPooled(ParticleType.EXPLOSION, (int)location.x, (int)location.y);
 			explosion = true;
+			hit = true;
 			if(!earlyCollision) // lo hago solamente en casos donde no es earlycollision, porque los casos de earlycollision ya estan contemplados en el update() del PlayState
 			{
 				if(castedBy.equals(EntityManager.getPlayer().getID()))

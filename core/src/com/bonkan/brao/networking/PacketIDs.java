@@ -41,5 +41,7 @@ public class PacketIDs {
 	public static final int PACKET_PLAYER_HIT_USER_WITH_SPELL = 30;
 	public static final int PACKET_RECEIVE_DAMAGE = 31;
 	public static final int PACKET_USER_IN_AREA_RECEIVED_DAMAGE = 32;
+	public static final int PACKET_EXPLODE_USER_SPELL = 33;
+	public static final int PACKET_CONFIRM_EXPLODE_USER_SPELL = 34;
 	
 }

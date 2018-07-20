@@ -316,6 +316,11 @@ public class PlayState extends AbstractGameState {
         				args.add(entry.getValue().getID().toString());
         				args.add(String.valueOf(s.getSpellIndex()));
         				app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_HIT_USER_WITH_SPELL, EntityManager.getPlayer().getID().toString(), args));
+        			
+        				args.clear();
+        				args.add(entry.getValue().getID().toString());
+        				// le mandamos el paquete al otro user para que explote el spell
+        				app.getClient().sendTCP(new Packet(PacketIDs.PACKET_EXPLODE_USER_SPELL, EntityManager.getPlayer().getID().toString(), args));
         			}
         		}
     		}
@@ -671,6 +676,20 @@ public class PlayState extends AbstractGameState {
 	    			case PacketIDs.PACKET_USER_IN_AREA_RECEIVED_DAMAGE:
 	    				id = UUID.fromString((String) p.getData());
 	    				EntityManager.addTextEffect(new TextDamageEffect(p.getArgs().get(0), EntityManager.getEnemy(id).getPos().x, EntityManager.getEnemy(id).getPos().y));
+	    				break;
+	    				
+	    			case PacketIDs.PACKET_CONFIRM_EXPLODE_USER_SPELL:
+	    				id = UUID.fromString((String) p.getData());
+	    				
+	    				// busco el spell segun id
+	    				for(Spell s : EntityManager.getSpells())
+	    				{
+	    					if(s.getCastedBy().equals(id))
+	    					{
+	    						s.hit();
+	    						break;
+	    					}
+	    				}
 	    				break;
     			}
     			
