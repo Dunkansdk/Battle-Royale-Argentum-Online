@@ -22,6 +22,8 @@ public class Spell extends Entity {
 	private double angle;
 	private UUID castedBy;
 	private boolean earlyCollision;
+	private boolean hit;
+	private int spellIndex;
 	
 	private static final float SPEED = 4f;
 
@@ -33,7 +35,7 @@ public class Spell extends Entity {
 	 * @param destY &emsp;<b>(float)</b> target y
 	 * @param effect &emsp;<b>(ParticleType)</b> {@link com.bonkan.brao.engine.entity.entities.particle.ParticleType}
 	 */
-	public Spell(float x, float y, float destX, float destY, ParticleType effect, UUID castedBy) {
+	public Spell(float x, float y, float destX, float destY, ParticleType effect, UUID castedBy, int spellIndex) {
 		super((int)x, (int)y);
 		// Iniciamos un nuevo pool de particulas para evitar bugs
 		this.pool = new ParticlePool();
@@ -44,6 +46,8 @@ public class Spell extends Entity {
 		this.explosion = false;
 		this.castedBy = castedBy;
 		this.earlyCollision = false;
+		this.spellIndex = spellIndex;
+		this.hit = false;
 	}
 
 	@Override
@@ -56,8 +60,8 @@ public class Spell extends Entity {
 			pool.update(effect, (int)location.x, (int)location.y);
 		} else {
 			// Llego a destino o exploto antes
+			pool.remove(effect);
 			if(!explosion) pool.createPooled(ParticleType.EXPLOSION, (int)location.x, (int)location.y);
-			effect.free(); // Liberamos la particula viajera, dejamos la explosion
 			explosion = true;
 			if(!earlyCollision) // lo hago solamente en casos donde no es earlycollision, porque los casos de earlycollision ya estan contemplados en el update() del PlayState
 			{
@@ -81,8 +85,19 @@ public class Spell extends Entity {
 	public void hit() 
 	{
 		this.earlyCollision = true;
+		this.hit = true;
+	}
+	
+	public boolean getHit()
+	{
+		return hit;
 	}
 
+	public int getSpellIndex()
+	{
+		return spellIndex;
+	}
+	
 	public Rectangle getRect()
 	{
 		return new Rectangle((int) location.x, (int) location.y - 10, 10, 10);

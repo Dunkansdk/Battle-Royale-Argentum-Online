@@ -27,6 +27,7 @@ import com.bonkan.brao.engine.entity.entities.particle.ParticleType;
 import com.bonkan.brao.engine.input.InputController;
 import com.bonkan.brao.engine.map.MapManager;
 import com.bonkan.brao.engine.map.WorldManager;
+import com.bonkan.brao.engine.text.TextDamageEffect;
 import com.bonkan.brao.engine.ui.ItemSlot;
 import com.bonkan.brao.engine.ui.ItemTooltip;
 import com.bonkan.brao.engine.ui.SpellSlot;
@@ -64,10 +65,10 @@ public class PlayState extends AbstractGameState {
     private boolean dragging;
     private int draggingSlot;
     private TextureRegion draggingTexture;
-    
+
 	public PlayState(GameStateManager gameState) {
         super(gameState);
-        
+
         WorldManager.init();
         EntityManager.init(app);
         ItemTooltip.init();
@@ -306,11 +307,15 @@ public class PlayState extends AbstractGameState {
         		{
         			Rectangle r = new Rectangle((int) entry.getValue().getPos().x - Constants.BODY_WIDTH / 2, (int) entry.getValue().getPos().y - Constants.BODY_HEIGHT / 2, Constants.BODY_WIDTH, Constants.BODY_HEIGHT);
         		
-        			if(r.intersects(s.getRect()))
+        			if(r.intersects(s.getRect()) && !s.getHit())
         			{
         				s.hit();
         				EntityManager.getPlayer().setSpellCasted(false);
-        				System.out.println("Le pegaste al enemigo con ID: " + entry.getValue().getID());
+
+        				ArrayList<String> args = new ArrayList<String>();
+        				args.add(entry.getValue().getID().toString());
+        				args.add(String.valueOf(s.getSpellIndex()));
+        				app.getClient().sendTCP(new Packet(PacketIDs.PACKET_PLAYER_HIT_USER_WITH_SPELL, EntityManager.getPlayer().getID().toString(), args));
         			}
         		}
     		}
@@ -617,8 +622,9 @@ public class PlayState extends AbstractGameState {
 	    				py = Float.parseFloat(p.getArgs().get(4));
 	    				dx = Float.parseFloat(p.getArgs().get(1));
 	    				dy = Float.parseFloat(p.getArgs().get(2));
+	    				index = Integer.parseInt(p.getArgs().get(5));
 	    				
-	    				EntityManager.createSpell(ParticleType.TEST2, px, py, dx, dy, EntityManager.getPlayer().getID());
+	    				EntityManager.createSpell(ParticleType.TEST2, px, py, dx, dy, EntityManager.getPlayer().getID(), index);
 	    				break;
 	    				
 	    			case PacketIDs.PACKET_USER_IN_AREA_CASTED_SPELL:
@@ -627,8 +633,9 @@ public class PlayState extends AbstractGameState {
 	    				py = Float.parseFloat(p.getArgs().get(4));
 	    				dx = Float.parseFloat(p.getArgs().get(1));
 	    				dy = Float.parseFloat(p.getArgs().get(2));
+	    				index = Integer.parseInt(p.getArgs().get(5));
 	    				
-	    				EntityManager.createSpell(ParticleType.TEST2, px, py, dx, dy, id);
+	    				EntityManager.createSpell(ParticleType.TEST2, px, py, dx, dy, id, index);
 	    				break;
 	    				
 	    			case PacketIDs.PACKET_PLAYER_CONFIRM_USE_POTION:
@@ -650,6 +657,20 @@ public class PlayState extends AbstractGameState {
 		    						EntityManager.getPlayer().setMana(EntityManager.getPlayer().getMaxMana());
 		    					break;
 	    				}
+	    				break;
+	    				
+	    			case PacketIDs.PACKET_RECEIVE_DAMAGE:
+	    				int dmg = Integer.parseInt(p.getArgs().get(0));
+	    				EntityManager.addTextEffect(new TextDamageEffect(p.getArgs().get(0), EntityManager.getPlayer().getPos().x, EntityManager.getPlayer().getPos().y));
+	    				
+	    				EntityManager.getPlayer().setHP(EntityManager.getPlayer().getHealth() - dmg);
+	    				if(EntityManager.getPlayer().getHealth() < 0)
+	    					EntityManager.getPlayer().setHP(0);
+	    				break;
+	    				
+	    			case PacketIDs.PACKET_USER_IN_AREA_RECEIVED_DAMAGE:
+	    				id = UUID.fromString((String) p.getData());
+	    				EntityManager.addTextEffect(new TextDamageEffect(p.getArgs().get(0), EntityManager.getEnemy(id).getPos().x, EntityManager.getEnemy(id).getPos().y));
 	    				break;
     			}
     			

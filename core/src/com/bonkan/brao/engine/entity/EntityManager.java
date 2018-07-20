@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ import com.bonkan.brao.engine.entity.entities.WorldObject;
 import com.bonkan.brao.engine.entity.entities.human.Enemy;
 import com.bonkan.brao.engine.entity.entities.human.Player;
 import com.bonkan.brao.engine.entity.entities.particle.ParticleType;
+import com.bonkan.brao.engine.text.TextDamageEffect;
 import com.bonkan.brao.engine.utils.CommonUtils;
 import com.bonkan.brao.engine.utils.Constants;
 
@@ -35,6 +37,7 @@ public class EntityManager {
 	private static ArrayList<Chest> chests;
 	private static HashMap<UUID, Item> items;
 	private static ArrayList<Spell> spells;
+	private static ArrayList<TextDamageEffect> tdes;
 	private static Game app;
 	
 	private static Vector3 mouseCoords;
@@ -45,6 +48,7 @@ public class EntityManager {
 		chests = new ArrayList<Chest>();
 		items = new HashMap<UUID, Item>();
 		spells = new ArrayList<Spell>();
+		tdes = new ArrayList<TextDamageEffect>();
 	}
 	
 	public static void setPlayer(Player p) 
@@ -55,6 +59,11 @@ public class EntityManager {
 	public static void addEnemy(UUID id, Enemy enemy) 
 	{
 		enemies.put(id, enemy);
+	}
+	
+	public static void addTextEffect(TextDamageEffect tde)
+	{
+		tdes.add(tde);
 	}
 	
 	/**
@@ -85,6 +94,9 @@ public class EntityManager {
 			for(Spell spell : spells) 
 				spell.render(batch);
 			
+			for(TextDamageEffect tde : tdes)
+				tde.render(batch);
+			
 		batch.end();
 	}
 	
@@ -100,10 +112,22 @@ public class EntityManager {
 		
 		player.update(delta);
 		
-		for(Spell spell : spells) {
+		for(Spell spell : spells)
 			spell.update(delta);
-		}
+		
+		// recorro con iterator para hacer remove() de los efectos que ya terminaron
+		ListIterator<TextDamageEffect> lit = tdes.listIterator();
+		
+		while(lit.hasNext())
+		{
+			TextDamageEffect tde = lit.next();
 			
+			tde.update();
+			
+			if(!tde.getAlive())
+				lit.remove();
+		}
+
 		mouseCoords = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 		
 		// también actualizo los items xq tienen el check del mouseHover
@@ -111,16 +135,19 @@ public class EntityManager {
 			entry.getValue().update(delta, (int) mouseCoords.x, (int) mouseCoords.y);
 	}
 	
-	public static void removeEnemy(UUID id) {
+	public static void removeEnemy(UUID id) 
+	{
 		if(enemies.get(id) != null)
 			enemies.remove(id);
 	}
 
-	public static Enemy getEnemy(UUID id) {
+	public static Enemy getEnemy(UUID id) 
+	{
 		return enemies.get(id);
 	}
 	
-	public static Player getPlayer() {
+	public static Player getPlayer() 
+	{
 		return player;
 	}
 	
@@ -134,13 +161,14 @@ public class EntityManager {
 		return null;
 	}
 	
-	public static void addWorldObject(WorldObject entity) {
+	public static void addWorldObject(WorldObject entity) 
+	{
 		world.add(entity);
 	}
 
-	public static void createSpell(ParticleType effect, float x, float y, float destX, float destY, UUID castedBy) 
+	public static void createSpell(ParticleType effect, float x, float y, float destX, float destY, UUID castedBy, int spellIndex) 
 	{
-		spells.add(new Spell(x, y, destX, destY, effect, castedBy));
+		spells.add(new Spell(x, y, destX, destY, effect, castedBy, spellIndex));
 	}
 	
 	public static void addChest(Chest chest)

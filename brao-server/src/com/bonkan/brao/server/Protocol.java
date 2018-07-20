@@ -447,9 +447,12 @@ public class Protocol {
 					args.add(String.valueOf(mu.getMana()));
 					mu.sendData(new Packet(PacketIDs.PACKET_UPDATE_PLAYER_HP_AND_MANA, null, args));
 				
-					mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_CONFIRM_CAST_SPELL, null, p.getArgs())); // lo mando con los mismos argumentos que llegaron, el SLOT no me sirve pero x, y, destX y destY si
+					args.clear();
+					args = p.getArgs();
+					args.add(String.valueOf(mu.getSpell(slot))); // agrego el indice del spell a los argumentos
+					mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_CONFIRM_CAST_SPELL, null, args)); // lo mando con los mismos argumentos que llegaron, el SLOT no me sirve pero x, y, destX y destY si (además, le agregamos el index del spell)
 				
-					currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_IN_AREA_CASTED_SPELL, id.toString(), p.getArgs()), id);
+					currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_IN_AREA_CASTED_SPELL, id.toString(), args), id);
 				}
 				break;
 				
@@ -482,6 +485,31 @@ public class Protocol {
 							mu.sendData(new Packet(PacketIDs.PACKET_PLAYER_CONFIRM_USE_POTION, null, p.getArgs()));
 						}
 						break;
+				}
+				break;
+				
+			case PacketIDs.PACKET_PLAYER_HIT_USER_WITH_SPELL:
+				id = UUID.fromString((String) p.getData());
+				mu = currentMatch.getUserByID(id);
+				//int index = Integer.parseInt(p.getArgs().get(1)); // indice del hechizo
+				
+				UUID id2 = UUID.fromString(p.getArgs().get(0));
+				mu2 = currentMatch.getUserByID(id2);
+				
+				if(mu != null && mu2 != null) // corroboramos que el cliente no tenga ids truchas
+				{
+					// MU le tira el hechizo a MU2
+					// calculamos el daño segun el indice del hechizo, ahora no tengo ganas
+					args.clear();
+					args.add("100"); // esto es el daño, jeje
+					
+					mu2.setHP(mu2.getHP() - 100);
+					
+					if(mu2.getHP() < 0)
+						mu2.setHP(0);
+					
+					mu2.sendData(new Packet(PacketIDs.PACKET_RECEIVE_DAMAGE, null, args));
+					currentMatch.sendDataToArea(new Packet(PacketIDs.PACKET_USER_IN_AREA_RECEIVED_DAMAGE, id2.toString(), args), id2);
 				}
 				break;
 		}

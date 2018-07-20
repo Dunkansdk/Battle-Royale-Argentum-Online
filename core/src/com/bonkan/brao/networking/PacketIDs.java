@@ -38,5 +38,8 @@ public class PacketIDs {
 	public static final int PACKET_USER_IN_AREA_CASTED_SPELL = 27;
 	public static final int PACKET_PLAYER_REQUEST_USE_POTION = 28;
 	public static final int PACKET_PLAYER_CONFIRM_USE_POTION = 29;
-
+	public static final int PACKET_PLAYER_HIT_USER_WITH_SPELL = 30;
+	public static final int PACKET_RECEIVE_DAMAGE = 31;
+	public static final int PACKET_USER_IN_AREA_RECEIVED_DAMAGE = 32;
+	
 }

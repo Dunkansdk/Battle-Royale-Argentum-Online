@@ -70,4 +70,18 @@ public class ParticlePool {
 	    }
 	}
 
+	/**
+     * Delete particle from pool
+     * @param effect
+     */
+    public void remove(PooledEffect effect) {
+        effect.free();
+        Iterator<PooledEffect> it = pool.iterator();
+        while (it.hasNext()) {
+            PooledEffect actual = it.next();
+            if(actual.equals(effect)) {
+                it.remove();
+            }
+        }
+    }
 }
