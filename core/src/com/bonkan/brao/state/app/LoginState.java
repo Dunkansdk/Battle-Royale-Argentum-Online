@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.bonkan.brao.engine.ui.OptionWindow;
 import com.bonkan.brao.engine.utils.AssetsManager;
 import com.bonkan.brao.networking.Packet;
 import com.bonkan.brao.networking.PacketIDs;
@@ -36,6 +37,8 @@ public class LoginState extends AbstractGameState {
 	
 	private double labelTimer; // para que se borre despues de un toque
 	private final int LABEL_TIME = 3000; // en 3 segundos desaparece
+	
+	private OptionWindow options;
 	
     public LoginState(GameStateManager gameState) {
         super(gameState);
@@ -106,6 +109,8 @@ public class LoginState extends AbstractGameState {
         stage.addActor(password);
         stage.addActor(connect);
         stage.addActor(label);
+        
+        options = new OptionWindow();
     }
 
     private void connect()
@@ -127,6 +132,8 @@ public class LoginState extends AbstractGameState {
     @Override
     public void update(float delta) {
     	stage.act(delta);
+    	options.act(delta);
+    	
     	
     	// si esta logueado desde el app cambiamos el estado
     	if(app.isLogged())
@@ -142,6 +149,7 @@ public class LoginState extends AbstractGameState {
     @Override
     public void render() {
     	stage.draw();
+    	options.draw();
     }
 
     @Override
@@ -149,5 +157,7 @@ public class LoginState extends AbstractGameState {
     	/*stage.dispose();
     	skin.dispose();
     	defaultFont.dispose();*/
+    	stage.dispose();
+    	options.dispose();
     }
 }

@@ -1,0 +1,62 @@
+
+cache.png
+size: 512,256
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+barOutline
+  rotate: false
+  xy: 2, 219
+  size: 166, 24
+  orig: 166, 24
+  offset: 0, 0
+  index: -1
+body
+  rotate: false
+  xy: 336, 83
+  size: 150, 160
+  orig: 150, 160
+  offset: 0, 0
+  index: -1
+body2
+  rotate: false
+  xy: 170, 59
+  size: 150, 160
+  orig: 150, 160
+  offset: 0, 0
+  index: -1
+body3
+  rotate: false
+  xy: 2, 2
+  size: 85, 129
+  orig: 85, 129
+  offset: 0, 0
+  index: -1
+hpBar
+  rotate: false
+  xy: 2, 195
+  size: 164, 22
+  orig: 164, 22
+  offset: 0, 0
+  index: -1
+manaBar
+  rotate: false
+  xy: 170, 221
+  size: 164, 22
+  orig: 164, 22
+  offset: 0, 0
+  index: -1
+slot
+  rotate: false
+  xy: 89, 67
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+tooltip
+  rotate: false
+  xy: 2, 133
+  size: 160, 60
+  orig: 160, 60
+  offset: 0, 0
+  index: -1

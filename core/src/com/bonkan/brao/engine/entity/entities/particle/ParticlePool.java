@@ -11,6 +11,8 @@ public class ParticlePool {
 	private ParticleCache cache;
 	private ArrayList<PooledEffect> pool;
 	
+	private boolean complete;
+	
 	/**
 	 * <p>Controla los efectos que existen en el screen</p>
 	 */
@@ -20,6 +22,7 @@ public class ParticlePool {
 		cache.create(ParticleType.TEST1);
 		cache.create(ParticleType.TEST2);
 		cache.create(ParticleType.EXPLOSION);
+		this.complete = false;
 	}
 	
 	/**
@@ -66,6 +69,7 @@ public class ParticlePool {
 	      if (effect.isComplete()) {
 				effect.free();
 				it.remove();
+				complete = true;
 			}
 	    }
 	}
@@ -83,5 +87,9 @@ public class ParticlePool {
                 it.remove();
             }
         }
+    }
+    
+    public boolean complete() {
+    	return complete;
     }
 }

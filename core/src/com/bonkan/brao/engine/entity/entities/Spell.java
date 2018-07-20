@@ -17,6 +17,7 @@ public class Spell extends Entity {
 	
 	private ParticlePool pool;
 	private PooledEffect effect;
+	private PooledEffect effectExp;
 	private boolean explosion;
 	private Vector2 target;
 	private double angle;
@@ -61,7 +62,8 @@ public class Spell extends Entity {
 		} else {
 			// Llego a destino o exploto antes
 			pool.remove(effect);
-			if(!explosion) pool.createPooled(ParticleType.EXPLOSION, (int)location.x, (int)location.y);
+			if(!explosion) effectExp = pool.createPooled(ParticleType.EXPLOSION, (int)location.x, (int)location.y);
+			//System.out.println("Lo complete: " + pool.complete(effectExp));
 			explosion = true;
 			hit = true;
 			if(!earlyCollision) // lo hago solamente en casos donde no es earlycollision, porque los casos de earlycollision ya estan contemplados en el update() del PlayState
@@ -87,6 +89,10 @@ public class Spell extends Entity {
 	{
 		this.earlyCollision = true;
 		this.hit = true;
+	}
+	
+	public boolean complete() {
+		return pool.complete();
 	}
 	
 	public boolean getHit()

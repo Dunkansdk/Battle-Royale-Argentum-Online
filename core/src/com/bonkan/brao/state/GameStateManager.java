@@ -4,7 +4,6 @@ import com.bonkan.brao.Game;
 import com.bonkan.brao.state.app.LoadingState;
 import com.bonkan.brao.state.app.LobbyState;
 import com.bonkan.brao.state.app.LoginState;
-import com.bonkan.brao.state.app.OptionState;
 import com.bonkan.brao.state.app.PlayState;
 
 import java.util.Stack;
@@ -22,7 +21,6 @@ public class GameStateManager {
     public enum State {
         LOGIN,
         PLAY,
-        OPTION,
         LOBBY,
         LOADING
     }
@@ -88,8 +86,6 @@ public class GameStateManager {
                 return new PlayState(this);
             case LOBBY:
                 return new LobbyState(this);
-            case OPTION:
-                return new OptionState(this);
             case LOADING:
             	return new LoadingState(this);
         }

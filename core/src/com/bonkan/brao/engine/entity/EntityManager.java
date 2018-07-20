@@ -112,8 +112,17 @@ public class EntityManager {
 		
 		player.update(delta);
 		
-		for(Spell spell : spells)
-			spell.update(delta);
+		Iterator<Spell> itSpell = spells.iterator();
+	    while (itSpell.hasNext()) {
+	    	Spell actual = itSpell.next();
+	    	if(actual.complete()) {
+	    		itSpell.remove();
+	    		System.out.println("Borre el hechizo");
+	    	} else {
+	    		actual.update(delta);
+	    		//System.out.println("Hechizos activo!");
+	    	}
+	    }
 		
 		// recorro con iterator para hacer remove() de los efectos que ya terminaron
 		ListIterator<TextDamageEffect> lit = tdes.listIterator();
