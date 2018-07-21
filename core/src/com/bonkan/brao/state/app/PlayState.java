@@ -504,7 +504,6 @@ public class PlayState extends AbstractGameState {
 	    								break;
 	    							}
 	    						}
-
 	    						break;
 	    				}
 	    				

@@ -96,4 +96,60 @@ public class JSONManager {
 		
 		return null;
 	}
+	
+	public static int getItemMinDamage(int id)
+	{
+		if(id < 0 || id > itemsJSON.length()) return -1;
+		
+		if(itemsJSON.getJSONObject(id) != null)
+		{
+			JSONObject aux = itemsJSON.getJSONObject(id);
+			
+			return (Integer) aux.get("min_dmg");
+		}
+		
+		return -1;
+	}
+	
+	public static int getItemMaxDamage(int id)
+	{
+		if(id < 0 || id > itemsJSON.length()) return -1;
+		
+		if(itemsJSON.getJSONObject(id) != null)
+		{
+			JSONObject aux = itemsJSON.getJSONObject(id);
+			
+			return (Integer) aux.get("max_dmg");
+		}
+		
+		return -1;
+	}
+	
+	public static int getItemSpellDamage(int id)
+	{
+		if(id < 0 || id > itemsJSON.length()) return -1;
+		
+		if(itemsJSON.getJSONObject(id) != null)
+		{
+			JSONObject aux = itemsJSON.getJSONObject(id);
+			
+			return (Integer) aux.get("spell_damage");
+		}
+		
+		return -1;
+	}
+	
+	public static int getItemSpellResistance(int id)
+	{
+		if(id < 0 || id > itemsJSON.length()) return -1;
+		
+		if(itemsJSON.getJSONObject(id) != null)
+		{
+			JSONObject aux = itemsJSON.getJSONObject(id);
+			
+			return (Integer) aux.get("spell_resistance");
+		}
+		
+		return -1;
+	}
 }

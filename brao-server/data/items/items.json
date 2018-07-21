@@ -15,6 +15,7 @@
 			"anim_atlas_name" : "weapon1",
 			"min_atk" : 20,
 			"max_atk" : 25,
+			"spell_damage" : 0,
 			"item_type" : 1,
 			"desc" : "ATK: 20 / 25"
 		},
@@ -24,6 +25,7 @@
 			"anim_atlas_name" : "helmet1",
 			"min_def" : 5,
 			"max_def" : 15,
+			"spell_resistance" : 0,
 			"item_type" : 2,
 			"desc" : "DEF: 5 / 15"
 		},

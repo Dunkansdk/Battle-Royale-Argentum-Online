@@ -17,6 +17,7 @@ public class Spell extends Entity {
 	
 	private ParticlePool pool;
 	private PooledEffect effect;
+	@SuppressWarnings("unused")
 	private PooledEffect effectExp;
 	private boolean explosion;
 	private Vector2 target;

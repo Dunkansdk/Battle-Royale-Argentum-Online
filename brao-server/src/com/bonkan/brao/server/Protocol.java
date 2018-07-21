@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.bonkan.brao.server.mysql.MySQLHandler;
 import com.bonkan.brao.server.packets.Packet;
@@ -491,7 +492,7 @@ public class Protocol {
 			case PacketIDs.PACKET_PLAYER_HIT_USER_WITH_SPELL:
 				id = UUID.fromString((String) p.getData());
 				mu = currentMatch.getUserByID(id);
-				//int index = Integer.parseInt(p.getArgs().get(1)); // indice del hechizo
+				int index = Integer.parseInt(p.getArgs().get(1)); // indice del hechizo
 				
 				id2 = UUID.fromString(p.getArgs().get(0));
 				mu2 = currentMatch.getUserByID(id2);
@@ -499,11 +500,23 @@ public class Protocol {
 				if(mu != null && mu2 != null) // corroboramos que el cliente no tenga ids truchas
 				{
 					// MU le tira el hechizo a MU2
-					// calculamos el daño segun el indice del hechizo, ahora no tengo ganas
-					args.clear();
-					args.add("100"); // esto es el daño, jeje
+					// calculamos el daño segun el indice del hechizo
+					int mindmg = JSONManager.getItemMinDamage(index);
+					int maxdmg = JSONManager.getItemMaxDamage(index);
 					
-					mu2.setHP(mu2.getHP() - 100);
+					int dmg = ThreadLocalRandom.current().nextInt(mindmg, maxdmg);
+					if(mu.getEquippedWeapon() > -1)
+					{
+						dmg += JSONManager.getItemSpellDamage(mu.getEquippedWeapon()) * mu.getEquippedWeaponRarity();
+					
+						if(mu2.getEquippedHelmet() > -1)
+							dmg -= JSONManager.getItemSpellResistance(mu2.getEquippedHelmet()) * mu2.getEquippedHelmetRarity();
+					}
+					
+					args.clear();
+					args.add(String.valueOf(dmg));
+					
+					mu2.setHP(mu2.getHP() - dmg);
 					
 					if(mu2.getHP() < 0)
 						mu2.setHP(0);

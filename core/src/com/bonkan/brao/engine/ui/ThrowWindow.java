@@ -87,10 +87,6 @@ public class ThrowWindow extends Stage {
 	public void reset()
 	{
 		amountText.setText("50");
-
-		// sino se bugea el texto (no se por que)
-		potionsWindow.removeActor(okButton);
-		potionsWindow.addActor(okButton);
 		ready = false;
 	}
 
