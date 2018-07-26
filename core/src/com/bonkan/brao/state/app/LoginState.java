@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -16,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.bonkan.brao.engine.ui.OptionWindow;
 import com.bonkan.brao.engine.utils.AssetsManager;
 import com.bonkan.brao.networking.Packet;
 import com.bonkan.brao.networking.PacketIDs;
@@ -34,19 +34,22 @@ public class LoginState extends AbstractGameState {
 	private TextField password;
 	private TextButton connect;
 	private Label label;
+
+	// Esto lo podria dejar, va a ser util, como ejemplo
+	private InputMultiplexer inputMultiplexer = new InputMultiplexer();
 	
 	private double labelTimer; // para que se borre despues de un toque
 	private final int LABEL_TIME = 3000; // en 3 segundos desaparece
-	
-	private OptionWindow options;
 	
     public LoginState(GameStateManager gameState) {
         super(gameState);
 
         labelTimer = 0;
-        
+
         stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
+        
+        inputMultiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
 
         skin = AssetsManager.getDefaultSkin();
         
@@ -109,8 +112,6 @@ public class LoginState extends AbstractGameState {
         stage.addActor(password);
         stage.addActor(connect);
         stage.addActor(label);
-        
-        options = new OptionWindow();
     }
 
     private void connect()
@@ -132,8 +133,6 @@ public class LoginState extends AbstractGameState {
     @Override
     public void update(float delta) {
     	stage.act(delta);
-    	options.act(delta);
-    	
     	
     	// si esta logueado desde el app cambiamos el estado
     	if(app.isLogged())
@@ -149,15 +148,10 @@ public class LoginState extends AbstractGameState {
     @Override
     public void render() {
     	stage.draw();
-    	options.draw();
     }
 
     @Override
     public void dispose() {
-    	/*stage.dispose();
-    	skin.dispose();
-    	defaultFont.dispose();*/
     	stage.dispose();
-    	options.dispose();
     }
 }

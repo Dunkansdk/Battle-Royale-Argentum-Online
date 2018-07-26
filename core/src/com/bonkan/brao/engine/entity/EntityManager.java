@@ -117,7 +117,7 @@ public class EntityManager {
 	    	Spell actual = itSpell.next();
 	    	if(actual.complete()) {
 	    		itSpell.remove();
-	    		//System.out.println("Borre el hechizo");
+	    		System.out.println("Borre el hechizo");
 	    	} else {
 	    		actual.update(delta);
 	    		//System.out.println("Hechizos activo!");

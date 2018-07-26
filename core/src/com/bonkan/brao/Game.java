@@ -79,7 +79,7 @@ public class Game extends ApplicationAdapter {
 
 	    try {
 	    	// 5000 es la cant. maxima de milisegundos que se bloquea el thread tratando de conectar
-	    	client.connect(5000, "127.0.0.1", 7666, 7667); //190.191.191.51
+	    	client.connect(5000, "190.191.191.51", 7666, 7667); //190.191.191.51
 
 	    	client.addListener(new Listener() {
 		        public void received (Connection connection, Object object) {

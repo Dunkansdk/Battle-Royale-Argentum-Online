@@ -146,7 +146,7 @@ public class AssetsManager {
 	{
 		return am.get("uiskin.json");
 	}
-	
+
 	public static ParticleEffect getParticle(String id)
 	{
 		return am.get(id);

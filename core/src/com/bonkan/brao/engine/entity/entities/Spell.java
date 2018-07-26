@@ -27,7 +27,7 @@ public class Spell extends Entity {
 	private boolean hit;
 	private int spellIndex;
 	
-	private static final float SPEED = 4f;
+	private static final float SPEED = 6f;
 
 	/**
 	 * Crea un hechizo!
