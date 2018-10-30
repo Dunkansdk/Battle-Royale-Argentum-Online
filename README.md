@@ -28,5 +28,6 @@ Mi **local.properties** es así:
 
 También, van a tener que montar en localhost una BD **"test"**, que tenga sólo una tabla: *users*. Esta tabla tiene 4 columnas, *ID* (primaria), *username* (varchar), *password* (varchar) y *default_body* (int), que puede valer **1** (cuerpo desnudo) o **2** (túnica de druida).
 Creen un usuario dentro de la BD, y ya van a poder logear.
+P.D: en honor a Argentum original, usamos los puertos 7666 (TCP) y 7667 (UDP), asegurense de que estén libres.
 
 
