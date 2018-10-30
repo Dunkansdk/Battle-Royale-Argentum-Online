@@ -15,7 +15,7 @@ El engine fue creado desde cero usando libGDX, y sus sub-librerías de box2D, bo
 La parte de networking también fue hecha desde cero utilizando [KryoNet](https://github.com/EsotericSoftware/kryonet) y conectando con MySQL mediante [JDBC Connector](https://dev.mysql.com/downloads/connector/j/5.1.html); el envío de paquetes probablemente puede ser más refinado, fue hecho sin experiencia previa y aprendiendo sobre la marcha.
 
 ## Bugs conocidos
-• Al tirar los items no se muestra la luz correspondiente según la rareza.
+• Al tirar los items no se muestra la luz correspondiente según la rareza.<br>
 • A veces se bugea el Dialog de tirar pociones, y no muestra los textos.
 
 ## Setup
